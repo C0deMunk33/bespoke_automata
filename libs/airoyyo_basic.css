@@ -1,0 +1,266 @@
+body {
+    font-family: 'Trebuchet MS', Helvetica, sans-serif;
+    margin: 0px;
+    overflow: hidden;
+}
+#top_menu_bar {
+    position: absolute;
+    text-align: right;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 30px;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    padding-right: 50px;
+    box-sizing: border-box;
+}
+#top_menu_bar button {
+    background-color: #333;
+    color: #AAA;
+    border: 1px solid #555;
+    padding: 0px 4px;
+    margin: 0px 2px;
+    cursor: pointer;
+}
+/*hover*/
+#top_menu_bar button:hover {
+    background-color: #444;
+    color: #FFF;
+}
+/*run button active*/
+#top_menu_bar button.active {
+    background-color: #1aff00;
+    color: #FFF;
+}
+
+#top_menu_file_name{ 
+    position:absolute;
+    top:5px;
+    left:50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 20px;
+    background-color: #333;
+    color: #AAA;
+    border: 1px solid #555;
+    padding: 0px 4px;
+    margin: 0px 2px;
+    
+}
+
+
+#node-panel {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    width: 300px;
+    height: 100%;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+#node-panel .close {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#node-panel h3 {
+    margin: 0px;
+    padding: 0px;
+    font-size: 0.5em;
+    display: none;
+}
+
+#node-panel .dialog-title {
+    margin: 0px;
+    padding: 1px;
+    font-size: 1em;
+    display: block;
+    background-color: #333;
+    width: 100%;
+    margin-top: 20px;
+    font-weight: bolder;
+}
+
+#node-panel .property_name {
+    font-size: 0.5em;
+    font-weight: bold;
+    margin-right: 5px;
+    padding: 0px;
+    display: block;
+}
+
+
+#node-panel .node_type,
+#node-panel .delete {
+    display: none;
+}
+
+.property {
+    margin-top: 5px;
+}
+#site_title {
+    font-family: 'Shadows Into Light';
+    font-size: 1.25em;
+    position:absolute;
+    top:0px;
+    left:35px;
+    display: inline-block;
+    color:#FFF;
+
+    
+}
+#site_icon{
+    position:absolute;
+    width: 30px;
+    height: 30px;
+    left:2px;
+    top:0px;
+    display: inline-block;
+    margin: 0px 10px;
+
+}
+.menu_gap{
+    flex-grow: 1;
+}
+
+.menu_button_icon{
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 1px;
+    /*tint white*/
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+
+#more_menu {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.submenu_button {
+    background-color: #333;
+    color: #AAA;
+    border: 1px solid #555;
+    padding: 0px 4px;
+    margin: 0px 2px;
+    cursor: pointer;
+}
+/*hover*/
+.submenu_button:hover {
+    background-color: #444;
+    color: #FFF;
+}
+
+#left_panel {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    width: 200px;
+    bottom: 0px;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: auto;
+}
+.file {
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px;
+    background-color: #333;
+    color: #AAA;
+}
+.file:hover {
+    background-color: #444;
+    color: #FFF;
+}
+.panel_toggle_open {
+    position: absolute;
+    top: 30px;
+    left: 200px;
+    width: 20px;
+    height: 100%;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.panel_toggle_closed {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+    width: 20px;
+    height: 100%;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.active {
+    background-color: /*lighter grey*/ #666;
+    color: #FFF;
+}
+.visible {
+    display: block;
+}
+.hidden {
+    display: none;
+}
+#panel_bottom_buttons {
+    position: absolute;
+    bottom: 5px;
+    left: 0px;
+    width: 100%;
+    background-color: #555;
+    color: #AAA;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.bottom_panel_button {
+    background-color: #333;
+    color: #AAA;
+    border: 1px solid #555;
+    padding: 0px 4px;
+    margin: 0px 2px;
+    cursor: pointer;
+    width: 100%;
+}
+#file_list_element {
+    overflow: auto;
+    height: calc(100% - 100px);
+}
+.file_button{
+    background-color: #333;
+    color: #AAA;
+    border: 1px solid #555;
+    padding: 0px 4px;
+    margin: 0px 2px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    float: right;
+}

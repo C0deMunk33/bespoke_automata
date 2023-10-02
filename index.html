@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<head>
+	<link rel="stylesheet" type="text/css" href="libs/litegraph.css">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
+
+	<style>
+		@font-face {
+			font-family: 'Resagnicto';
+			src: url('libs/Resagnicto.ttf') format('truetype');
+		}
+		
+		@font-face {
+			font-family: 'HerrVonMuellerhoff';
+			src: url('libs/HerrVonMuellerhoff-Regular.otf') format('opentype');
+		}
+
+		
+		@font-face {
+			font-family: 'Poiret One';
+			src: url('libs/PoiretOne-Regular.ttf') format('truetype');
+		}
+	</style>
+
+	<script src="libs/socket.io.js"></script>
+	<script type="text/javascript" src="libs/litegraph.js"></script>
+	<script type="text/javascript" src="libs/weaviate.js"></script>
+	<script type="text/javascript" src="libs/nodes.js"></script>
+	<script type="text/javascript" src="libs/schema.js"></script>
+	<script type="text/javascript" src="libs/jszip.min.js"></script>
+
+	<link rel="icon" href="icon.svg" type="image/svg+xml">
+	<title>BESPOKE AUTOMATA</title>
+	<link rel="stylesheet" href="libs/airoyyo.css">
+
+</head>
+<body style='width:100%; height:100%'>
+	<div id="top_menu_bar">
+		<span><h1 id="site_title" style="display:inline-block; margin: 0px 10px;">
+			<span id="site_title_first">BESPOKE</span>
+			<span id="site_title_last">AUTOMATA</span>
+		</h1> 
+			<!--<img id="site_icon" src="icon.svg" alt="icon">-->
+			</span>
+		<input id="top_menu_file_name" type="text" value="untitled_brain">
+		<div class="menu_gap"></div>
+		<button id="run">
+			<img class="menu_button_icon" src="play.svg" alt="play"> Run</button>
+	</div>
+	<div id="left_panel" class="hidden">
+		<!-- files list title-->
+		<div id="file_list_title">Saved Brains</div>
+		<!--left panel for file list allows selection/quick change-->
+		<div id="file_list_element"></div>
+		<!-- bottom buttons-->
+		<div id="panel_bottom_buttons">
+			<!-- new brain button-->
+			<button id="new_brain" class="bottom_panel_button">New Brain</button>
+			<!-- import brain button-->
+			<button id="import_brain" class="bottom_panel_button">Import Brain</button>
+			<!-- export workspace button-->
+			<button id="export_workspace" class="bottom_panel_button">Export Workspace</button>
+			<!-- import workspace button-->
+			<button id="import_workspace" class="bottom_panel_button">Import Workspace</button>
+			<!-- clear workspace button -->
+			<button id="clear_workspace" class="bottom_panel_button">Clear Workspace</button>
+		</div>		
+	</div>
+	<!-- left panel toggle button-->
+	<div id="left_panel_toggle" class="panel_toggle_closed">▶</div>
+	
+
+<canvas id='mycanvas' width='1024' height='720' style='border: 1px solid'></canvas>
+<script>
+	let save_buffer = [];
+	let save_buffer_length = 10;
+	let save_buffer_index = 0;
+
+	let is_saving = false;
+	function draw_file_list(file_name_list){
+		// clear file list
+		file_list_element.innerHTML = "";
+		// add files to file list
+		for(let i = 0; i < file_name_list.length; i++){
+			let file_name = file_name_list[i];
+			let file = document.createElement("div");
+			file.className = "file";
+			// limit name to 12 characters
+			file.innerHTML = file_name.substring(0,12);
+			if(file_name.length > 12){
+				file.innerHTML += "...";
+			}
+			// if file name matches current_loaded_graph_name, set it to active
+			if( file_name == current_loaded_graph_name ) {
+				file.classList.add("active");
+			}
+			file.addEventListener("click",function(){
+				if (event.target.classList.contains("file_button")) {
+					return;
+				}
+				// clear save buffer
+				save_buffer = [];
+				save_buffer_index = 0;
+				// load graph from localStorage
+				let data = localStorage.getItem( file_name );
+				save_buffer.push( data );
+				if(data) {
+					graph.configure( JSON.parse( data ) );
+				} else {
+					alert( "File not found: " + file_name );
+					return;
+				}
+				// set text box to file name
+				top_menu_file_name.value = file_name;
+				// update the title of the page
+				document.title = "Bespoke Automata - " + file_name;
+				// update the current_loaded_graph_name variable in localStorage
+				localStorage.setItem( "current_loaded_graph_name", file_name );
+				current_loaded_graph_name = file_name;
+				// add or move file to front of file list
+				// save file list to localStorage
+				if( file_list.includes( file_name ) ) {
+					// if the file is already in the list, move it to the front
+					file_list.splice( file_list.indexOf( file_name ), 1 );
+					file_list.unshift( file_name );
+				} else {
+					// if the file isn't in the list, add it to the front
+					file_list.unshift( file_name );
+				}
+				localStorage.setItem( "file_list", JSON.stringify( file_list ) );
+
+				// set active, remove active from other files
+				let files = file_list_element.querySelectorAll(".file");
+				for(let j = 0; j < files.length; j++){
+					files[j].classList.remove("active");
+				}
+				file.classList.add("active");
+			});
+			file_list_element.appendChild(file);
+			
+			// add download button
+			let download_button = document.createElement("button");
+			download_button.innerHTML = "↓";
+			download_button.className = "file_button";
+			download_button.addEventListener("click",function(){
+				let data = localStorage.getItem( file_name );
+				if(data) {
+					var file = new Blob( [ data ] );
+					var url = URL.createObjectURL( file );
+					var element = document.createElement("a");
+					element.setAttribute('href', url);
+					element.setAttribute('download', file_name + ".brain" );
+					element.style.display = 'none';
+					document.body.appendChild(element);
+					element.click();
+					document.body.removeChild(element);
+					setTimeout( function(){ URL.revokeObjectURL( url ); }, 1000*60 ); //wait one minute to revoke url	
+				} else {
+					alert( "File not found: " + file_name );
+					return;
+				}
+			});
+			
+
+			// add delete button
+			let delete_button = document.createElement("button");
+			delete_button.innerHTML = "X";
+			delete_button.className = "file_button";
+			delete_button.addEventListener("click",function(){
+				// ask if you want to delete the file
+				if( confirm( "Delete " + file_name + "?" ) ) {
+					// if yes, delete it
+					localStorage.removeItem( file_name );
+					// remove file from file list
+					file_list.splice( file_list.indexOf( file_name ), 1 );
+					// save file list to localStorage
+					localStorage.setItem( "file_list", JSON.stringify( file_list ) );
+					// redraw file list
+					draw_file_list(file_list);
+
+					if(file_list.length == 0){
+						// clear workspace
+						clear_workspace();
+						return;
+					}
+
+					// set current_loaded_graph_name the first file in the list
+					current_loaded_graph_name = file_list[0];
+					// load graph from localStorage
+					let data = localStorage.getItem( current_loaded_graph_name );
+					if(data) {
+						graph.configure( JSON.parse( data ) );
+						save_buffer = [];
+						save_buffer_index = 0;
+						save_buffer.push( data );
+					}
+					// set text box to file name
+					top_menu_file_name.value = current_loaded_graph_name;
+					// update the title of the page
+					document.title = "Bespoke Automata - " + current_loaded_graph_name;
+					// update the current_loaded_graph_name variable in localStorage
+					localStorage.setItem( "current_loaded_graph_name", current_loaded_graph_name );
+					// set active, remove active from other files
+					let files = file_list_element.querySelectorAll(".file");
+					for(let j = 0; j < files.length; j++){
+						files[j].classList.remove("active");
+					}
+					files[0].classList.add("active");
+
+				}
+			});
+			file.appendChild(delete_button);
+			file.appendChild(download_button);
+
+			
+		}
+
+		
+	}
+
+	// on window load, check weaviate connection
+	window.onload = async function() {
+		const weaviate = new Weaviate();
+
+		//let schema = await weaviate.fetchSchema();
+		//console.log("schema")
+		//console.log(schema);
+		// set up file #left_panel #file_list_element
+		// add files to file list
+		draw_file_list(file_list);
+	}	
+
+	// set up left panel toggle button
+	let left_panel_toggle = document.getElementById("left_panel_toggle");
+	let left_panel = document.getElementById("left_panel");
+	left_panel_toggle.addEventListener("click",function(){
+		left_panel.classList.toggle("hidden");
+		left_panel.classList.toggle("visible");
+		if(!left_panel.classList.contains("visible")){
+			left_panel_toggle.innerHTML = "▶";
+		} else {
+			left_panel_toggle.innerHTML = "◀";
+		}
+		// apply panel_toggle_open/panel_toggle_closed to left_panel_toggle
+		left_panel_toggle.classList.toggle("panel_toggle_open");
+		left_panel_toggle.classList.toggle("panel_toggle_closed");
+	});
+
+
+	function set_nodes(){
+		LiteGraph.clearRegisteredTypes()
+		LiteGraph.registerNodeType("LLM/Llama", Llama_Node );
+		LiteGraph.registerNodeType("Text/Text", Text_Node );
+		LiteGraph.registerNodeType("Text/Random Text", Random_Selection_Node );
+		LiteGraph.registerNodeType("Templates/Persona Template", Persona_Template_Node );
+		LiteGraph.registerNodeType("Templates/Prompt Template", Prompt_Template_Node );
+		LiteGraph.registerNodeType("Storage/Chat Buffer", Chat_Log_Buffer_Node );
+		
+		LiteGraph.registerNodeType("Control/Interrupt", Interrupt_Node );
+		LiteGraph.registerNodeType("Control/Prompt Gate (Llama)", Prompt_Gate_Llama );
+		LiteGraph.registerNodeType("LLM/Llama Query Text", Query_Text_Node );
+
+		LiteGraph.registerNodeType("Text/Prefix Text", Prefix_Text_Node );
+		LiteGraph.registerNodeType("Text/Suffix Text", Suffix_Text_Node );
+		LiteGraph.registerNodeType("Text/Concatenate Text", Concatenate_Text_Node );
+
+		LiteGraph.registerNodeType("Storage/Weaviate Store", Weaviate_Ingest_Node );
+		LiteGraph.registerNodeType("Storage/Weaviate Query", Weaviate_Query_Node );
+
+		LiteGraph.registerNodeType("IO/Text Input", Text_Input_Node );
+
+		LiteGraph.registerNodeType("IO/Text Output", Text_Output_Node );
+
+		//Audio_Generation_Node
+		LiteGraph.registerNodeType("Audio/Audio Generation", Audio_Generation_Node );
+		//Start_Node 
+		LiteGraph.registerNodeType("Control/Start", Start_Node );
+		//Trigger_On_Text_Node
+		LiteGraph.registerNodeType("Control/Event Emitter", Emit_Node );
+		//Counter_Node
+		LiteGraph.registerNodeType("Control/Counter", Counter_Node );
+		//Checklist_Node
+		LiteGraph.registerNodeType("Control/Checklist", Checklist_Node );
+		//Random_Number_Node
+		LiteGraph.registerNodeType("Text/Random Number", Random_Number_Node );
+		//Llama_Node_With_Memory
+		LiteGraph.registerNodeType("LLM/Llama With Memory", Llama_Node_With_Memory );
+		// Gate
+		LiteGraph.registerNodeType("Control/Gate", Gate );
+		// JSON_API_Node
+		LiteGraph.registerNodeType("API/JSON API", JSON_API_Node );
+		// Shared_Chat_Buffer_Node
+		LiteGraph.registerNodeType("Storage/Shared Chat Buffer", Shared_Chat_Buffer_Node );
+		// Event_Text_Receiver_Node
+		LiteGraph.registerNodeType("Control/Event Receiver", Event_Text_Receiver_Node );
+	}
+
+	var graph = new LGraph();
+	
+	set_nodes();
+
+	var canvas = new LGraphCanvas("#mycanvas", graph);
+	updateEditorHiPPICanvas();
+	window.addEventListener("resize", function() { 
+		canvas.resize();
+		updateEditorHiPPICanvas();
+	} );
+
+	function updateEditorHiPPICanvas() {
+		const ratio = window.devicePixelRatio;
+		thisCanvas = document.getElementById("mycanvas");
+		if(ratio == 1) { return }
+		const width = /*window viewport*/ 
+			Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+		const height = /*window viewport*/
+			Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);			
+
+		thisCanvas.width = width * ratio;
+		thisCanvas.height = height * ratio;
+		thisCanvas.style.width = width + "px";
+		thisCanvas.style.height = height + "px";
+		thisCanvas.getContext("2d").scale(ratio, ratio);
+		return thisCanvas;
+	}
+	
+
+	// set menu bar button actions
+	elem = document.getElementById("top_menu_bar");
+	elem.querySelector("#run").addEventListener("click",function(){
+		//graph.start(5000)
+		graph.runStepAsync()
+	});
+
+	//ctrl-s does a Quicksave stops the browser from saving the page
+	document.addEventListener("keydown",function(e){
+		if(e.code == "KeyS" && (e.ctrlKey || e.metaKey) ) {
+			e.preventDefault();
+			localStorage.setItem( current_loaded_graph_name, JSON.stringify( graph.serialize() ) );
+			// update file list, title, etc
+			update_filename();
+			return false;
+		}
+		return true;
+	});
+
+	// set up top_menu_file_name hooks for the menu text box.
+	// on blur:
+	//	update the title of the page
+	// 	update the current_loaded_graph_name variable in localStorage
+	// 	check if that file name exists in localStorage
+	// 	if it does, ask if you want to overwrite it
+	// 	if it doesn't, save it
+	// 	add or move file to front of file list
+	// 	save file list to localStorage
+	let current_loaded_graph_name = "untitled_brain_" /*unix timestamp*/ + Math.floor( Date.now() / 1000 );
+	let top_menu_file_name = document.getElementById("top_menu_file_name");
+	let file_list_element = document.getElementById("file_list_element");
+	let file_list = [];
+	// check if file list is in localStorage
+	if( localStorage.getItem( "file_list" ) ) {
+		// if it is, load it
+		file_list = JSON.parse( localStorage.getItem( "file_list" ) );
+	} else {
+		// if it isn't, create it
+		localStorage.setItem( "file_list", JSON.stringify( file_list ) );
+	}
+
+	//check if current_loaded_graph_name is in localStorage
+	if( localStorage.getItem( "current_loaded_graph_name" ) ) {
+		// if it is, set the text box to that value
+		top_menu_file_name.value = localStorage.getItem( "current_loaded_graph_name" );
+		current_loaded_graph_name = top_menu_file_name.value;
+		// load graph from localStorage
+		let data = localStorage.getItem( top_menu_file_name.value);		
+		if(data) {
+			graph.configure( JSON.parse( data ) );
+			save_buffer.push( data );
+		}
+
+	} else {
+		// if it isn't, set the text box to the default value
+		top_menu_file_name.value = current_loaded_graph_name;
+	}
+
+
+	function update_filename(){
+		// update the title of the page
+		document.title = "Bespoke Automata - " + top_menu_file_name.value;
+		// update the current_loaded_graph_name variable in localStorage
+		localStorage.setItem( "current_loaded_graph_name", top_menu_file_name.value );
+		// check if that file name exists in localStorage
+		if( localStorage.getItem( top_menu_file_name.value ) && top_menu_file_name.value != current_loaded_graph_name ) {
+			// if it does, ask if you want to overwrite it
+			if( confirm( "Overwrite " + top_menu_file_name.value + "?" ) ) {
+				// if yes, save it
+				localStorage.setItem( top_menu_file_name.value, JSON.stringify( graph.serialize() ) );
+				// add or move file to front of file list
+				// save file list to localStorage
+				if( file_list.includes( top_menu_file_name.value ) ) {
+					// if the file is already in the list, move it to the front
+					file_list.splice( file_list.indexOf( top_menu_file_name.value ), 1 );
+					file_list.unshift( top_menu_file_name.value );
+				} else {
+					// if the file isn't in the list, add it to the front
+					file_list.unshift( top_menu_file_name.value );
+				}
+			} else {
+				// if no, set the text box to the current_loaded_graph_name
+				top_menu_file_name.value = current_loaded_graph_name;
+			}
+		} else {
+			// if it doesn't, save it
+			localStorage.setItem( top_menu_file_name.value, JSON.stringify( graph.serialize() ) );
+			// add or move file to front of file list
+			// save file list to localStorage
+			if( file_list.includes( top_menu_file_name.value ) ) {
+				// if the file is already in the list, move it to the front
+				file_list.splice( file_list.indexOf( top_menu_file_name.value ), 1 );
+				file_list.unshift( top_menu_file_name.value );
+			} else {
+				// if the file isn't in the list, add it to the front
+				file_list.unshift( top_menu_file_name.value );
+			}
+		}
+		// save file list to localStorage
+		localStorage.setItem( "file_list", JSON.stringify( file_list ) );
+		//redraw file list
+		draw_file_list(file_list);
+	}
+
+	top_menu_file_name.addEventListener("blur", update_filename);
+	top_menu_file_name.addEventListener("keydown", function(e){
+		if(e.code == "Enter" || e.code == "NumpadEnter") {
+			// blur the text box
+			top_menu_file_name.blur();
+		}
+	});
+
+	function clear_workspace(){
+		// ask if you want to clear the workspace
+		if( confirm( "Clear workspace?" ) ) {
+			// clear save buffer
+			save_buffer = [];
+			save_buffer_index = 0;
+			// if yes, clear it
+			graph.clear();
+			eventEmitter = new EventEmitter();
+			// clear file list
+			file_list_element.innerHTML = "";
+			// clear file list in localStorage
+			file_list = [];
+			localStorage.setItem( "file_list", JSON.stringify( file_list ) );
+			// clear current_loaded_graph_name in localStorage
+			localStorage.removeItem( "current_loaded_graph_name" );
+			// set text box to default value
+			top_menu_file_name.value = "untitled_brain_" /*unix timestamp*/ + Math.floor( Date.now() / 1000 );
+		}
+	}
+
+	// set up bottom panel buttons
+	elem = document.getElementById("panel_bottom_buttons");
+	elem.querySelector("#new_brain").addEventListener("click", ()=>{
+		// save current graph to localStorage
+		localStorage.setItem( current_loaded_graph_name, JSON.stringify( graph.serialize() ) );
+		// clears current graph and creates a new one
+		graph.clear();
+		// set text box to default value
+		top_menu_file_name.value = "untitled_brain_" /*unix timestamp*/ + Math.floor( Date.now() / 1000 );
+		// update the title of the page
+		document.title = "Bespoke Automata - " + top_menu_file_name.value;
+		// update the current_loaded_graph_name variable in localStorage
+		current_loaded_graph_name = top_menu_file_name.value;
+		
+	});
+	elem.querySelector("#import_brain").addEventListener("click", function(){
+		// import graph from .brain file upload prompt
+		let element = document.createElement("input");
+		element.setAttribute('type', "file");
+		element.setAttribute('accept', ".brain");
+		element.style.display = 'none';
+		document.body.appendChild(element);
+		element.click();
+		document.body.removeChild(element);
+		element.addEventListener("change",function(){
+			// clear save buffer
+			save_buffer = [];
+			save_buffer_index = 0;
+			let file = element.files[0];
+			if(file){
+				let reader = new FileReader();
+				reader.onload = function(e) {
+					let data = e.target.result;
+					// add initial state to save buffer
+					save_buffer.push( data );
+					
+					graph.configure( JSON.parse( data ) );
+					let name = file.name.split(".")[0];
+					// set text box to file name
+					top_menu_file_name.value = name;
+					// update the title of the page
+					document.title = "Bespoke Automata - " + name;
+					// save graph to localStorage
+					localStorage.setItem( name, data );
+					// update the current_loaded_graph_name variable in localStorage
+					localStorage.setItem( "current_loaded_graph_name", name );
+					
+					current_loaded_graph_name = name;
+					// add or move file to front of file list
+					// save file list to localStorage
+					if( file_list.includes( name ) ) {
+						// if the file is already in the list, move it to the front
+						file_list.splice( file_list.indexOf( name ), 1 );
+						file_list.unshift( name );
+					} else {
+						// if the file isn't in the list, add it to the front
+						file_list.unshift( name );
+					}
+					localStorage.setItem( "file_list", JSON.stringify( file_list ) );
+					// set active, remove active from other files
+
+					// redraw file list
+					draw_file_list(file_list);
+
+				}
+				reader.readAsText(file);
+			}
+		});
+	})
+	elem.querySelector("#export_workspace").addEventListener("click",function(){
+		// for each file, get the data from localStorage, create a file for each, zip them together, and download them
+		let zip = new JSZip();
+		for(let i = 0; i < file_list.length; i++){
+			let file_name = file_list[i];
+			let data = localStorage.getItem( file_name );
+			if(data) {
+				zip.file( file_name, data );
+			} else {
+				alert( "File not found: " + file_name );
+				return;
+			}
+		}
+
+		zip.generateAsync({type:"blob"})
+		.then(function(content) {
+			var file = new Blob( [ content ] );
+			var url = URL.createObjectURL( file );
+			var element = document.createElement("a");
+			element.setAttribute('href', url);
+			element.setAttribute('download', "workspace.zip" );
+			element.style.display = 'none';
+			document.body.appendChild(element);
+			element.click();
+			document.body.removeChild(element);
+			setTimeout( function(){ URL.revokeObjectURL( url ); }, 1000*60 ); //wait one minute to revoke url
+		});
+	});
+	elem.querySelector("#import_workspace").addEventListener("click",function(){
+		// ask if you want to import a workspace
+		// if so, prompt for a zip file
+		// unzip the file
+		// for each file in the zip file, save it to localStorage
+		// update file list, title, etc
+		// set first file in file list as current_loaded_graph_name
+		// load graph from localStorage
+		// set text box to file name
+		// update the title of the page
+		// update the current_loaded_graph_name variable in localStorage
+		// set active, remove active from other files
+		if(confirm("do you wish to replace the current workspace?")){
+
+			let element = document.createElement("input");
+			element.setAttribute('type', "file");
+			element.setAttribute('accept', ".zip");
+			element.style.display = 'none';
+			document.body.appendChild(element);
+			element.click();
+			document.body.removeChild(element);
+			element.addEventListener("change",function(){
+				let file = element.files[0];
+				if(file){
+					JSZip.loadAsync(file)
+					.then(async function(zip) {
+						clear_workspace();
+						await zip.forEach(function (relativePath, zipEntry) {
+							zipEntry.async("string").then(function (data) {
+								localStorage.setItem( zipEntry.name.split(".")[0], data );
+							});
+						});
+						// update file list, title, etc
+						file_list = [];
+						// zip.files is a dictionary of file names to file objects
+						for(let file_name in zip.files){
+							file_list.push( file_name.split(".")[0] );
+						}
+						// save file list to localStorage
+						localStorage.setItem( "file_list", JSON.stringify( file_list ) );
+						// set first file in file list as current_loaded_graph_name
+						current_loaded_graph_name = file_list[0];
+						// load graph from localStorage
+						let data = localStorage.getItem( current_loaded_graph_name );
+						if(data) {
+							graph.configure( JSON.parse( data ) );
+							save_buffer.push( data );
+						}
+						// set text box to file name
+						top_menu_file_name.value = current_loaded_graph_name;
+						// update the title of the page
+						document.title = "Bespoke Automata - " + current_loaded_graph_name;
+						// update the current_loaded_graph_name variable in localStorage
+						localStorage.setItem( "current_loaded_graph_name", current_loaded_graph_name );
+						// set active, remove active from other files
+						draw_file_list(file_list);
+					});
+				}
+			});
+		}
+	});
+	elem.querySelector("#clear_workspace").addEventListener("click", clear_workspace );
+	
+
+
+	// on any change of the graph, save it to localStorage
+	graph.onAfterChange = function(){
+		is_saving = true;
+		let graph_data = JSON.stringify( graph.serialize() )
+		localStorage.setItem( current_loaded_graph_name, graph_data );
+		// if buffer index is not at the end, clear the buffer after the index
+		if( save_buffer_index < save_buffer.length - 1 ) {
+			save_buffer.splice( save_buffer_index + 1 );
+		}
+		save_buffer.push( graph_data );
+		if( save_buffer.length > save_buffer_length ) {
+			save_buffer.shift();
+		}
+		save_buffer_index = save_buffer.length - 1;
+		is_saving = false;
+	}
+
+	// save the current graph every 5 seconds, but first check if it's changed by comparing the json
+	window.setInterval(function(){
+		if(is_saving) { return; }
+
+		let data = JSON.stringify( graph.serialize() );
+		
+		if( data !== localStorage.getItem( current_loaded_graph_name ) ) {
+			localStorage.setItem( current_loaded_graph_name, data );
+			// if buffer index is not at the end, clear the buffer after the index
+			if( save_buffer_index < save_buffer.length - 1 ) {
+				save_buffer.splice( save_buffer_index + 1 );
+			}
+			save_buffer.push( data );
+			if( save_buffer.length > save_buffer_length ) {
+				save_buffer.shift();
+			}
+			save_buffer_index = save_buffer.length - 1;
+		}
+	}, 5000);
+
+	// undo and redo for graph changes (ctrl-z and ctrl-y)
+	document.addEventListener("keydown",function(e){
+		if(e.code == "KeyZ" && (e.ctrlKey || e.metaKey) ) {
+			e.preventDefault();
+			// step back in save buffer
+			if( save_buffer_index > 0 ) {
+				save_buffer_index--;
+				graph.clear();
+				graph.configure( JSON.parse( save_buffer[ save_buffer_index ] ) );
+				// save graph to localStorage
+				localStorage.setItem( current_loaded_graph_name, save_buffer[ save_buffer_index ] );
+			}
+			return false;
+		}
+		if(e.code == "KeyY" && (e.ctrlKey || e.metaKey) ) {
+			e.preventDefault();
+			// step forward in save buffer
+			if( save_buffer_index < save_buffer.length - 1 ) {
+				save_buffer_index++;
+				graph.clear();
+				graph.configure( JSON.parse( save_buffer[ save_buffer_index ] ) );
+				// save graph to localStorage
+				localStorage.setItem( current_loaded_graph_name, save_buffer[ save_buffer_index ] );
+			}
+			return false;
+		}
+		return true;
+	});
+</script>
+</body>
+</html>
