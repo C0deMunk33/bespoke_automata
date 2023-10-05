@@ -489,7 +489,7 @@ body {
     font-size: 1em;
     position:absolute;
     top:7px;
-    left:5px;
+    left:25px;
     display: inline-block;
     color: var(--main-text-color);
     /*thick drop shadow*/
@@ -508,12 +508,15 @@ body {
 }
 #site_icon{
     position:absolute;
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     left:2px;
-    top:0px;
+    top:7px;
     display: inline-block;
     margin: 0px 10px;
+    /*set color to --main-text-color*/
+    fill: var(--main-text-color);
+    filter: drop-shadow(2px 2px 4px var(--shadow-color));
 
 }
 .menu_gap{

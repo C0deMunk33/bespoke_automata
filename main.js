@@ -7,7 +7,7 @@ const createWindow = () => {
   })
   // set icon
   //win.setIcon('icon.svg')
-   win.removeMenu();
+   //win.removeMenu();
   win.loadFile('index.html')
 }
 

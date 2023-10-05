@@ -294,6 +294,7 @@ class Weaviate {
 
     async advancedQuery(className, queryText, count) {
         const url = Weaviate.WEAVIATE_URL + "/v1/graphql";
+        const cleanedQueryText = queryText.replace(/[\n\r\t]/g, ' ');
 
         const data = {
             query: `
@@ -302,7 +303,7 @@ class Weaviate {
                         ${className}(
                             limit: ${count},
                             nearText: {
-                                concepts: ["${queryText}"],
+                                concepts: ["${cleanedQueryText}"],
                             }
                         ){ text }
                     }
@@ -310,7 +311,7 @@ class Weaviate {
         };
 
         let data_string = JSON.stringify(data);
-       
+       console.log(data_string);
         const response = await fetch(url, {
             method: 'POST',
             headers: {
