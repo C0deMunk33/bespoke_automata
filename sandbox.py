@@ -1,54 +1,74 @@
 import xml.sax
-import pickle
 
-class IndexBuilder(xml.sax.ContentHandler):
-    def __init__(self):
+class Article:
+    def __init__(self, title, ns, id, revisions):
+        self.title = title
+        self.ns = ns
+        self.id = id
+        self.revisions = revisions
+
+class Revision:
+    def __init__(self, id, timestamp, username, userid, comment, text):
+        self.id = id
+        self.timestamp = timestamp
+        self.username = username
+        self.userid = userid
+        self.comment = comment
+        self.text = text
+
+class WikiHandler(xml.sax.ContentHandler):
+    def __init__(self, target_id):
+        self.target_id = target_id
         self.current_id = None
-        self.in_id_tag = False
         self.buffer = ""
-        self.index = {}
+        self.article = None
+        self.revision = None
+        self.in_target_article = False
 
     def startElement(self, name, attrs):
-        if name == "id":
-            self.in_id_tag = True
+        if name in ["title", "ns", "id", "timestamp", "username", "comment", "text"]:
+            self.buffer = ""
 
     def characters(self, content):
-        if self.in_id_tag:
-            self.buffer += content
+        self.buffer += content
 
     def endElement(self, name):
-        if name == "id" and self.in_id_tag:
-            self.current_id = int(self.buffer.strip())
-            self.in_id_tag = False
-            self.buffer = ""
-        elif name == "page":
-            self.index[self.current_id] = self._locator.getLineNumber()
+        if name == "id":
+            if self.article is None:  # This is the article ID
+                self.current_id = int(self.buffer.strip())
+                if self.current_id == self.target_id:
+                    self.in_target_article = True
+            elif self.in_target_article:  # This is the revision ID
+                self.revision.id = int(self.buffer.strip())
+        elif self.in_target_article:
+            if name == "title":
+                self.article = Article(self.buffer, None, self.current_id, [])
+            elif name == "ns":
+                self.article.ns = int(self.buffer.strip())
+            elif name == "revision":
+                self.article.revisions.append(self.revision)
+                self.revision = None
+            elif name == "timestamp":
+                self.revision.timestamp = self.buffer
+            elif name == "username":
+                self.revision.username = self.buffer
+            elif name == "comment":
+                self.revision.comment = self.buffer
+            elif name == "text":
+                self.revision.text = self.buffer
+            elif name == "page":
+                self.in_target_article = False  # Exit early, we found our article
 
-    def save_index(self, file_path):
-        with open(file_path, 'wb') as file:
-            pickle.dump(self.index, file)
+    def startDocument(self):
+        self.revision = Revision(None, None, None, None, None, None)
 
-def build_index(xml_file_path, index_file_path):
+def get_article(xml_file_path, article_id):
     parser = xml.sax.make_parser()
-    handler = IndexBuilder()
+    handler = WikiHandler(article_id)
     parser.setContentHandler(handler)
     with open(xml_file_path, 'r', encoding='utf-8') as file:
         parser.parse(file)
-    handler.save_index(index_file_path)
+    return handler.article
 
 # Usage:
-# build_index('your_file.xml', 'index.pkl')
-
-def get_article(xml_file_path, index_file_path, article_id):
-    with open(index_file_path, 'rb') as file:
-        index = pickle.load(file)
-    if article_id not in index:
-        return None  # Article ID not found
-    with open(xml_file_path, 'r', encoding='utf-8') as file:
-        file.seek(index[article_id])  # Seek to the start of the article
-        # Now parse the XML from this point to extract the article
-        # ...
-        pass
-
-# Usage:
-# article_text = get_article('your_file.xml', 'index.pkl', 1)
+# article = get_article('your_file.xml', 1)
