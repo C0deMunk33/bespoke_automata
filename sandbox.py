@@ -6,26 +6,28 @@ import xml.etree.ElementTree as ET
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 articles_index_filename = 'enwiki-20231001-pages-articles-multistream-index.txt'
 
-import os
-
 def index_binary_search(file_path, title_part):
     with open(file_path, 'r', encoding='utf-8') as file:
         low = 0
         high = os.path.getsize(file_path)
-        
-        while low <= high:
+
+        while low < high:
             mid = (low + high) // 2
             file.seek(mid)
-            
-            # Consume the rest of the current line if in the middle
+
+            # Skip the rest of the line if not at the beginning
             if mid > 0:
                 file.readline()
-            
+
             try:
                 line = file.readline().strip()
-            except:
+            except EOFError:
                 return None
 
+            if not line:  # Handle potential reading after the last line
+                high = mid
+                continue
+            
             # Safeguard against invalid format
             if len(line.split(':')) < 3:
                 return None
@@ -36,11 +38,12 @@ def index_binary_search(file_path, title_part):
             if title.startswith(title_part):
                 return id_
             elif title_part < title:
-                high = mid - 1
+                high = mid
             else:
                 low = mid + 1
 
-    return None
+        return None
+
 
 
 def binary_search_xml(file_path, target_id):
