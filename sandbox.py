@@ -15,26 +15,29 @@ def index_binary_search(file_path, title_part):
             mid = (low + high) // 2
             file.seek(mid)
 
-            # Skip the rest of the line if not at the beginning
+            # Skip to the end of the current line, unless we are at the start of the file
             if mid > 0:
                 file.readline()
 
+            # Try to read the next full line and return None if not possible (e.g., at EOF)
             try:
                 line = file.readline().strip()
             except EOFError:
                 return None
 
-            if not line:  # Handle potential reading after the last line
+            # If line is empty, we are likely at the end of the file
+            if not line:
                 high = mid
                 continue
-            
-            # Safeguard against invalid format
-            if len(line.split(':')) < 3:
+
+            # Handle potentially malformed lines
+            try:
+                _, id_, title = line.split(":", 2)
+                id_ = int(id_)
+            except ValueError:
                 return None
 
-            _, id_, title = line.split(':', 2)
-            id_ = int(id_)
-
+            # Compare the current title and adjust the search space accordingly
             if title.startswith(title_part):
                 return id_
             elif title_part < title:
@@ -43,6 +46,7 @@ def index_binary_search(file_path, title_part):
                 low = mid + 1
 
         return None
+
 
 
 
