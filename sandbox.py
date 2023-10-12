@@ -6,40 +6,42 @@ import xml.etree.ElementTree as ET
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 articles_index_filename = 'enwiki-20231001-pages-articles-multistream-index.txt'
 
+import os
+
 def index_binary_search(file_path, title_part):
-    # index is formated like this: #section:#id:title and all titles are alphabetically sorted
-    # find the first line that starts with title_part using an alphabetical binary search
     with open(file_path, 'r', encoding='utf-8') as file:
         low = 0
-        # file size in bytes
-        max = os.path.getsize(file_path)
-        high = max
+        high = os.path.getsize(file_path)
+        
         while low <= high:
             mid = (low + high) // 2
-            if mid >= max:
-                return None
             file.seek(mid)
-            try:
+            
+            # Consume the rest of the current line if in the middle
+            if mid > 0:
                 file.readline()
-                line = file.readline()
+            
+            try:
+                line = file.readline().strip()
             except:
                 return None
-           
-            line_index = file.tell() - len(line)
-            #split line on :
-            line_parts = line.split(':')
-            id = int(line_parts[1])
-            # title is all parts from index 2 to the end
-            title = ':'.join(line_parts[2:])
 
-            if title_part == title:
-                return id
+            # Safeguard against invalid format
+            if len(line.split(':')) < 3:
+                return None
+
+            _, id_, title = line.split(':', 2)
+            id_ = int(id_)
+
+            if title.startswith(title_part):
+                return id_
             elif title_part < title:
                 high = mid - 1
             else:
                 low = mid + 1
 
     return None
+
 
 def binary_search_xml(file_path, target_id):
     with open(file_path, 'r', encoding='utf-8') as file:
