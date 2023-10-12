@@ -1,44 +1,54 @@
-import os
-import re
-import xml.etree.ElementTree as ET
-
 def binary_search_xml(file_path, target_id):
-    lower_bound = 0
-    upper_bound = os.path.getsize(file_path)
-    last_mid_point = None
-    
-    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
-        while lower_bound <= upper_bound:
-            mid_point = (lower_bound + upper_bound) // 2
+    with open(file_path, 'r', encoding='utf-8') as file:
+        low = 0
+        high = file.seek(0, 2)  # Seek to end
+
+        while low < high:
+            mid = (low + high) // 2
+            file.seek(mid)
             
-            # Avoid an infinite loop by checking if we're stuck at the same position
-            if last_mid_point == mid_point:
-                return None
-            last_mid_point = mid_point
-            
-            file.seek(mid_point)
-            # Read until the end of the line in case we are in the middle of a line
+            # Skip partial line if landed in the middle
             file.readline()
             
-            # Read a sufficiently large chunk of the file that should contain a full <id> tag
-            chunk = file.read(1024)
+            # Skip until the next "<page>" tag
+            while True:
+                line = file.readline()
+                if '<page>' in line:
+                    break
+                mid = mid + len(line)
             
-            # Use regex to find an <id> tag and extract its value
-            match = re.search(r'<id>(\d+)</id>', chunk)
-            if match:
-                id_value = int(match.group(1))
-                
-                if id_value == target_id:
-                    # Target found. Do something with it, e.g., return the chunk or extract further data
-                    return chunk
-                elif id_value < target_id:
-                    lower_bound = mid_point + 1
-                else:
-                    upper_bound = mid_point - 1
+            # Store lines in a buffer and find "<id>" tag
+            buffer = [line]
+            for _ in range(3):  # Adjust accordingly
+                line = file.readline()
+                buffer.append(line)
+                if '<id>' in line:
+                    # Extract ID value
+                    id_start = line.find('<id>') + 4
+                    id_end = line.find('</id>')
+                    if id_start != -1 and id_end != -1:
+                        id_value = int(line[id_start:id_end])
+                        break
             else:
-                # No <id> tag found, adjust bounds
-                # Prefer to move upper bound to find preceding <id> tag
-                upper_bound = mid_point - 1
+                # If here, failed to find ID in expected lines - error handling or skip to next iteration
+                low = mid + 1
+                continue
                 
-        # ID not found in the file
-        return None
+            # Compare ID with target and adjust bounds
+            if id_value == target_id:
+                # Found the ID, now extract the full <page> content
+                # Read forward until "</page>"
+                while True:
+                    line = file.readline()
+                    buffer.append(line)
+                    if '</page>' in line:
+                        break
+                
+                # Concatenate buffer to return the <page> content
+                return ''.join(buffer)
+            elif id_value < target_id:
+                low = mid + 1
+            else:
+                high = mid
+
+    return None  # ID not found
