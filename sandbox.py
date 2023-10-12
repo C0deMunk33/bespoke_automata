@@ -6,7 +6,6 @@ import xml.etree.ElementTree as ET
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 articles_index_filename = 'enwiki-20231001-pages-articles-multistream-index.txt'
 
-
 def index_binary_search(file_path, title_part):
     with open(file_path, 'r', encoding='utf-8') as file:
         low = 0
@@ -62,6 +61,7 @@ def index_binary_search(file_path, title_part):
                 low = mid + 1
 
         return None
+
 
 
 
