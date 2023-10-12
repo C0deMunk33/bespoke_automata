@@ -1,54 +1,55 @@
+import os
+import re
+import random
+articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
+articles_index_filename = 'enwiki-20231001-pages-articles-multistream-index.txt'
+
 def binary_search_xml(file_path, target_id):
     with open(file_path, 'r', encoding='utf-8') as file:
         low = 0
-        high = file.seek(0, 2)  # Seek to end
-
-        while low < high:
+        # file size in bytes
+        max = os.path.getsize(file_path)
+        high = max
+        while low <= high:
             mid = (low + high) // 2
+            if mid >= max:
+                return None
             file.seek(mid)
-            
-            # Skip partial line if landed in the middle
-            file.readline()
-            
-            # Skip until the next "<page>" tag
-            while True:
+            try:
+                file.readline()
                 line = file.readline()
-                if '<page>' in line:
-                    break
-                mid = mid + len(line)
+            except:
+                return None
             
-            # Store lines in a buffer and find "<id>" tag
-            buffer = [line]
-            for _ in range(3):  # Adjust accordingly
-                line = file.readline()
-                buffer.append(line)
-                if '<id>' in line:
-                    # Extract ID value
-                    id_start = line.find('<id>') + 4
-                    id_end = line.find('</id>')
-                    if id_start != -1 and id_end != -1:
-                        id_value = int(line[id_start:id_end])
-                        break
-            else:
-                # If here, failed to find ID in expected lines - error handling or skip to next iteration
-                low = mid + 1
-                continue
-                
-            # Compare ID with target and adjust bounds
-            if id_value == target_id:
-                # Found the ID, now extract the full <page> content
-                # Read forward until "</page>"
-                while True:
-                    line = file.readline()
-                    buffer.append(line)
-                    if '</page>' in line:
-                        break
-                
-                # Concatenate buffer to return the <page> content
-                return ''.join(buffer)
-            elif id_value < target_id:
-                low = mid + 1
-            else:
-                high = mid
+            print("mid: ", mid)
 
-    return None  # ID not found
+            line = ""
+            # read the next line
+            while '<page>' not in line:
+                #if line contains end of file character, break
+                if file.tell() >= max:
+                    return None           
+                line = file.readline()
+            page_start_idx = file.tell() - len(line)
+
+            # move three lines down
+            for i in range(3):
+                line = file.readline()
+            # get the id from the line
+            id = int(re.search(r'<id>(\d+)</id>', line).group(1))
+            if id == target_id:
+                # seek to the start of the page, get all text between <page and </page>
+                file.seek(page_start_idx)
+                page = ""
+                while '</page>' not in page:
+                    page += file.readline()
+                return page                   
+            elif id < target_id:
+                low = mid + 1
+            else:
+                high = mid - 1
+
+# do it 10 times
+for i in range(10):
+    random_id = random.randint(0, 300000)
+    print(binary_search_xml(articles_filename, random_id))
