@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 articles_index_filename = 'enwiki-20231001-pages-articles-multistream-index.txt'
 
+
 def index_binary_search(file_path, title_part):
     with open(file_path, 'r', encoding='utf-8') as file:
         low = 0
@@ -30,22 +31,38 @@ def index_binary_search(file_path, title_part):
                 high = mid
                 continue
 
-            # Handle potentially malformed lines
+            # Check the next line as well to prevent off-by-one errors
+            try:
+                next_line = file.readline().strip()
+            except EOFError:
+                next_line = ""
+
+            # Parse the current line and the next line
             try:
                 _, id_, title = line.split(":", 2)
                 id_ = int(id_)
             except ValueError:
                 return None
 
+            try:
+                _, next_id, next_title = next_line.split(":", 2)
+                next_id = int(next_id)
+            except ValueError:
+                next_title = ""
+                next_id = None
+
             # Compare the current title and adjust the search space accordingly
             if title.startswith(title_part):
                 return id_
+            elif next_title.startswith(title_part):
+                return next_id
             elif title_part < title:
                 high = mid
             else:
                 low = mid + 1
 
         return None
+
 
 
 
