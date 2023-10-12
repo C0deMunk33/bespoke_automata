@@ -6,6 +6,10 @@ import xml.etree.ElementTree as ET
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 articles_index_filename = 'enwiki-20231001-pages-articles-multistream-index.txt'
 
+def count_lines(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        count = sum(1 for _ in file)
+    return count
 
 
 def index_binary_search(file_path, title_part, line_count):
