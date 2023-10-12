@@ -1,74 +1,44 @@
-import xml.sax
+import os
+import re
+import xml.etree.ElementTree as ET
 
-class Article:
-    def __init__(self, title, ns, id, revisions):
-        self.title = title
-        self.ns = ns
-        self.id = id
-        self.revisions = revisions
-
-class Revision:
-    def __init__(self, id, timestamp, username, userid, comment, text):
-        self.id = id
-        self.timestamp = timestamp
-        self.username = username
-        self.userid = userid
-        self.comment = comment
-        self.text = text
-
-class WikiHandler(xml.sax.ContentHandler):
-    def __init__(self, target_id):
-        self.target_id = target_id
-        self.current_id = None
-        self.buffer = ""
-        self.article = None
-        self.revision = None
-        self.in_target_article = False
-
-    def startElement(self, name, attrs):
-        if name in ["title", "ns", "id", "timestamp", "username", "comment", "text"]:
-            self.buffer = ""
-
-    def characters(self, content):
-        self.buffer += content
-
-    def endElement(self, name):
-        if name == "id":
-            if self.article is None:  # This is the article ID
-                self.current_id = int(self.buffer.strip())
-                if self.current_id == self.target_id:
-                    self.in_target_article = True
-            elif self.in_target_article:  # This is the revision ID
-                self.revision.id = int(self.buffer.strip())
-        elif self.in_target_article:
-            if name == "title":
-                self.article = Article(self.buffer, None, self.current_id, [])
-            elif name == "ns":
-                self.article.ns = int(self.buffer.strip())
-            elif name == "revision":
-                self.article.revisions.append(self.revision)
-                self.revision = None
-            elif name == "timestamp":
-                self.revision.timestamp = self.buffer
-            elif name == "username":
-                self.revision.username = self.buffer
-            elif name == "comment":
-                self.revision.comment = self.buffer
-            elif name == "text":
-                self.revision.text = self.buffer
-            elif name == "page":
-                self.in_target_article = False  # Exit early, we found our article
-
-    def startDocument(self):
-        self.revision = Revision(None, None, None, None, None, None)
-
-def get_article(xml_file_path, article_id):
-    parser = xml.sax.make_parser()
-    handler = WikiHandler(article_id)
-    parser.setContentHandler(handler)
-    with open(xml_file_path, 'r', encoding='utf-8') as file:
-        parser.parse(file)
-    return handler.article
-
-# Usage:
-# article = get_article('your_file.xml', 1)
+def binary_search_xml(file_path, target_id):
+    lower_bound = 0
+    upper_bound = os.path.getsize(file_path)
+    last_mid_point = None
+    
+    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+        while lower_bound <= upper_bound:
+            mid_point = (lower_bound + upper_bound) // 2
+            
+            # Avoid an infinite loop by checking if we're stuck at the same position
+            if last_mid_point == mid_point:
+                return None
+            last_mid_point = mid_point
+            
+            file.seek(mid_point)
+            # Read until the end of the line in case we are in the middle of a line
+            file.readline()
+            
+            # Read a sufficiently large chunk of the file that should contain a full <id> tag
+            chunk = file.read(1024)
+            
+            # Use regex to find an <id> tag and extract its value
+            match = re.search(r'<id>(\d+)</id>', chunk)
+            if match:
+                id_value = int(match.group(1))
+                
+                if id_value == target_id:
+                    # Target found. Do something with it, e.g., return the chunk or extract further data
+                    return chunk
+                elif id_value < target_id:
+                    lower_bound = mid_point + 1
+                else:
+                    upper_bound = mid_point - 1
+            else:
+                # No <id> tag found, adjust bounds
+                # Prefer to move upper bound to find preceding <id> tag
+                upper_bound = mid_point - 1
+                
+        # ID not found in the file
+        return None

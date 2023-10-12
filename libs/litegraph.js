@@ -12,6 +12,17 @@
      * @class LiteGraph
      * @constructor
      */
+    let isRecording = false;
+    
+    let recognition = null;
+    function recordAndTranscribe(callback) {
+       
+    }
+
+
+    function stopRecording() {
+       
+    }
 
     var LiteGraph = (global.LiteGraph = {
         VERSION: 0.4,
@@ -11274,15 +11285,42 @@ LGraphNode.prototype.executeAction = function(action)
         dialog.is_modified = false;
         dialog.className = "graphdialog rounded";
         if(multiline)
-	        dialog.innerHTML = "<span class='name'></span> <textarea autofocus class='value'></textarea><button class='rounded'>OK</button>";
+	        dialog.innerHTML = "<span class='name'></span> <textarea autofocus class='value'></textarea><button class='rounded'>OK</button>"
+        
 		else
-        	dialog.innerHTML = "<span class='name'></span> <input autofocus type='text' class='value'/><button class='rounded'>OK</button>";
+        	dialog.innerHTML = "<span class='name'></span> <input autofocus type='text' class='value'/><button class='rounded'>OK</button>"
+            + /*microphone emoji 🎤 button that*/
+            "<button class='rounded' id='recordButton' title='Start recording'>🎤</button>"
+
+
         dialog.close = function() {
             that.prompt_box = null;
             if (dialog.parentNode) {
                 dialog.parentNode.removeChild(dialog);
             }
         };
+
+        // setup recordButton
+        var recordButton = dialog.querySelector("#recordButton");
+        recordButton.addEventListener("click", function(e) {
+            // triggers speech recognition via recordAndTranscribe that on complete fills in the input.value
+            // on click the emoji text should turn red and on complete it should turn back to black
+            // if the user clicks on the record icon before the callback, it should call stopRecording()
+            // if the user clicks on the record icon after the callback, it should call recordAndTranscribe()
+            stopRecording();
+            let text_element = dialog.querySelector(".value");
+
+            if (recordButton.style.color == "black") {
+                recordButton.style.color = "red";
+                recordAndTranscribe((x)=>{
+                    text_element.value = x;
+                    recordButton.style.color = "black";
+                });
+            } else {
+                recordButton.style.color = "black";    
+            }
+        });
+
 
         var graphcanvas = LGraphCanvas.active_canvas;
         var canvas = graphcanvas.canvas;

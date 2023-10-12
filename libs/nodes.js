@@ -1864,8 +1864,13 @@
 
 	if (typeof module !== 'undefined' && module.exports) {
 		module.exports = {
+			/* Weaviate_Ingest_Node */
+			/* takes in text and a class name and it dumps text into the target weaviate class */
 			Weaviate_Ingest_Node: Weaviate_Ingest_Node,
+			/* Weaviate_Query_Node */
+			/* takes in a query and a class name and it queries the target weaviate class */
 			Weaviate_Query_Node: Weaviate_Query_Node,
+			
 			Chat_Log_Buffer_Node: Chat_Log_Buffer_Node,
 			Interrupt_Node: Interrupt_Node,
 			Query_Text_Node: Query_Text_Node,

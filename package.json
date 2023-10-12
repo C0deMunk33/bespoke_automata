@@ -21,6 +21,7 @@
     "electron": "^26.2.4"
   },
   "dependencies": {
+    "@zilliz/milvus2-sdk-node": "^2.3.2",
     "electron-squirrel-startup": "^1.0.0"
   }
 }
