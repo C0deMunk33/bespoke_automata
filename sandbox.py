@@ -11,41 +11,37 @@ def count_lines(file_path):
         count = sum(1 for _ in file)
     return count
 
+import csv
 
-def index_binary_search(file_path, title_part, line_count):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        low = 0
-        high = line_count - 1
-
-        while low <= high:
-            mid = (low + high) // 2
+def convert_to_csv(input_file, output_file):
+    with open(input_file, 'r') as infile, open(output_file, 'w', newline='') as outfile:
+        csv_writer = csv.writer(outfile, quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerow(['Section', 'ID', 'Title'])  # Write header
+        
+        for line in infile:
+            section, id_, title = line.strip().split(':')
+            csv_writer.writerow([section, id_, title])
             
-            # Go to the line number specified by 'mid'
-            for _ in range(mid):
-                file.readline()
-                
-            line = file.readline().strip()
+def binary_search_title(csv_file, target_title):
+    with open(csv_file, 'r') as file:
+        csv_reader = csv.reader(file)
+        data = list(csv_reader)[1:]  # Exclude header
+        
+        data.sort(key=lambda x: x[2])  # Ensure data is sorted by title
+        
+        left, right = 0, len(data) - 1
+        
+        while left <= right:
+            mid = (left + right) // 2
+            title = data[mid][2]
             
-            # Ensure pointer is back at the start for the next iteration
-            file.seek(0)
-            
-            # Ensure line has a valid format
-            try:
-                _, id_, title = line.split(':', 2)
-                id_ = int(id_)
-            except ValueError:
-                return None
-            
-            # Compare and adjust boundaries for search
-            if title.startswith(title_part):
-                return id_
-            elif title_part < title:
-                high = mid - 1
+            if title == target_title:
+                return data[mid]  # Record found
+            elif title < target_title:
+                left = mid + 1    # Search in the right half
             else:
-                low = mid + 1
-
-        return None
-
+                right = mid - 1   # Search in the left half
+        return None  # Record not found
 
 
 
