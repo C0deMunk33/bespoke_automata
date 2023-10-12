@@ -6,61 +6,42 @@ import xml.etree.ElementTree as ET
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 articles_index_filename = 'enwiki-20231001-pages-articles-multistream-index.txt'
 
-def index_binary_search(file_path, title_part):
+
+
+def index_binary_search(file_path, title_part, line_count):
     with open(file_path, 'r', encoding='utf-8') as file:
         low = 0
-        high = os.path.getsize(file_path)
+        high = line_count - 1
 
-        while low < high:
+        while low <= high:
             mid = (low + high) // 2
-            file.seek(mid)
-
-            # Skip to the end of the current line, unless we are at the start of the file
-            if mid > 0:
+            
+            # Go to the line number specified by 'mid'
+            for _ in range(mid):
                 file.readline()
-
-            # Try to read the next full line and return None if not possible (e.g., at EOF)
+                
+            line = file.readline().strip()
+            
+            # Ensure pointer is back at the start for the next iteration
+            file.seek(0)
+            
+            # Ensure line has a valid format
             try:
-                line = file.readline().strip()
-            except EOFError:
-                return None
-
-            # If line is empty, we are likely at the end of the file
-            if not line:
-                high = mid
-                continue
-
-            # Check the next line as well to prevent off-by-one errors
-            try:
-                next_line = file.readline().strip()
-            except EOFError:
-                next_line = ""
-
-            # Parse the current line and the next line
-            try:
-                _, id_, title = line.split(":", 2)
+                _, id_, title = line.split(':', 2)
                 id_ = int(id_)
             except ValueError:
                 return None
-
-            try:
-                _, next_id, next_title = next_line.split(":", 2)
-                next_id = int(next_id)
-            except ValueError:
-                next_title = ""
-                next_id = None
-
-            # Compare the current title and adjust the search space accordingly
+            
+            # Compare and adjust boundaries for search
             if title.startswith(title_part):
                 return id_
-            elif next_title.startswith(title_part):
-                return next_id
             elif title_part < title:
-                high = mid
+                high = mid - 1
             else:
                 low = mid + 1
 
         return None
+
 
 
 
