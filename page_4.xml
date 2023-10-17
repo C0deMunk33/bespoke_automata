@@ -1,0 +1,21 @@
+  <page>
+    <title>Robin-Goodfellow</title>
+    <ns>0</ns>
+    <id>3815834</id>
+    <redirect title="Puck (folklore)" />
+    <revision>
+      <id>854065155</id>
+      <parentid>97390266</parentid>
+      <timestamp>2018-08-08T18:30:55Z</timestamp>
+      <contributor>
+        <username>EmausBot</username>
+        <id>11292982</id>
+      </contributor>
+      <minor />
+      <comment>Bot: Fixing double redirect to [[Puck (folklore)]]</comment>
+      <model>wikitext</model>
+      <format>text/x-wiki</format>
+      <text bytes="29" xml:space="preserve">#REDIRECT [[Puck (folklore)]]</text>
+      <sha1>s5khws0edognnoxfmb2p7fxlz2lstsj</sha1>
+    </revision>
+  </page>

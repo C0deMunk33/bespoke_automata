@@ -1,0 +1,20 @@
+  <page>
+    <title>Seretech</title>
+    <ns>0</ns>
+    <id>3815833</id>
+    <redirect title="Shadowrun" />
+    <revision>
+      <id>38761134</id>
+      <parentid>38318563</parentid>
+      <timestamp>2006-02-08T13:41:30Z</timestamp>
+      <contributor>
+        <username>Kjkolb</username>
+        <id>107439</id>
+      </contributor>
+      <comment>#Redirect [[Shadowrun]], not notable enough for its own article, will put content on talk page</comment>
+      <model>wikitext</model>
+      <format>text/x-wiki</format>
+      <text bytes="23" xml:space="preserve">#Redirect [[Shadowrun]]</text>
+      <sha1>9yrooh63nllw5g8jbu1njxdkbbjt9qw</sha1>
+    </revision>
+  </page>
