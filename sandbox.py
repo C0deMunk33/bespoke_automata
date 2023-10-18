@@ -13,6 +13,7 @@ connections.connect(host='192.168.0.8', port='19530')
 MODEL = 'bert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
+INSERTION_BATCH_SIZE = 1000
 
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
@@ -173,6 +174,10 @@ def insert_wiki_page(page_text, collection):
     collection.insert(insertable)
     collection.flush()
 
+def insert_wiki_pages(batch, collection):
+    collection.insert(batch)
+    collection.flush()
+
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 #articles_filename = './wiki_pages/page_0.xml'
 articles_index_filename = "articles_index.csv"
@@ -192,9 +197,20 @@ def iterate_pages(file_name, start_line=0):
 # create a collection for the wiki pages
 wiki_collection = create_wiki_collection()
 # insert the pages into the collection
+batch = []
 file_count = 0
 for page in iterate_pages(articles_filename):
-    insert_wiki_page(page, wiki_collection)
+    parsed_page = parse_wiki_page(page)
+    batch.append(parsed_page)
     file_count += 1
-    if file_count % 100 == 0:
+
+    # If batch size reached, insert the batch
+    if file_count % BATCH_SIZE == 0:
+        insert_wiki_pages(batch, wiki_collection)
         print(f"Inserted {file_count} pages")
+        batch.clear()
+
+# Flush any remaining batch
+if batch:
+    insert_wiki_pages(batch, wiki_collection)
+    print(f"Inserted a total of {file_count} pages")
