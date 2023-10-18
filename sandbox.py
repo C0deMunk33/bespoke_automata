@@ -6,6 +6,7 @@ import numpy as np
 import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from transformers import AutoTokenizer, AutoModel
+import torch
 
 connections.connect(host='192.168.0.8', port='19530')
 
@@ -85,13 +86,20 @@ def parse_wiki_page(page_text):
     
     # TODO: vectorize
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    #     results = tokenizer(batch['question'], add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
-    title_tokens = tokenizer(title, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
-    title_tokens = {
-        'input_ids': title_tokens['input_ids'],
-        'token_type_ids': title_tokens['token_type_ids'],
-        'attention_mask': title_tokens['attention_mask']
-    }
+    title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
+    
+    # Embedding the title using your model
+    model = AutoModel.from_pretrained(MODEL)
+    title_embedding = model(
+                input_ids=title_tokens['input_ids'],
+                token_type_ids=title_tokens['token_type_ids'],
+                attention_mask=title_tokens['attention_mask']
+                )[0]
+    input_mask_expanded = title_tokens['attention_mask'].unsqueeze(-1).expand(title_embedding.size()).float()
+    title_vector = (title_embedding * input_mask_expanded).sum(1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+    
+    # Converting tensor to list
+    title_vector = title_vector.tolist()
     #description_tokens = tokenizer(description, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     #body_tokens = tokenizer(body, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     #categories_tokens = tokenizer(categories, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
@@ -102,7 +110,7 @@ def parse_wiki_page(page_text):
     return {
         'id': id,
         'title': title,
-        'title_vector': title_tokens,
+        'title_vector': title_vector[0],
         # limit body to 65535 characters
         'body': body[:65535],
         #'body_vector': body_tokens,
