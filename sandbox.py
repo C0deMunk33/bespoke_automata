@@ -7,6 +7,7 @@ import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from transformers import AutoTokenizer, AutoModel
 import torch
+from concurrent.futures import ProcessPoolExecutor
 import logging
 # suppress weight loading warning from transformers
 logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
@@ -19,7 +20,8 @@ DIMENSION = 768
 INSERTION_BATCH_SIZE = 1000
 
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
+tokenizer = AutoTokenizer.from_pretrained(MODEL).to('cuda')
+
 
 #takes xml text and returns a dictionary of the fields we want to store
 def parse_wiki_page(page_text):
@@ -130,7 +132,29 @@ def parse_wiki_page(page_text):
         #'numbers_vector': numbers_tokens,
         }
 
+def process_page(page):
+    return parse_wiki_page(page)
+
+def insert_pages_in_parallel(articles_filename):
+    batch = []
+    file_count = 0
     
+    with ProcessPoolExecutor(max_workers=4) as executor:  # using 4 processes. Adjust according to your CPU cores.
+        for parsed_page in executor.map(process_page, iterate_pages(articles_filename)):
+            batch.append(parsed_page)
+            file_count += 1
+
+            # If batch size reached, insert the batch
+            if file_count % INSERTION_BATCH_SIZE == 0:
+                insert_wiki_pages(batch, wiki_collection)
+                print(f"Inserted {file_count} pages")
+                batch.clear()
+
+    # Flush any remaining batch
+    if batch:
+        insert_wiki_pages(batch, wiki_collection)
+        print(f"Inserted a total of {file_count} pages")
+
 
 def create_wiki_collection():
     if utility.has_collection('wiki'):
@@ -200,20 +224,4 @@ def iterate_pages(file_name, start_line=0):
 # create a collection for the wiki pages
 wiki_collection = create_wiki_collection()
 # insert the pages into the collection
-batch = []
-file_count = 0
-for page in iterate_pages(articles_filename):
-    parsed_page = parse_wiki_page(page)
-    batch.append(parsed_page)
-    file_count += 1
-
-    # If batch size reached, insert the batch
-    if file_count % INSERTION_BATCH_SIZE == 0:
-        insert_wiki_pages(batch, wiki_collection)
-        print(f"Inserted {file_count} pages")
-        batch.clear()
-
-# Flush any remaining batch
-if batch:
-    insert_wiki_pages(batch, wiki_collection)
-    print(f"Inserted a total of {file_count} pages")
+insert_pages_in_parallel(articles_filename)
