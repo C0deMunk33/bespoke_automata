@@ -12,7 +12,7 @@ from transformers import AutoTokenizer, AutoModel
 df = pd.read_csv('New_Medium_Data.csv', converters={'title_vector': lambda x: eval(x)})
 df.head()
 
-connections.connect(host='192.168.0.7', port='19530')
+connections.connect(host='192.168.0.8', port='19530')
 
 MODEL = 'bert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
@@ -92,6 +92,11 @@ def parse_wiki_page(page_text):
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     #     results = tokenizer(batch['question'], add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     title_tokens = tokenizer(title, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
+    title_tokens = {
+        'input_ids': title_tokens['input_ids'],
+        'token_type_ids': title_tokens['token_type_ids'],
+        'attention_mask': title_tokens['attention_mask']
+    }
     #description_tokens = tokenizer(description, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     #body_tokens = tokenizer(body, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     #categories_tokens = tokenizer(categories, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
