@@ -14,6 +14,9 @@ MODEL = 'bert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
 
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL)
+
 #takes xml text and returns a dictionary of the fields we want to store
 def parse_wiki_page(page_text):
     # find id tag
@@ -85,7 +88,6 @@ def parse_wiki_page(page_text):
             numbers.append(float(word))
     
     # TODO: vectorize
-    tokenizer = AutoTokenizer.from_pretrained(MODEL)
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     
     # Embedding the title using your model
@@ -138,7 +140,7 @@ def create_wiki_collection():
             # body_vector
             #FieldSchema(name="body_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             # description
-            FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=1000),
+            FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=5000),
             # description_vector
             #FieldSchema(name="description_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             # image filename
@@ -167,12 +169,12 @@ def create_wiki_collection():
 
 def insert_wiki_page(page_text, collection):
     insertable = parse_wiki_page(page_text)
-    print(insertable)
+    
     collection.insert(insertable)
     collection.flush()
 
-# articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
-articles_filename = './wiki_pages/page_0.xml'
+articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
+#articles_filename = './wiki_pages/page_0.xml'
 articles_index_filename = "articles_index.csv"
 
 def iterate_pages(file_name, start_line=0):
