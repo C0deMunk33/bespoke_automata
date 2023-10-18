@@ -1,6 +1,4 @@
 #! pip3 install -q towhee pymilvus==2.2.11
-# Download data
-#! wget -q https://github.com/towhee-io/examples/releases/download/data/New_Medium_Data.csv
 
 import pandas as pd
 from towhee import ops, pipe, DataCollection
@@ -8,9 +6,6 @@ import numpy as np
 import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from transformers import AutoTokenizer, AutoModel
-
-df = pd.read_csv('New_Medium_Data.csv', converters={'title_vector': lambda x: eval(x)})
-df.head()
 
 connections.connect(host='192.168.0.8', port='19530')
 
@@ -168,9 +163,8 @@ def insert_wiki_page(page_text, collection):
     collection.insert(insertable)
     collection.flush()
 
-
-
-articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
+# articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
+articles_filename = './wiki_pages/page_0.xml'
 articles_index_filename = "articles_index.csv"
 
 def iterate_pages(file_name, start_line=0):
