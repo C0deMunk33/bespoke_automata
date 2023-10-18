@@ -83,20 +83,21 @@ def parse_wiki_page(page_text):
     categories_tokens = tokenizer(categories, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     numbers_tokens = tokenizer(numbers, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     
+    # TODO: track milvus issue (https://github.com/milvus-io/milvus/issues/25639) multiple vectors in one field
     return {
         'id': id,
         'title': title,
         'title_vector': title_tokens,
         'body': body,
-        'body_vector': body_tokens,
+        #'body_vector': body_tokens,
         'description': description,
-        'description_vector': description_tokens,
+        #'description_vector': description_tokens,
         'categories': categories,
-        'categories_vector': categories_tokens,
+        #'categories_vector': categories_tokens,
         'image_filename': image_file,
         'redirect_title': redirect,
         'revision_hash': sha1,
-        'numbers_vector': numbers_tokens,
+        #'numbers_vector': numbers_tokens,
         }
 
     
@@ -111,22 +112,22 @@ def create_wiki_collection():
             FieldSchema(name="title_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             FieldSchema(name="body", dtype=DataType.VARCHAR, max_length=50000),
             # body_vector
-            FieldSchema(name="body_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
+            #FieldSchema(name="body_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             # description
             FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=500),
             # description_vector
-            FieldSchema(name="description_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
+            #FieldSchema(name="description_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             # image filename
             FieldSchema(name="image_filename", dtype=DataType.VARCHAR, max_length=500),
             # categories
             FieldSchema(name="categories", dtype=DataType.VARCHAR, max_length=500),
             # categories_vector
-            FieldSchema(name="categories_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
+            #FieldSchema(name="categories_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             FieldSchema(name="redirect_title", dtype=DataType.VARCHAR, max_length=500),
             # revision hash
             FieldSchema(name="revision_hash", dtype=DataType.VARCHAR, max_length=500),
             # numbers vector, a vector of numbers extracted from the text
-            FieldSchema(name="numbers_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
+            #FieldSchema(name="numbers_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
 
     ]
     schema = CollectionSchema(fields=fields, description='search text')
@@ -144,32 +145,6 @@ def insert_wiki_page(page_text, collection):
     insertable = parse_wiki_page(page_text)
     collection.insert(insertable)
     collection.flush()
-
-def create_milvus_collection(collection_name, dim):
-    if utility.has_collection(collection_name):
-        utility.drop_collection(collection_name)
-    
-    fields = [
-            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=False),
-            FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=500),   
-            FieldSchema(name="title_vector", dtype=DataType.FLOAT_VECTOR, dim=dim),
-            FieldSchema(name="link", dtype=DataType.VARCHAR, max_length=500),
-            FieldSchema(name="reading_time", dtype=DataType.INT64),
-            FieldSchema(name="publication", dtype=DataType.VARCHAR, max_length=500),
-            FieldSchema(name="claps", dtype=DataType.INT64),
-            FieldSchema(name="responses", dtype=DataType.INT64)
-    ]
-    schema = CollectionSchema(fields=fields, description='search text')
-    collection = Collection(name=collection_name, schema=schema)
-    
-    index_params = {
-        'metric_type': "L2",
-        'index_type': "IVF_FLAT",
-        'params': {"nlist": 2048}
-    }
-    collection.create_index(field_name='title_vector', index_params=index_params)
-    return collection
-
 
 
 
