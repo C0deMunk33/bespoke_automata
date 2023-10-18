@@ -7,6 +7,9 @@ import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from transformers import AutoTokenizer, AutoModel
 import torch
+import logging
+# suppress weight loading warning from transformers
+logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 connections.connect(host='192.168.0.8', port='19530')
 
@@ -51,7 +54,7 @@ def parse_wiki_page(page_text):
     description = ""
     body = ""
     # if text contains #REDIRECT, skip it
-    if "#REDIRECT" not in page_text[text_start:text_end]:
+    if "#REDIRECT" not in page_text[text_start:text_end] and "==" in page_text[text_start:text_end]:
         #description is everything in text before the first "=="
         description = page_text[text_start:text_end]
         description = description.split("==")[0]
@@ -205,7 +208,7 @@ for page in iterate_pages(articles_filename):
     file_count += 1
 
     # If batch size reached, insert the batch
-    if file_count % BATCH_SIZE == 0:
+    if file_count % INSERTION_BATCH_SIZE == 0:
         insert_wiki_pages(batch, wiki_collection)
         print(f"Inserted {file_count} pages")
         batch.clear()
