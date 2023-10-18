@@ -1,40 +1,39 @@
-import re
+data_dataset = load_dataset(DATASET, split='all')
+data_dataset = data_dataset.train_test_split(test_size=INSERT_RATIO, seed=42)['test']
+data_dataset = data_dataset.map(lambda val: {'answer': val['answers']['text'][0]}, remove_columns=['answers'])
 
-articles_filename = 'enwiki-20231001-pages-articles-multistream.xml'
+tokenizer = AutoTokenizer.from_pretrained(MODEL)
 
-def check_ids_are_ascending(file_path):
-    last_id = -1  # initialize with a value that is lower than any valid id
-    
-    with open(file_path, 'r', encoding='utf-8') as file:
-        line_number = 0
-        for line in file:
-            line_number += 1
-            # Check for the <page> tag
-            if '<page>' in line:
-                # Skip next 2 lines to get to the id line
-                for _ in range(2):
-                    line = file.readline()
-                    line_number += 1
-                
-                # The next line should contain the <id> tag
-                id_line = file.readline()
-                line_number += 1
-                
-                # Extract id using regex and check if it is ascending
-                match = re.search(r'<id>(\d+)</id>', id_line)
-                if match:
-                    current_id = int(match.group(1))
-                    if current_id <= last_id:
-                        print(f"IDs not in ascending order! (line {line_number}: id={current_id}, last_id={last_id})")
-                        return False
-                    last_id = current_id
-                else:
-                    print(f"No id found on expected line {line_number}. Line content: {id_line.strip()}")
-                    return False
-    return True
+def tokenize_question(batch):
+    results = tokenizer(batch['question'], add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
+    batch['input_ids'] = results['input_ids']
+    batch['token_type_ids'] = results['token_type_ids']
+    batch['attention_mask'] = results['attention_mask']
+    return batch
 
-# Call the function and print the result
-if check_ids_are_ascending(articles_filename):
-    print("All IDs are in ascending order!")
-else:
-    print("IDs are not in ascending order.")
+data_dataset = data_dataset.map(tokenize_question, batch_size=TOKENIZATION_BATCH_SIZE, batched=True)
+data_dataset.set_format('torch', columns=['input_ids', 'token_type_ids', 'attention_mask'], output_all_columns=True)
+
+model = AutoModel.from_pretrained(MODEL)
+def embed(batch):
+    sentence_embs = model(
+                input_ids=batch['input_ids'],
+                token_type_ids=batch['token_type_ids'],
+                attention_mask=batch['attention_mask']
+                )[0]
+    input_mask_expanded = batch['attention_mask'].unsqueeze(-1).expand(sentence_embs.size()).float()
+    batch['question_embedding'] = sum(sentence_embs * input_mask_expanded, 1) / clamp(input_mask_expanded.sum(1), min=1e-9)
+    return batch
+
+data_dataset = data_dataset.map(embed, remove_columns=['input_ids', 'token_type_ids', 'attention_mask'], batched = True, batch_size=INFERENCE_BATCH_SIZE)
+
+def insert_function(batch):
+    insertable = [
+        batch['question'],
+        [x[:995] + '...' if len(x) > 999 else x for x in batch['answer']],
+        batch['question_embedding'].tolist()
+    ]    
+    collection.insert(insertable)
+
+data_dataset.map(insert_function, batched=True, batch_size=64)
+collection.flush()
