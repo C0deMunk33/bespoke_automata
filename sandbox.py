@@ -6,21 +6,24 @@ import numpy as np
 import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from transformers import AutoTokenizer, AutoModel
+from transformers import DistilBertTokenizerFast, DistilBertModel
+
 import torch
 from concurrent.futures import ProcessPoolExecutor
 import logging
+
 # suppress weight loading warning from transformers
 logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 connections.connect(host='192.168.0.8', port='19530')
 
-MODEL = 'bert-base-uncased'
+MODEL = 'distilbert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
 INSERTION_BATCH_SIZE = 1000
 
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL).to('cuda')
+tokenizer = DistilBertTokenizerFast.from_pretrained(MODEL)
 
 
 #takes xml text and returns a dictionary of the fields we want to store
