@@ -23,7 +23,8 @@ MODEL = 'bert-base-uncased'
 LOCAL_MODEL_DIR = './local_bert_model'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
-INSERTION_BATCH_SIZE = 10
+INSERTION_BATCH_SIZE = 1000
+WORKERS = 32
 
 
 # Download the tokenizer and model
@@ -125,7 +126,7 @@ def insert_pages_in_parallel(articles_filename):
     file_count = 0
     futures = []
 
-    with ProcessPoolExecutor(max_workers=20) as executor:  # using 4 processes. Adjust according to your CPU cores.
+    with ProcessPoolExecutor(max_workers=WORKERS) as executor:
         for page in iterate_pages(articles_filename):
             future = executor.submit(process_page, page)
             futures.append(future)
