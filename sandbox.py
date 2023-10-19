@@ -17,7 +17,7 @@ logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 connections.connect(host='192.168.0.8', port='19530')
 
-MODEL = 'distilbert-base-uncased'
+MODEL = 'bert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
 INSERTION_BATCH_SIZE = 10
@@ -117,11 +117,11 @@ def parse_wiki_page(page_text):
     #numbers_tokens = tokenizer(numbers, add_special_tokens = True, truncation = True, padding = "max_length", return_attention_mask = True, return_tensors = "pt")
     
     # TODO: track milvus issue (https://github.com/milvus-io/milvus/issues/25639) multiple vectors in one field
-    
+    print("page parsed")
     return {
         'id': id,
         'title': title,
-        'title_vector': title_vector,
+        'title_vector': title_vector[0],
         # limit body to 65535 characters
         'body': body[:65535],
         #'body_vector': body_tokens,
@@ -143,7 +143,7 @@ def insert_pages_in_parallel(articles_filename):
     file_count = 0
     futures = []
 
-    with ProcessPoolExecutor(max_workers=4) as executor:  # using 4 processes. Adjust according to your CPU cores.
+    with ProcessPoolExecutor(max_workers=20) as executor:  # using 4 processes. Adjust according to your CPU cores.
         for page in iterate_pages(articles_filename):
             future = executor.submit(process_page, page)
             futures.append(future)
@@ -220,6 +220,8 @@ def insert_wiki_page(page_text, collection):
     collection.flush()
 
 def insert_wiki_pages(batch, collection):
+    print("inserting batch")
+
     collection.insert(batch)
     collection.flush()
 
