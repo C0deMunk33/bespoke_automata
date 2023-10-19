@@ -20,12 +20,19 @@ print("connected to milvus")
 
 
 MODEL = 'bert-base-uncased'
+LOCAL_MODEL_DIR = './local_bert_model'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
 INSERTION_BATCH_SIZE = 10
 
 
+# Download the tokenizer and model
+tokenizer = AutoTokenizer.from_pretrained(MODEL)
+model = AutoModel.from_pretrained(MODEL)
 
+# Save them locally
+tokenizer.save_pretrained(LOCAL_MODEL_DIR)
+model.save_pretrained(LOCAL_MODEL_DIR)
 
 def parse_wiki_page(page_text):
     id_start = page_text.find('<id>') + 4
@@ -81,8 +88,8 @@ def parse_wiki_page(page_text):
         if word.isnumeric():
             numbers.append(float(word))
     
-    tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModel.from_pretrained(MODEL)
+    tokenizer = AutoTokenizer.from_pretrained(LOCAL_MODEL_DIR)
+    model = AutoModel.from_pretrained(LOCAL_MODEL_DIR).to('cuda')
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     
     
