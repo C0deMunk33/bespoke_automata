@@ -20,7 +20,7 @@ connections.connect(host='192.168.0.8', port='19530')
 MODEL = 'distilbert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
-INSERTION_BATCH_SIZE = 1000
+INSERTION_BATCH_SIZE = 10
 
 
 tokenizer = DistilBertTokenizerFast.from_pretrained(MODEL)
@@ -32,6 +32,7 @@ def parse_wiki_page(page_text):
     id_start = page_text.find('<id>') + 4
     id_end = page_text.find('</id>')
     id = page_text[id_start:id_end]
+    print("id: ", id)
     # parse id to int
     id = int(id)
     # find title tag
@@ -147,10 +148,11 @@ def insert_pages_in_parallel(articles_filename):
             batch.append(parsed_page)
             file_count += 1
 
+            print(f"Inserted {file_count} pages")
+
             # If batch size reached, insert the batch
             if file_count % INSERTION_BATCH_SIZE == 0:
                 insert_wiki_pages(batch, wiki_collection)
-                print(f"Inserted {file_count} pages")
                 batch.clear()
 
     # Flush any remaining batch
