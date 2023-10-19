@@ -6,7 +6,7 @@ import numpy as np
 import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from transformers import AutoTokenizer, AutoModel
-from transformers import DistilBertTokenizerFast, DistilBertModel
+
 
 import torch
 from concurrent.futures import ProcessPoolExecutor
@@ -23,7 +23,7 @@ DIMENSION = 768
 INSERTION_BATCH_SIZE = 10
 
 
-tokenizer = DistilBertTokenizerFast.from_pretrained(MODEL)
+tokenizer = AutoTokenizer.from_pretrained(MODEL)
 
 
 #takes xml text and returns a dictionary of the fields we want to store
