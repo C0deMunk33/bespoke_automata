@@ -1,5 +1,3 @@
-#! pip3 install -q towhee pymilvus==2.2.11
-
 import pandas as pd
 from towhee import ops, pipe, DataCollection
 import numpy as np
@@ -7,33 +5,24 @@ import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 from transformers import AutoTokenizer, AutoModel
 
-
 import torch
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import logging
 
-# suppress weight loading warning from transformers
 logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 connections.connect(host='192.168.0.8', port='19530')
 print("connected to milvus")
 
-
 MODEL = 'bert-base-uncased'
-LOCAL_MODEL_DIR = './local_bert_model'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
 INSERTION_BATCH_SIZE = 1000
 WORKERS = 32
 
-
-# Download the tokenizer and model
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModel.from_pretrained(MODEL)
-
-# Save them locally
-tokenizer.save_pretrained(LOCAL_MODEL_DIR)
-model.save_pretrained(LOCAL_MODEL_DIR)
+model.share_memory()
 
 def parse_wiki_page(page_text):
     id_start = page_text.find('<id>') + 4
@@ -89,11 +78,22 @@ def parse_wiki_page(page_text):
         if word.isnumeric():
             numbers.append(float(word))
     
-    tokenizer = AutoTokenizer.from_pretrained(LOCAL_MODEL_DIR)
-    model = AutoModel.from_pretrained(LOCAL_MODEL_DIR).to('cuda')
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     
-    
+    print("page parsed")
+    return {
+        'id': id,
+        'title': title,
+        'title_tokens': title_tokens,  # store tokens, will embed later
+        'body': body[:65535],
+        'description': description,
+        'categories': categories,
+        'image_filename': image_file,
+        'redirect_title': redirect_title,
+        'revision_hash': sha1
+    }
+
+def embed_title(title_tokens):
     title_embedding = model(
                 input_ids=title_tokens['input_ids'],
                 token_type_ids=title_tokens['token_type_ids'],
@@ -101,25 +101,8 @@ def parse_wiki_page(page_text):
                 )[0]
     input_mask_expanded = title_tokens['attention_mask'].unsqueeze(-1).expand(title_embedding.size()).float()
     title_vector = (title_embedding * input_mask_expanded).sum(1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-    
-    title_vector = title_vector.tolist()
-
-    # TODO: track milvus issue (https://github.com/milvus-io/milvus/issues/25639) multiple vectors in one field
-    print("page parsed")
-    return {
-        'id': id,
-        'title': title,
-        'title_vector': title_vector[0],
-        'body': body[:65535],
-        'description': description,
-        'categories': categories,
-        'image_filename': image_file,
-        'redirect_title': redirect_title,
-        'revision_hash': sha1,
-        }
-
-def process_page(page):
-    return parse_wiki_page(page)
+    title_vector = title_vector.tolist()[0]
+    return title_vector
 
 def insert_pages_in_parallel(articles_filename):
     batch = []
@@ -128,12 +111,14 @@ def insert_pages_in_parallel(articles_filename):
 
     with ProcessPoolExecutor(max_workers=WORKERS) as executor:
         for page in iterate_pages(articles_filename):
-            future = executor.submit(process_page, page)
+            future = executor.submit(parse_wiki_page, page)  # only parse, don't embed
             futures.append(future)
             
             if len(futures) == INSERTION_BATCH_SIZE:
                 for future in as_completed(futures):
                     parsed_page = future.result()
+                    parsed_page['title_vector'] = embed_title(parsed_page['title_tokens'])  # embed in main process
+                    del parsed_page['title_tokens']  # remove tokens if you don't want to store them
                     batch.append(parsed_page)
                     file_count += 1
 
@@ -146,6 +131,8 @@ def insert_pages_in_parallel(articles_filename):
     # Handle remaining futures
     for future in as_completed(futures):
         parsed_page = future.result()
+        parsed_page['title_vector'] = embed_title(parsed_page['title_tokens'])
+        del parsed_page['title_tokens']
         batch.append(parsed_page)
         file_count += 1
 
@@ -153,8 +140,6 @@ def insert_pages_in_parallel(articles_filename):
     if batch:
         insert_wiki_pages(batch, wiki_collection)
         print(f"Inserted a total of {file_count} pages")
-
-
 
 def create_wiki_collection():
     if utility.has_collection('wiki'):
@@ -182,20 +167,16 @@ def create_wiki_collection():
     collection.create_index(field_name='title_vector', index_params=index_params)
     return collection
 
+
 def insert_wiki_page(page_text, collection):
     insertable = parse_wiki_page(page_text)
-    
     collection.insert(insertable)
     collection.flush()
 
 def insert_wiki_pages(batch, collection):
     print("inserting batch")
-
     collection.insert(batch)
     collection.flush()
-
-articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
-#articles_filename = './wiki_pages/page_0.xml'
 
 def iterate_pages(file_name, start_line=0):
     with open(file_name, 'r', encoding='utf-8') as file:
