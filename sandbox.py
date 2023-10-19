@@ -24,7 +24,7 @@ INSERTION_BATCH_SIZE = 10
 
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
-
+model = AutoModel.from_pretrained(MODEL)
 
 #takes xml text and returns a dictionary of the fields we want to store
 def parse_wiki_page(page_text):
@@ -100,8 +100,7 @@ def parse_wiki_page(page_text):
     # TODO: vectorize
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     
-    # Embedding the title using your model
-    model = AutoModel.from_pretrained(MODEL)
+    
     title_embedding = model(
                 input_ids=title_tokens['input_ids'],
                 token_type_ids=title_tokens['token_type_ids'],
@@ -122,7 +121,7 @@ def parse_wiki_page(page_text):
     return {
         'id': id,
         'title': title,
-        'title_vector': title_vector[0],
+        'title_vector': title_vector,
         # limit body to 65535 characters
         'body': body[:65535],
         #'body_vector': body_tokens,
