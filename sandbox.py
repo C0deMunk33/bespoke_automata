@@ -142,23 +142,37 @@ def process_page(page):
 def insert_pages_in_parallel(articles_filename):
     batch = []
     file_count = 0
-    
+    futures = []
+
     with ProcessPoolExecutor(max_workers=4) as executor:  # using 4 processes. Adjust according to your CPU cores.
-        for parsed_page in executor.map(process_page, iterate_pages(articles_filename)):
-            batch.append(parsed_page)
-            file_count += 1
+        for page in iterate_pages(articles_filename):
+            future = executor.submit(process_page, page)
+            futures.append(future)
+            
+            if len(futures) == INSERTION_BATCH_SIZE:
+                for future in as_completed(futures):
+                    parsed_page = future.result()
+                    batch.append(parsed_page)
+                    file_count += 1
 
-            print(f"Inserted {file_count} pages")
+                    # If batch size reached, insert the batch
+                    if file_count % INSERTION_BATCH_SIZE == 0:
+                        insert_wiki_pages(batch, wiki_collection)
+                        print(f"Inserted {file_count} pages")
+                        batch.clear()
+                futures.clear()
 
-            # If batch size reached, insert the batch
-            if file_count % INSERTION_BATCH_SIZE == 0:
-                insert_wiki_pages(batch, wiki_collection)
-                batch.clear()
+    # Handle remaining futures
+    for future in as_completed(futures):
+        parsed_page = future.result()
+        batch.append(parsed_page)
+        file_count += 1
 
     # Flush any remaining batch
     if batch:
         insert_wiki_pages(batch, wiki_collection)
         print(f"Inserted a total of {file_count} pages")
+
 
 
 def create_wiki_collection():
