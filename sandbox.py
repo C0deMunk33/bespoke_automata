@@ -11,13 +11,12 @@ import logging
 import multiprocessing
 
 
-connections.connect(host='192.168.0.8', port='19530')
-print("connected to milvus")
+
 
 MODEL = 'bert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
-INSERTION_BATCH_SIZE = 1000
+INSERTION_BATCH_SIZE = 200
 WORKERS = 32
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 #articles_filename = './wiki_pages/page_0.xml'
@@ -28,7 +27,6 @@ def parse_wiki_page(page_text, tokenizer):
     id_start = page_text.find('<id>') + 4
     id_end = page_text.find('</id>')
     id = page_text[id_start:id_end]
-    print("id: ", id)
     id = int(id)
     title_start = page_text.find('<title>') + 7
     title_end = page_text.find('</title>')
@@ -80,15 +78,16 @@ def parse_wiki_page(page_text, tokenizer):
     
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
-    print("page parsed")
     #truncate the strings
     title = title[:1000]
-    body = body[:65535]
-    description = description[:5000]
-    categories = categories[:1000]
+    body = body[:65000]
+    description = description[:10000]
+    categories = categories[0:1000]
     image_file = image_file[:2000]
     redirect_title = redirect_title[:1000]
     sha1 = sha1[:500]
+
+    print(id)
     return {
         'id': id,
         'title': title,
@@ -158,14 +157,14 @@ def create_wiki_collection():
     
     fields = [
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=False),
-            FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=1000),   
+            FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=1024),   
             FieldSchema(name="title_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             FieldSchema(name="body", dtype=DataType.VARCHAR, max_length=65535),
-            FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=10000),         
-            FieldSchema(name="image_filename", dtype=DataType.VARCHAR, max_length=2000),          
-            FieldSchema(name="categories", dtype=DataType.VARCHAR, max_length=1000),
-            FieldSchema(name="redirect_title", dtype=DataType.VARCHAR, max_length=1000),
-            FieldSchema(name="revision_hash", dtype=DataType.VARCHAR, max_length=500),
+            FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=12100),         
+            FieldSchema(name="image_filename", dtype=DataType.VARCHAR, max_length=2048),          
+            FieldSchema(name="categories", dtype=DataType.VARCHAR, max_length=1024),
+            FieldSchema(name="redirect_title", dtype=DataType.VARCHAR, max_length=1024),
+            FieldSchema(name="revision_hash", dtype=DataType.VARCHAR, max_length=510),
     ]
     schema = CollectionSchema(fields=fields, description='search text')
     collection = Collection(name='wiki', schema=schema)
@@ -181,20 +180,20 @@ def create_wiki_collection():
 
 def insert_wiki_page(page_text, collection, tokenizer):
     insertable = parse_wiki_page(page_text, tokenizer)
+
     collection.insert(insertable)
     collection.flush()
 
 def insert_wiki_pages(batch, collection):
-    print("inserting batch")
     try:
-
+        # check to see if any batch descriptions are larger than 10000 characters
         collection.insert(batch)
         collection.flush()
     except Exception as e:
         # save all the image filenames in the batch to file
         with open('./failed_batch.txt', 'w') as file:
             for page in batch:
-                file.write(page['image_filename'] + '\n')
+                file.write(page['description'] + '\n')
         print(e)
         print("insert failed")
         # exit program if insert failed
@@ -227,5 +226,7 @@ def main():
     insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collection)
 
 if __name__ == '__main__':
+    connections.connect(host='192.168.0.8', port='19530')
+
     multiprocessing.set_start_method('spawn', force=True)
     main()

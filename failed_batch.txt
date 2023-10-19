@@ -1,1006 +1,230 @@
+{{Short description|American film director &amp; screenwriter (1885–1981)}}
+{{Use American English|date=June 2021}}
+{{Use mdy dates|date=June 2021}}
+{{Infobox person
+| name         = Allan Dwan
+| image        = Allan Dwan - Sep 1920 EH.jpg
+| alt          =
+| caption      = Dwan in 1920
+| birth_name   = Joseph Aloysius Dwan
+| birth_date   = {{Birth date|1885|4|3}}
+| birth_place  = [[Toronto]], [[Ontario]], Canada
+| death_date   = {{Death date and age|1981|12|28|1885|4|3}}
+| death_place  = [[Los Angeles]], [[California]], United States
+| spouse       = [[Pauline Bush (actress)|Pauline Bush]] (1915–1919)&lt;br/&gt;Marie Shelton (1927–1949)
+| occupation   = Film director&lt;br /&gt;Film producer&lt;br /&gt;Screenwriter
+| years_active = 1911–1961; 1980
+}}
+'''Allan Dwan''' (born '''Joseph Aloysius Dwan'''; April 3, 1885 – December 28, 1981) was a pioneering Canadian-born American motion picture director, producer, and screenwriter.
+
+
+
+{{Short description|American writer and philosopher (1905–1982)}}
+{{Good article}}
+{{Use American English|date=February 2023}}
+{{Use mdy dates|date=March 2023}}
+{{Infobox writer
+| name             = Ayn Rand
+| native_name      = Алиса Зиновьевна Розенбаум
+| image            = Ayn Rand (1943 Talbot portrait).jpg
+| alt              = Photo of Ayn Rand
+| caption          = Rand in 1943
+| birth_name       = Alisa Zinovyevna Rosenbaum
+| birth_date       = {{birth date|1905|02|02}}
+| birth_place      = [[Saint Petersburg]], Saint Petersburg Governorate&lt;!-- DO NOT LINK, see [[MOS:GEOLINK]] for further guidance --&gt;, Russian Empire&lt;!-- DO NOT LINK, see [[MOS:GEOLINK]] for further guidance --&gt;
+| death_date       = {{death date and age|1982|3|6|1905|2|2}}
+| death_place      = New York City, U.S.&lt;!-- DO NOT REMOVE the country per [[Template:Infobox writer]] --&gt;
+| pseudonym        = Ayn Rand
+| occupation       = Writer
+| language         = English
+| citizenship      = {{ublist|
+  | Russia (1905–1931){{efn|Rand's initial citizenship was in the [[Russian Empire]] and continued through the [[Russian Republic]] and [[Russian Soviet Federative Socialist Republic]], which became part of the [[Soviet Union]].}}
+  | United States (1931–1982)}}
+| alma_mater       = [[Leningrad State University]]
+| period           = 1934–1982
+| notableworks     = {{ublist|
+  | ''[[The Fountainhead]]'' (1943)
+  | ''[[Atlas Shrugged]]'' (1957)
+  | ''[[#Selected works|more...]]''}}
+| spouse           = {{marriage|[[Charles Francis O'Connor|Frank O'Connor]]|1929|1979|end=d}}{{efn|name=&quot;frank&quot;|Rand's husband, Charles Francis O'Connor (1897–1979),{{sfn|Heller|2009|p=65}} is not to be confused with the actor [[Frank A. O'Connor]] or the writer whose pen name was [[Frank O'Connor]].}}
+| signature        = Ayn Rand signature 1949.svg
+| signature_alt    = Ayn Rand
+}}
+
+'''Alice O'Connor''' (born '''Alisa Zinovyevna Rosenbaum''';{{efn|{{lang-ru|link=no|Алиса Зиновьевна Розенбаум}}, {{IPA-ru|ɐˈlʲisə zʲɪˈnovʲjɪvnə rəzʲɪnˈbaʊm|}}. Most sources [[transliterate]] her given name as either ''Alisa'' or ''Alissa''.{{sfn|Gladstein|1999|p=121}}}} {{OldStyleDateNY|February 2|January 20}}, 1905&amp;nbsp;– March 6, 1982), better known by her pen name '''Ayn Rand''' ({{IPAc-en|aɪ|n}}), was a Russian-born American writer and [[public philosopher]].&lt;!-- DO NOT REMOVE WITHOUT CONSENSUS. --&gt;{{sfn|Sciabarra|2013|p=91}} She is known for her fiction and for developing a philosophical system she named [[Objectivism]]. Born and educated in Russia, she moved to the United States in 1926. After two early novels that were initially unsuccessful and two [[Broadway theatre|Broadway]] plays, she achieved fame with her 1943 novel, ''[[The Fountainhead]]''. In 1957, Rand published her best-selling work, the novel ''[[Atlas Shrugged]]''. Afterward, until her death in 1982, she turned to non-fiction to promote her philosophy, publishing her own [[Objectivist periodicals|periodicals]] and releasing several collections of essays.
+
+Rand advocated [[reason]] and rejected [[faith]] and religion. She supported [[Rational egoism|rational]] and [[ethical egoism]] as opposed to [[Altruism (ethics)|altruism]]. In politics, she condemned the [[initiation of force]] as immoral and supported ''[[laissez-faire]]'' [[capitalism]], which she defined as the system based on recognizing [[individual rights]], including [[private property]] rights. Although Rand opposed [[libertarianism]], which she viewed as [[anarchism]], she is often associated with the modern [[libertarian movement in the United States]]. In art, Rand promoted [[romantic realism]]. She was sharply critical of most philosophers and philosophical traditions known to her, with a few exceptions.
+
+Rand's books have sold over 37 million copies. Her fiction received mixed reviews from literary critics, with reviews becoming more negative for her later work.{{sfn|Gladstein|1999|pp=117–119}} Although academic interest in her ideas has grown since her death,{{sfn|Cocks|2020|p=15}} academic philosophers have generally ignored or rejected her philosophy, arguing that she has a polemical approach and that her work lacks methodological rigor.{{sfn|Badhwar|Long|2020}} Her writings have politically influenced some [[right-libertarians]] and [[conservatives]]. The [[Objectivist movement]] circulates her ideas, both to the public and in academic settings.
+
+
+
+{{short description|French mathematician (born 1947)}}
+{{Use dmy dates|date=April 2020}}
+
+{{Infobox scientist
+| name              = Alain Connes
+| image             = Alain_Connes.jpg
+| alt               = Photo of the upper body of Alain Connes with vegetation, blue sky, and clouds in the background
+| caption           = Alain Connes in 2004
+| birth_date        = {{birth date and age|1947|04|01|df=y}}
+| birth_place       = [[Draguignan]], France
+| death_date        = 
+| death_place       = 
+| fields            = Mathematics &lt;br/&gt; [[Particle physics]]
+| workplaces        = [[Collège de France]] &lt;br/&gt; [[IHÉS]] &lt;br/&gt; [[Ohio State University]] &lt;br/&gt; [[Vanderbilt University]]
+| alma_mater        = [[École Normale Supérieure]] &lt;br&gt; [[Pierre and Marie Curie University]]
+| thesis_title      = A Classification of Factors of Type III
+| thesis_year       = 1973
+| doctoral_advisor  = [[Jacques Dixmier]]
+| doctoral_students = [[Jean-Benoît Bost]]&lt;br&gt;[[Georges Skandalis]]
+| known_for         = [[Baum–Connes conjecture]]&lt;br&gt;[[Noncommutative geometry]]&lt;br&gt;[[Noncommutative standard model]]&lt;br&gt;[[Operator algebra]]s&lt;br&gt;[[Thermal time hypothesis]]
+| awards            = [[Peccot Lectures|Peccot-Vimont Prize]] (1976)&lt;br/&gt;[[CNRS Silver Medal]] (1977)&lt;br/&gt; [[Prize Ampère]] (1980)&lt;br/&gt; [[Fields Medal]] (1982)&lt;br/&gt; [[Clay Research Award]] (2000)&lt;br/&gt; [[Crafoord Prize]] (2001)&lt;br/&gt; [[CNRS Gold medal]] (2004)
+| website           = {{URL|https://alainconnes.org/}}
+| footnotes         = 
+}}
+
+'''Alain Connes''' ({{IPA-fr|alɛ̃ kɔn|lang}}; born 1 April 1947 in [[Draguignan]]) is a French mathematician, known for his contributions to the study of [[operator algebra]]s and [[noncommutative geometry]]. He is a professor at the {{Lang|fr|[[Collège de France]]|italic=no}}, {{Lang|fr|[[Institut des Hautes Études Scientifiques]]|italic=no}}, [[Ohio State University]] and [[Vanderbilt University]]. He was awarded the [[Fields Medal]] in 1982.&lt;ref&gt;{{Cite web |last=O'Connor |first=John |last2=Robertson |first2=Edmund |author-link2=Edmund F. Robertson |title=Alain Connes |url=https://mathshistory.st-andrews.ac.uk/Biographies/Connes/ |access-date=2023-05-19 |website=[[MacTutor History of Mathematics archive]] |language=en}}&lt;/ref&gt;&lt;ref name=&quot;:0&quot;&gt;{{Cite web |last=Jackson |first=Allyn |date=2021 |title=Interview with Alain Connes |url=https://celebratio.org/Connes_A/article/842/ |access-date=2023-05-18 |website=Celebratio Mathematica |language=en}}&lt;/ref&gt;&lt;ref name=&quot;:1&quot;&gt;{{Cite journal |last=Skandalis |first=Georges |author-link=Georges Skandalis |last2=Goldstein |first2=Catherine |author-link2=Catherine Goldstein |date=2007 |title=An interview with Alain Connes, part I |url=https://ems.press/content/serial-issue-files/13664 |journal=EMS Newsletter |publisher=[[European Mathematical Society]] |volume=63 |pages=25–30}}&lt;/ref&gt;&lt;ref name=&quot;:2&quot;&gt;{{Cite journal |last=Skandalis |first=Georges |author-link=Georges Skandalis |last2=Goldstein |first2=Catherine |author-link2=Catherine Goldstein |date=2008 |title=An interview with Alain Connes, part II |url=https://ems.press/content/serial-issue-files/13672 |journal=EMS Newsletter |publisher=[[European Mathematical Society]] |volume=67 |pages=29–33}}&lt;/ref&gt;
+
+
+{{pp-semi-indef}}
+{{short description|Country in North Africa}}
+{{About|the country||Algeria (disambiguation)}}
+{{pp-move}}
+{{Use dmy dates|date=February 2022}}
+{{Infobox country
+| conventional_long_name = People's Democratic Republic of Algeria
+| name                   = {{ubl|{{native name|ar|الجمهورية الجزائرية الديمقراطية الشعبية|italic=no}}&lt;br /&gt;{{resize|80%|{{transliteration|ar|al-Jumhūriyah al-Jazāʾiriyah ad-Dīmuqrāṭiyah ash‑Shaʿbiyah}}}}|{{midsize|{{native name|fr|République algérienne démocratique et populaire}}}}}}
+| common_name            = Algeria
+| image_flag             = Flag of Algeria.svg
+| image_coat             = 
+| symbol_type            = Emblem
+| national_motto         = {{lang|ar|بالشعب وللشعب}}&lt;br /&gt;(&quot;By the people and for the people&quot;)&lt;ref name=&quot;CONST-AR&quot;&gt;{{cite web|url=http://www.el-mouradia.dz/arabe/symbole/textes/constitution96.htm |title=Constitution of Algeria, Art. 11 |id= language: France and Arabic (government language); people of Algeria speak Arabic and Berber|publisher=El-mouradia.dz |access-date=17 January 2013 |url-status=dead |archive-url=https://web.archive.org/web/20120718124116/http://www.el-mouradia.dz/arabe/symbole/textes/constitution96.htm |archive-date=18 July 2012 }}&lt;/ref&gt;&lt;ref name=&quot;CONST-EN&quot;&gt;{{cite web |url= http://www.apn-dz.org/apn/english/constitution96/titre_01.htm |title=Constitution of Algeria; Art. 11 |publisher=Apn-dz.org |date=28 November 1996 |access-date=17 January 2013 |url-status=dead |archive-url=https://web.archive.org/web/20130725130249/http://www.apn-dz.org/apn/english/constitution96/titre_01.htm |archive-date=25 July 2013 }}&lt;/ref&gt;
+| national_anthem        = ''[[Kassaman]]''&lt;br /&gt;({{lang-en|&quot;We Pledge&quot;}})&lt;br /&gt;&lt;div style=&quot;display:inline-block;margin-top:0.4em;&quot;&gt;{{center|[[File:National anthem of Algeria, by the U.S. Navy Band.oga]]}}&lt;/div&gt;
+| image_map              = Algeria (centered orthographic projection).svg
+| map_caption            = {{map caption |location_color=dark green || | |}}
+| image_map2             = 
+| capital                = [[Algiers]]
+| coordinates            = {{Coord|36|42|N|3|13|E|type:city_region:DZ}}
+| largest_city           = capital
+| religion               = {{unbulleted list|99% [[Islam in Algeria|Sunni Islam]] ([[State religion|official]]) |1% other (inc. [[Christianity in Algeria|Christians]] and [[History of the Jews in Algeria|Jews]])&lt;ref name=&quot;CIA&quot;&gt;{{Cite CIA World Factbook|country=Algeria|access-date=20 March 2021}}&lt;/ref&gt;}}
+| official_languages     = {{Plainlist|
+* [[Arabic]] 
+* [[Standard Algerian Berber|Tamazight]]
+}}
+| languages_type         = Other languages
+| languages              = [[Algerian Arabic]]&lt;br /&gt;[[French language|French]]&lt;ref name=&quot;CIA&quot; /&gt;{{efn| ''[[French language|French]]'' although not officially recognized, remains a common language, understood by the majority of the population.}}&lt;!--end nowrap:--&gt;
+| ethnic_groups          = {{vunblist
+ |75%–85% [[Arabs]]&lt;ref name=&quot;CIA&quot; /&gt;
+ | 15%–25% [[Berbers]]&lt;ref name=&quot;CIA&quot; /&gt;}}&lt;ref&gt;{{cite news|url=https://www.bbc.com/news/world-africa-35515769|title=Algeria reinstates term limit and recognises Berber language|newspaper=BBC News|date=2016-02-07}}&lt;/ref&gt;
+| demonym                = [[Demographics of Algeria|Algerian]]
+| government_type        = [[Unitary state|Unitary]] [[semi-presidential republic]]
+| leader_title1          = [[President of Algeria|President]]
+| leader_name1           = [[Abdelmadjid Tebboune]]
+| leader_title2          = [[Prime Minister of Algeria|Prime Minister]]
+| leader_name2           = [[Aymen Benabderrahmane]]
+| leader_title3          = [[List of presidents of the Council of the Nation (Algeria)|Council President]]
+| leader_name3           = [[Salah Goudjil]]
+| leader_title4          = [[List of presidents of the People's National Assembly (Algeria)|Assembly President]]
+| leader_name4           = [[Ibrahim Boughali]]
+| legislature            = [[Parliament of Algeria|Parliament]]
+| upper_house            = [[Council of the Nation]]
+| lower_house            = [[People's National Assembly]]
+| sovereignty_type       = [[History of Algeria|Formation]]
+| established_event1     = [[Phoenicia|Phoenicians]]
+| established_date1      = 600 BC
+| established_event2     = [[Ancient Carthage|Carthaginians]]
+| established_date2      = 500 BC
+| established_event3     = [[Numidia]]
+| established_date3      = 202 BC
+| established_event4     = [[Mauro-Roman Kingdom|Kingdom of Altava]]
+| established_date4      = 477
+| established_event5     = [[Emirate of Tlemcen|Ifranid dynasty]]
+| established_date5      = 757
+| established_event6     = [[Rustamid dynasty]]
+| established_date6      = 776
+| established_event7     = [[Sulaymanid dynasty]]
+| established_date7      = 786
+| established_event8     = [[Zirid dynasty]]
+| established_date8      = 972
+| established_event9     = [[Hammadid dynasty]]
+| established_date9      = 1014
+| established_event10    = [[Kingdom of Tlemcen|Zayyanid dynasty]]
+| established_date10     = 1235
+| established_event11    = [[Regency of Algiers]]
+| established_date11     = 1516
+| established_event12    = [[Emirate of Abdelkader]]
+| established_date12     = 1832
+| established_event13    = [[French Algeria]]
+| established_date13     = 5 July 1830
+| established_event14    = [[Algerian War|Modern Algeria]]
+| established_date14     = 5 July 1962
+| area_km2               = 2381741
+| area_rank              = 10th
+| area_sq_mi             = 919595
+| percent_water          = 1.1
+| population_estimate    = 44,700,000&lt;ref name=&quot;ONS 2020&quot;&gt;{{cite web | title=Démographie | website=Office National des Statistiques | date=18 May 2020 | url=http://www.ons.dz/IMG/pdf/demographie2019_bis.pdf | language=fr | trans-title=Demography | access-date=3 October 2020 | archive-url=https://web.archive.org/web/20200721155425/http://www.ons.dz/IMG/pdf/demographie2019_bis.pdf | archive-date=21 July 2020 | url-status=live }}&lt;/ref&gt;
+| population_estimate_year = 2021
+| population_estimate_rank = 32nd
+| population_census_year = 
+| population_density_km2 = 17.7
+| population_density_sq_mi = 47
+| population_density_rank = 168th
+| GDP_PPP                = {{increase}} $708.568 billion&lt;ref name=&quot;IMFWEOAG&quot;&gt;{{cite web |url=https://www.imf.org/en/Publications/WEO/weo-database/2022/October/weo-report?c=612,&amp;s=NGDPD,PPPGDP,NGDPDPC,PPPPC,&amp;sy=2020&amp;ey=2027&amp;ssm=0&amp;scsm=1&amp;scc=0&amp;ssd=1&amp;ssc=0&amp;sic=0&amp;sort=country&amp;ds=.&amp;br=1 |title=World Economic Outlook Database |website=IMF.org |publisher=[[International Monetary Fund]] |access-date=29 October 2021}}&lt;/ref&gt;
+| GDP_PPP_year           = 2022
+| GDP_PPP_rank           = 43rd
+| GDP_PPP_per_capita     = {{increase}} $13,324&lt;ref name=&quot;IMFWEOAG&quot;/&gt;
+| GDP_PPP_per_capita_rank = 111th
+| GDP_nominal            = {{increase}} $190.155 billion&lt;ref name=&quot;IMFWEOAG&quot;/&gt;
+| GDP_nominal_year       = 2022
+| GDP_nominal_rank       = 58th
+| GDP_nominal_per_capita = {{increase}} $4,151&lt;ref name=&quot;IMFWEOAG&quot;/&gt;
+| GDP_nominal_per_capita_rank = 130th
+| Gini                   = 27.6
+| Gini_year              = 2011
+| Gini_ref               = &lt;ref&gt;{{cite web|author=&lt;!--Staff writer(s); no by-line.--&gt; |url=https://www.cia.gov/library/publications/the-world-factbook/fields/2172.html |title=Distribution of Family Income&amp;nbsp;– Gini Index |work=[[The World Factbook]] |publisher=[[Central Intelligence Agency]] |access-date=1 September 2009 |archive-url=https://web.archive.org/web/20070613005439/https://www.cia.gov/library/publications/the-world-factbook/fields/2172.html |archive-date=13 June 2007 |url-status=dead }}&lt;/ref&gt;&lt;ref&gt;{{cite web |url=https://data.worldbank.org/indicator/SI.POV.GINI?locations=DZ |title=GINI index (World Bank estimate) |publisher=World Bank |access-date=24 February 2019 |archive-url=https://web.archive.org/web/20181118143415/https://data.worldbank.org/indicator/SI.POV.GINI?locations=DZ |archive-date=18 November 2018 |url-status=live }}&lt;/ref&gt;
+| HDI                    = 0.745&lt;!-- number only --&gt;
+| HDI_year               = 2021 &lt;!-- Please use the year to which the data refers, not the publication year --&gt;
+| HDI_change             = increase&lt;!-- increase/decrease/steady --&gt;
+| HDI_ref                = &lt;ref name=&quot;UNHDR&quot;&gt;{{cite book|title=Human Development Report 2021-22 Uncertain Times, Unsettled Lives: Shaping Our Future in an Uncertain World|date=8 September 2022|publisher=United Nations Development Programme|pages=289–292|url=https://hdr.undp.org/system/files/documents/global-report-document/hdr2021-22pdf_1.pdf |archive-url=https://ghostarchive.org/archive/20221009/https://hdr.undp.org/system/files/documents/global-report-document/hdr2021-22pdf_1.pdf |archive-date=2022-10-09 |url-status=live|access-date=10 September 2022}}&lt;/ref&gt;
+| HDI_rank               = 91st
+| currency               = [[Algerian dinar]]
+| currency_code          = DZD
+| time_zone              = [[Central European Time|CET]]
+| utc_offset             = +1
+| date_format            = dd/mm/yyyy
+| drives_on              = right
+| calling_code           = [[Telephone numbers in Algeria|+213]]
+| cctld                  = [[.dz]]&lt;br /&gt;الجزائر.
+| today                  = 
+}}
+{{Contains special characters|Tifinagh}}
+
+'''Algeria''',{{efn|{{IPAc-en|audio=En-Algeria-pronunciation.ogg|æ|l|ˈ|dʒ|ɪər|i|ə}} {{respell|al|JEER|ee|ə}}; {{Lang-ar|الجزائر|al-Jazāʾir}}, {{IPA-ar|al.d͡ʒazaːʔir|}}; {{Lang-fr|Algérie}}}} officially the '''People's Democratic Republic of Algeria''', is a country in [[North Africa]]. Algeria is bordered to [[Algeria–Tunisia border|the northeast]] by [[Tunisia]]; to [[Algeria–Libya border|the east]] by [[Libya]]; to [[Algeria–Niger border|the southeast]] by [[Niger]]; to [[A
+
+{{Short description|none}}
+{{DISPLAYTITLE:List of ''Atlas Shrugged'' characters}}
+This is a list of characters in [[Ayn Rand]]'s 1957 novel ''[[Atlas Shrugged]].''
+
+
+{{short description|Academic field within biology}}
+{{redirect|Crop Science|the journal|Crop Science (journal)|the company|Bayer CropScience}}
+{{more citations needed|date=March 2018}}
+{{Use dmy dates|date=June 2013}}
+{{Agriculture|related}}
+
+'''Agricultural science''' (or '''agriscience''' for short&lt;ref&gt;{{cite encyclopedia |title=Agriscience {{!}} Meaning &amp; Definition for UK English |encyclopedia=[[Oxford Dictionary of English]] |url=https://www.lexico.com/definition/agriscience|archive-url=https://web.archive.org/web/20220220064428/https://www.lexico.com/definition/agriscience|url-status=dead|archive-date=20 February 2022|access-date=2022-02-20 |publisher=[[Oxford University Press]] via [[Lexico]]|language=en}}&lt;/ref&gt;) is a broad multidisciplinary field of [[biology]] that encompasses the parts of exact, natural, economic and [[social science]]s that are used in the practice and understanding of [[agriculture]]. Professionals of the agricultural science are called agricultural scientists or [[agriculturists]].
+
+
+{{Short description|Scientific study of humans, human behavior, and societies}}
+{{Use dmy dates|date=January 2020}}
+{{about|the study of humans|the study of human origins|Anthropogeny}}
+{{other uses}}
+[[File:Antropologo social.jpg|thumb|upright=1.35|An anthropologist with [[Indigenous peoples of the Americas|indigenous American people]]]]
+{{Anthropology}}
+
+'''Anthropology''' is the [[Science|scientific study]] of humanity, concerned with [[human behavior]], [[human biology]], [[cultures]], [[society|societies]], and [[linguistics]], in both the present and past, including [[Homo|past human species]].&lt;ref name=&quot;oed&quot;&gt;{{cite web | title=anthropology | url=https://www.merriam-webster.com/dictionary/anthropology | work=Merriam-Webster.com | publisher=Merriam-Webster | access-date=16 September 2020 | archive-date=22 August 2020 | archive-url=https://web.archive.org/web/20200822080347/https://www.merriam-webster.com/dictionary/anthropology | url-status=live }}&lt;/ref&gt;&lt;ref name=&quot;eb&quot;&gt;{{cite encyclopedia | url=https://www.britannica.com/EBchecked/topic/27505/anthropology | title=anthropology | encyclopedia=Encyclopædia Britannica | access-date=23 March 2015 | date= | archive-date=15 April 2015 | archive-url=https://web.archive.org/web/20150415001228/https://www.britannica.com/EBchecked/topic/27505/anthropology | url-status=live }}&lt;/ref&gt;&lt;ref name=&quot;aaa&quot;&gt;{{cite web | title=What is Anthropology? | url=https://www.americananthro.org/AdvanceYourCareer/Content.aspx?ItemNumber=2150 | publisher=[[American Anthropological Association]] | access-date=10 August 2013 | archive-date=16 February 2016 | archive-url=https://web.archive.org/web/20160216033701/http://www.americananthro.org/AdvanceYourCareer/Content.aspx?ItemNumber=2150 | url-status=live }}&lt;/ref&gt; [[Social anthropology]] studies patterns of behavior, while [[cultural anthropology]] studies cultural meaning, including norms and values.&lt;ref name=&quot;oed&quot; /&gt;&lt;ref name=&quot;eb&quot; /&gt;&lt;ref name=&quot;aaa&quot; /&gt; A portmanteau term [[sociocultural anthropology]] is commonly used today.&lt;ref&gt;{{Cite web|title=Sociocultural Anthropology and Ethnography {{!}} Department of Anthropology|url=https://anthropology.unc.edu/graduate-program/programs-and-concentrations/sociocultural-anthropology-and-ethnography/|access-date=2021-09-25|language=en-US}}&lt;/ref&gt; [[Linguistic anthropology]] studies how language influences social life. [[Biological anthropology|Biological or physical anthropology]] studies the biological development of humans.&lt;ref name=&quot;oed&quot; /&gt;&lt;ref name=&quot;eb&quot; /&gt;&lt;ref name=&quot;aaa&quot; /&gt;
+
+[[Archaeology|Archaeological anthropology]], often termed as &quot;anthropology of the past,&quot; studies human activity through investigation of physical evidence.&lt;ref&gt;{{Cite web|date=2017-07-12|title=Archaeological Anthropology|url=https://uapress.arizona.edu/book/archaeological-anthropology|access-date=2021-09-25|website=UAPress|language=en-US}}&lt;/ref&gt;&lt;ref&gt;{{Cite web|title=Archaeological Anthropology|url=http://egyankosh.ac.in/bitstream/123456789/65851/1/Block-1.pdf&amp;ved=2ahUKEwit8-Cgi5rzAhV16XMBHSbnCM8QFnoECCAQBg&amp;usg=AOvVaw0kp6nF6FhwDYkbn7rFkHNs |archive-url=https://ghostarchive.org/archive/20221009/http://egyankosh.ac.in/bitstream/123456789/65851/1/Block-1.pdf&amp;ved=2ahUKEwit8-Cgi5rzAhV16XMBHSbnCM8QFnoECCAQBg&amp;usg=AOvVaw0kp6nF6FhwDYkbn7rFkHNs |archive-date=2022-10-09 |url-status=live|access-date=2021-09-25}}&lt;/ref&gt; It is considered a branch of anthropology in [[North America]] and [[Asia]], while in [[Europe]], [[archaeology]] is viewed as a discipline in its own right or grouped under other related disciplines, such as [[history]] and [[palaeontology]].&lt;ref&gt;{{cite web | url=https://www.britannica.com/science/paleoanthropology | title=Paleoanthropology &amp;#124; Britannica }}&lt;/ref&gt;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[[File:Proto-semiticA-01.svg|20px|Proto-Sinaitic 'alp]]
-
-
-
-
-
-
-[[File:Moundville Archaeological Site Alabama.jpg|thumb|left|The [[Moundville Archaeological Site]]
-
-[[File:Achilles fighting against Memnon Leiden Rijksmuseum voor Oudheden.jpg|thumb|260px|Ancient Greek polychromatic [[Ancient Greek vase painting|pottery painting]]
-
-[[File:Union army cpt rank insignia.jpg|35px]]
-[[File:20160518 092 mieza nympheum.jpg|thumb|left|School of Aristotle in [[Mieza, Macedonia|Mieza]]
-
-
-[[File:DSC 7227 Музей кино.jpg|thumb|right|200px|Plaster War-time Oscar plaque (1943), State Central Museum of Cinema, Moscow [[:ru:Государственный центральный музей кино|(ru)]]
-
-
-
-
-[[File:Belisaire demandant l'aumone Jacques-Louis David.jpg|thumb|Giving [[alms]]
-
-[[File:Pola Negri by Ayn Rand cover.jpg|thumb|upright|alt=Book cover with black-and-white drawings and text in Russian|Rand's first published work was a monograph in Russian about actress Pola Negri.]]
-[[File:Villeneuve-d'Ascq - IUT A - Alain Connes - 3.jpg|thumb|Alain Connes at a conference in 2012 in [[Villeneuve-d'Ascq]]
-
-
-
-[[File:National anthem of Algeria, by the U.S. Navy Band.oga]]
-
-
-[[File:Antropologo social.jpg|thumb|upright=1.35|An anthropologist with [[Indigenous peoples of the Americas|indigenous American people]]
-[[File:Norman Borlaug.jpg|thumb|200px|Norman Borlaug, father of the [[Green Revolution]]
-[[File:Aurora consurgens zurich 044 f-21v-44 dragon-pot.jpg|thumb|upright=1.4|Depiction of an [[Ouroboros]]
-
-[[File:IAU 2006 General Assembly- Result of the IAU Resolution Votes (iau0603g).jpg|thumb|upright=1.5|A voting session is conducted in 2006 [[International Astronomical Union]]
-
-[[File:ASCII1963-infobox-paths.svg|thumb|upright=1.25|right|ASCII (1963). [[Control Pictures]]
-
-
-[[File:Prof. Stampfer's Stroboscopische Scheibe No. X.gif|thumb|''Prof. Stampfers Stroboscopische Scheibe No. X'' (1833)]]
-[[File:Apollo, God of Light, Eloquence, Poetry and the Fine Arts with Urania, Muse of Astronomy - Charles Meynier.jpg|thumb|''Apollo, God of Light, Eloquence, Poetry and the Fine Arts with Urania, Muse of Astronomy'' (1798) by [[Charles Meynier]]
-[[File:Gold medal olympic.svg|15px]]
-
-[[File:AustroAsiatic tree Peiros2004.png|thumb|upright=2.27]]
-
-[[File:Afroasiatic 6-Family Diagram.svg|thumb|A diagram of the six widely recognized branches of the Afroasiatic family, including some of the larger or more culturally significant languages in each branch.]]
-[[File:El Gran Carlemany.ogg]]
-
-[[File:Comparison mean median mode.svg|thumb|300px|Comparison of two [[log-normal distribution]]
-[[File:Oldafclogo.JPG|thumb|right|150px|Original American Football Conference logo, based on the AFL logo with blue stars]]
-
-
-[[File:Animal Farm artwork.jpg|thumb|Squealer sprawls at the foot of the end wall of the big barn where the Seven Commandments were written (ch. viii) – preliminary artwork for a 1950 strip cartoon by [[Norman Pett]]
-[[File:Biofluorescence in Ceratophrys cranwelli - 41598 2020 59528 Fig2-bottom (cropped).png|thumb|250px|Many amphibians—like this ''[[Ceratophrys cranwelli]]
-
-[[File:Alaskan State Anthem.mp3|center]]
-
-[[File:Vavilov-centers updated.jpg|thumb |upright=1.35 |{{leftlegend|#000000|[[Center of origin|Centres of origin]]
-[[File:LEONARD HUXLEY 1860-1933 JULIAN HUXLEY 1887-1975 ALDOUS HUXLEY 1894-1963 Men of Science and Letters lived here.jpg|thumb|right|[[English Heritage]]
-
-
-
-[[File:Gephyrocapsa oceanica color.jpg|thumb|False-color [[scanning electron micrograph]]
-[[File:Anova, no fit..png|thumb|No fit: Young vs old, and short-haired vs long-haired]]
-
-
-[[File:D.C. Court of Appeals.JPG|thumb|The [[District of Columbia Court of Appeals|Court of Appeals]]
-
-
-[[File:High Court of Australia (6769096715).jpg|thumb|right|400px|The [[High Court of Australia]]
-
-
-[[File:Ministries trial arraignment.webm|thumb|Arraignment at the [[Ministries trial|Ministries Trial]]
-[[File:Americathebeautiful.jpg|thumb|upright|left|Commemoration plaque atop Pikes Peak in July 1999]]
-[[File:Stricker Handbike.jpg|thumb|Wheelchair propelled by attached [[handcycle]]
-
-[[File:Abacus_(PSF).png|thumb|[[Bi-quinary coded decimal]]
-
-
-[[File:Zn reaction with HCl.JPG|thumb|[[Zinc]]
-[[File:WilhelmWeitling.jpg|thumb|[[Wilhelm Weitling]]
-
-[[File:Bitumen.jpg|300px|thumb|Natural bitumen from the [[Dead Sea]]
-
-
-
-
-
-
-
-
-[[File:John F. Kennedy speaks at Rice University.jpg|thumb|left|upright|alt=Kennedy, in a blue suit and tie, speaks at a wooden podium bearing the seal of the President of the United States. Vice President Lyndon Johnson and other dignitaries stand behind him.|President [[John F. Kennedy]]
-
-[[File:Apollo 8 Flown Silver Robbins Medallion (SN-264).jpg|thumb|Apollo 8 space-flown silver [[NASA space-flown Robbins medallions of the Apollo missions|Robbins medallion]]
-[[File:Jonathan Swift by Charles Jervas detail.jpg|thumb|upright|Jonathan Swift]]
-[[File:STS41B-35-1613 - Bruce McCandless II during EVA (Retouched).jpg|upright=1.5|thumb|[[NASA]]
-
-[[File:Petalite.jpg|thumb|alt=A sample of petalite|[[Petalite]]
-
-
-[[File:Phoenician alphabet.svg|thumb|The [[Phoenician alphabet]]
-[[File:Atomic number depiction.svg|thumb|300px|right|An explanation of the superscripts and subscripts seen in atomic number notation. Atomic number is the number of protons, and therefore also the total positive charge, in the atomic nucleus.]]
-[[File:Vesalius-copy.jpg|thumb|350px|One of the large, detailed illustrations in [[Andreas Vesalius]]
-
-
-[[File:In Quest of Univeral Logic HypoSyll.png|right|thumbnail|400px|There are four possible forms of mixed [[Hypothetical syllogism|hypothetical syllogisms]]
-
-
-
-[[File:Alice 05a-1116x1492.jpg|thumb|250px|alt=Drawing of the back an anthropomorphic caterpillar, seated on a toadstool amid grass and flowers, blowing smoke from a hookah; a blonde girl in an old-fashioned frock is standing on tiptoe to peer at the caterpillar over the toadstool's edge|Sir [[John Tenniel]]
-[[File:Tarkovsky vgik.jpg|thumb|upright|left|Monument to Andrei Tarkovsky at entrance of [[Gerasimov Institute of Cinematography]]
-
-
-
-[[File:William Bouguereau - El primer duelo.jpg|thumb|right| ''[[The First Mourning]]
-
-
-[[File:Greenland_Albedo_Change.png|thumb|Albedo change in [[Greenland]]
-
-
-
-
-[[File:Aardvark Skeleton.jpg|thumb|Skeleton of an aardvark]]
-[[File:The life of animals (Colored Plate 4) (proteles cristatus).jpg|60 px]]
-
-
-
-
-[[File:Adobe wall (detail) 1.jpg|thumb|Adobe wall (detail) in Bahillo, [[Palencia]]
-[[File:Whitewater Rafting - geograph.org.uk - 1530594.jpg|thumb|River [[rafting]]
-
-
-[[File:Aruba Dushi Tera instrumental.ogg]]
-[[File:Articles of Confederation 13c 1977 issue.JPG|thumb|right|upright=.90|alt=Historical 13-cent postage stamp commemorating the Articles of Confederation 200th anniversary|1977 13-cent U.S. [[Postage stamp]]
-[[File:Populous Asia (physical, political, population) with legend.jpg|thumb|Map of the most populous part of Asia showing physical, political, and population characteristics, as per 2018]]
-
-
-[[File:Atlantic Ocean to Africa.ogv|thumb|This video was taken by the crew of [[Expedition 29]]
-
-[[File:Gdansk Schopenhauer House.jpg|thumb|upright|Schopenhauer's birthplace house, ul. Św. Ducha (formerly ''Heiligegeistgasse'')]]
-[[File:Angola (orthographic projection).svg|frameless]]
-[[File:Angola_population.svg|350px|alt=|thumb|Angolas population between 1960 and 2017.]]
-
-[[File:GDP per capita development of Angola.svg|thumb|Change in per capita GDP of Angola, 1950–2018. Figures are inflation-adjusted to 2011 International dollars.]]
-[[File:Cargamento de mineirios, Namibe.JPG|thumb|Ship loading minerals at Moçâmedes harbour, Angola]]
-[[File:Angolan soldiers training in Russia.png|300px|right|thumb|Angolan Second Lieutenant, First Lieutenant, and Captain training in Russia in August 2015]]
-[[File:Diplomatic_relations_of_Angola.svg|frameless|425x425px]]
-[[File:Union Army brigadier general rank insignia.svg|40px]]
-[[File:Android Times Tue Dec 22 1795.jpg|thumb|Early example of the term ''androides'' used to describe human-like mechanical devices, ''[[London Times]]
-
-[[File:Alberta Topo Labeled 90 dpi.png|thumb|400px|A topographic map of Alberta, showing cities, towns, municipal district (county) and rural municipality borders, and natural features]]
-
-
-
-[[File:Anatomia dei pesci.jpg|thumb|300px|left|{{center|Anatomy of a typical ray-finned fish ([[cichlid]]
-[[File:Albert Einstein at the age of three (1882).jpg|thumb|upright|left|alt=A young boy with short hair and a round face, wearing a white collar and large bow, with vest, coat, skirt, and high boots. He is leaning against an ornate chair.|Einstein in 1882, age&amp;nbsp;3]]
-
-[[File:Afghanistan (orthographic projection).svg|upright=1.15|frameless]]
-[[File:Coat of arms of Albania.svg|60px]]
-[[File:Allah3.svg|thumb|right|The word 'Allah' in [[Islamic calligraphy|Arabic calligraphy]]
-
-[[File:Azərbaycan marşı instrumental.ogg]]
-[[File:Hans Oberndorfer 2.JPG|thumb|Amateur astronomer recording observations of the sun.]]
-
-
-
-[[File:Ueshiba Mitsuteru (Nippon Budokan, 2017).webm|thumb|[[Mitsuteru Ueshiba]]
-
-
-[[File:Art-portrait-collage 2.jpg|thumb|upright=1.5|Clockwise from upper left: an 1887 [[self-portrait]]
-
-
-
-[[File:Vacuum-aspiration (single).svg|thumb|A vacuum aspiration abortion at eight weeks gestational age (six weeks after fertilization).&lt;br /&gt;'''1:''' [[Amniotic sac]]
-
-
-[[File:CONGRESSOWN.jpg|15px]]
-[[File:Diagram for the computation of Bernoulli numbers.jpg|thumb|[[Ada Lovelace]]
-
-
-
-[[File:Herb Abdank.svg|thumb|right|160px|Alfred Korzybski's family coat-of-arms (see [[Abdank coat of arms]]
-[[File:Listerine products.jpg|thumb|Range of mouthwashes by [[Listerine]]
-
-[[File:Archaeological Site of Pella by Joy of Museums.jpg|thumb|255px|Archaeological site of [[Pella]]
-[[File:Hippeastrum-seeds.jpg|thumb | [[Seed]]
-[[File:Moon and Asteroids 1 to 10.svg|thumb|left|Sizes of the first ten discovered asteroids, compared to the Moon]]
-[[File:Vasil Levski's Affidavit.jpg|thumb|[[Vasil Levski]]
-[[File:044 Dracunculus vulgaris at Akrotiri peninsula, Crete, Greece.jpg|thumb|220px|Snake lily (''[[Dracunculus vulgaris]]
-
-
-
-
-[[File:Sidney Hall - Urania's Mirror - Aquarius, Piscis Australis &amp; Ballon Aerostatique.jpg|left|thumb|upright=1.25|A representation of Aquarius printed in 1825 as part of ''[[Urania's Mirror]]
-[[File:Sidney Hall - Urania's Mirror - Aries and Musca Borealis.jpg|thumb|left|300px|Aries and [[Musca Borealis]]
-[[File:Anime cell 1917.jpg|thumb|right|A frame from ''[[Namakura Gatana]]
-[[File:Safaitic script with a figure of a camel on a red sandstone fragment, from es-Safa, currently housed in the British Museum.jpg|250px|thumb|alt=|[[Safaitic]]
-[[File:Museum of Anatolian Civilizations 1320259 nevit.jpg|180px|thumb|[[Seated Woman of Çatalhöyük]]
-
-
-[[File:William Hitchcock with boy and pony, c. 1900.jpg|thumb|upright|William Hitchcock, probably with his first son, William, outside the family shop in London, {{circa}} 1900; the sign above the store says &quot;W.&amp;nbsp;Hitchcock's&quot;. The Hitchcocks used the pony to deliver groceries.]]
-[[File:Anaconda Redpath museum.jpg|thumb|left|upright=2.5|Skeleton at the [[Redpath Museum]]
-
-
-
-
-
-
-
-
-[[File:Oesterreichische Schulschrift 1995, 2 - Schraegschrift.jpg|right|thumb|{{lang|de|Schulschrift}} (1995), an Austrian primary-school handwriting style]]
-[[File:2006-07 altaj belucha.jpg|thumb|The [[Altai Mountains]]
-
-
-[[File:Axiome du choix.png|thumb|250px|Illustration of the axiom of choice, with each set ''S''&lt;sub&gt;''i''&lt;/sub&gt; represented as a jar and its elements represented as marbles. Each element ''x''&lt;sub&gt;''i''&lt;/sub&gt; is represented as a marble on the right. Colors are used to suggest a functional association of marbles after adopting the choice axiom. The existence of such a choice function is in general independent of ZF for collections of infinite cardinality.]]
-[[File:Eugene Ferdinand Victor Delacroix Attila fragment.jpg|thumb|300px|A painting of Attila riding a pale horse, by French Romantic artist [[Eugène Delacroix]]
-[[File:Burgess1.jpg|right|thumb|Burgess in 1986]]
-[[File:Location of the Aegean Sea.png|thumb|The extent of the Aegean Sea on a map of the [[Mediterranean Sea]]
-[[File:Strykjärnet Motala ström Norrköping april 2005.jpg|thumb|200px|''Styrkjärn'' in central Norrköping]]
-[[File:Amsterdam (6578772447).jpg|thumb|left|The [[Oude Kerk, Amsterdam|Oude Kerk]]
-[[File:Alfred Nobel young.jpg|thumb|Alfred Nobel at a young age in the 1850s]]
-[[File:Weichsel-Würm-Glaciation.png|thumb|right|Europe during the [[Last Glacial Maximum]]
-[[File:Cessna 172S Skyhawk ‘G-JMKE’ (45077563364).jpg|thumb|The [[Cessna 172]]
-[[File:Audi Typ E (1923).jpg|thumb|1923 [[Audi Type E]]
-[[File:Blaeu - Atlas of Scotland 1654 - ABERDONIA &amp; BANFIA - Aberdeenshire and Banffshire.jpg|300px|thumb|left|Blaeu – Atlas of Scotland 1654 – &lt;br /&gt;ABERDONIA &amp; BANFIA]]
-
-[[File:The Bell Homestead National Historic Site, Brantford, Ontario, Canada, incl. Visitor Ctr, Henderson Home, Carriage House and Dreaming Place IMG 0039 09.JPG|thumb|[[Bell Homestead National Historic Site|Melville House]]
-
-
-[[File:Apple Garage.jpg|thumb|In 1976, [[Steve Jobs]]
-
-[[File:2 2011-09-29 WarnerBldg Facade SP-Pano1.jpg|thumb|left|The historic [[Spanish Colonial Revival]]
-[[File:US Secession map 1861.svg|thumb|upright=1.15|{{center|'''Status of the states, 1861'''}} {{legend|#A40000| Slave states that seceded before April 15, 1861}} {{legend|#EF2929| Slave states that seceded after April 15, 1861}} {{legend|#FCE94F| Border Southern states that permitted slavery but did not secede (both KY and MO had dual competing Confederate and Unionist governments)}} {{legend|#204A87| Union states that banned slavery}}
-{{legend|#D3D7CF| Territories}}|alt=Map of U.S. showing two kinds of Union states, two phases of secession and territories]]
-[[File:Dinar of Muhammad Alp Arslan, AH 455-465.jpg|thumb|right|Coin minted in the name of Alp Arslan with the title [[Shahanshah]]
-[[File:Andy Warhol's childhood home in Pittsburgh, Pennsylvania.jpg|thumb|upright|left|Warhol's childhood home. 3252 Dawson Street, [[Oakland (Pittsburgh)|South Oakland]]
-[[File:All Gizah Pyramids.jpg|thumb|upright=1.25|The [[Giza pyramid complex|pyramids of Giza]]
-
-[[File:Photo during the shooting of The Men Who Tread on the Tiger's Tail 2, 1945.jpg|thumb|right|Filming of ''[[The Men Who Tread on the Tiger's Tail]]
-
-[[File:devnag ka.png]]
-[[File:ALS clinical picture.png|thumb|325x325px|A man with [[amyotrophic lateral sclerosis]]
-[[File:ABBA Logo 1.jpg|First logo for the band|thumb|right|220x220px]]
-
-[[File:Arabic_Language.svg|thumb|''Al-ʻArabiyya'', meaning &quot;Arabic&quot;: an example of the Arabic script, which is an impure abjad]]
-
-
-[[File:Apple Newton-IMG 0454-cropped.jpg|250px]]
-[[File:Anglican Communion logo.png|70px]]
-
-[[File:Fantasy book 1947 v1 n2.jpg|thumb|right|Van Vogt's &quot;Ship of Darkness&quot; was the cover story in the second issue of ''Fantasy Book'' in 1948.]]
-[[File:Anna Kournikova DF-SD-04-04709.jpg|thumb|left|upright|Kournikova practices her [[backhand]]
-[[File:Charles Darwin seated crop.jpg|thumb|upright|[[Charles Darwin]]
-[[File:SbAs lattice.png|thumb|left|Crystal structure common to [[antimony|Sb]]
-[[File:Argon ice 1.jpg|upright|thumb|left|A small piece of rapidly melting solid argon]]
-[[File:Berkeley 60-inch cyclotron.jpg|thumb|left|The 60-inch cyclotron at the Lawrence Radiation Laboratory, [[University of California, Berkeley]]
-[[File:Antimon.PNG|thumb|left|alt=A clear vial containing small chunks of a slightly lustrous black solid, labeled &quot;Sb&quot;.|A vial containing the black [[allotrope]]
-[[File:Uraninite-39029.jpg|upright=0.70|thumb|[[Uraninite]]
-[[File:A New System of Chemical Philosophy fp.jpg|right|thumb|Various atoms and molecules as depicted in [[John Dalton]]
-[[File:040719 172 dorset marnhull2.jpg|upright=1.25|thumb| Modern mechanised agriculture permits large [[field (agriculture)|fields]]
-[[File:Hydrogen-astatide-calculated-3D-sf.svg|thumb|left|upright=0.6|[[Hydrogen astatide]]
-
-
-
-[[File:Aluminium Atomic lattice.png|alt=M. Tunes &amp; S. Pogatscher, Montanuniversität Leoben 2019 No copyrights =)|left|thumb|upright=1.2|High-resolution [[Scanning transmission electron microscopy|STEM]]
-
-
-[[File:Aegeansea.jpg|alt=|thumb|The [[Aegean Sea]]
-[[File:AAMarkov.jpg|right|thumb|alt=Markov|Markov]]
-[[File:Mark Twain, Brady-Handy photo portrait, Feb 7, 1871, cropped.jpg|thumb|150px|[[Mark Twain]]
-[[File:The Scream by Edvard Munch, 1893 - Nasjonalgalleriet.png|thumb|262px|[[Edvard Munch]]
-
-
-
-[[File:Los Angeles, California. Lockheed Employment. A worried applicant waiting to be interviewed - NARA - 532210.jpg|thumb|right|A job applicant with a facial expression that is indicative of anxiety]]
-
-[[File:Alumni rugby infantil 1952.jpg|thumb|Youth team of Alumni in 1952]]
-[[File:A. A. Milne plaque.jpg|thumb|right|230px|Plaque commemorating Milne’s birthplace in [[Kilburn, London]]
-
-[[File:Club Toffler in Rotterdam.jpg|alt=&quot;The great growling engine of change - technology&quot;|thumb|A quote of Alvin Toffler at the entrance of the club named after him in Rotterdam, the Netherlands]]
-[[File:Amazing Spider-Man 139.jpg|thumb|''The Amazing Spider-Man'' No. 139 (Dec. 1974): Spider-Man vs. The Grizzly (1st appearance).]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[[File:Antigua and Barbuda National Anthem.ogg]]
-[[File:Azincourt.jpg|250px|right|thumb|Commemorative monument near the battlefield]]
-[[File:Bundesarchiv Bild 183-V00555-3, Obersalzberg, Albert Speer, Adolf Hitler.jpg|thumb|left|upright|Speer shows Hitler a project at [[Obersalzberg]]
-[[File:Neuron.svg|thumb|A typical myelinated axon]]
-
-[[File:Bidens flwr.jpg|thumb|right|300px|A typical Asteraceae flower head showing the (five) individual ray florets and the (approximately 16) disk florets of a specimen of (''[[Bidens torta]]
-
-[[File:AsokaKandahar.jpg|thumb|left|The [[Kandahar Bilingual Rock Inscription]]
-
-[[File:Clint Eastwood and Marianne Koch in &quot;A Fistful of Dollars&quot; (1964).jpg|thumb|An example of a &quot;cowboy shot&quot; in ''[[A Fistful of Dollars]]
-[[File:Acute hemorrhagic Leukoencephalitis in a patient with Multiple sclerosis (MRI).png|thumb|407x407px|Acute hemorrhagic Leukoencephalitis in a patient with Multiple sclerosis.]]
-
-
-
-[[File:Gluten ataxia eng.ogg|thumb|A male with gluten ataxia: previous situation and evolution after three months of a gluten-free diet]]
-[[File:August Derleth in his library.jpg|thumb|Derleth in 1962]]
-[[File:Miniature of Ada Byron.jpg|thumb|Ada Byron, aged four|alt=Ada Byron, portrait at age four]]
-
-[[File:Saslong udu da Sacun ora.jpg|thumb|upright=1.15|The [[Dolomites]]
-
-[[File:Agatha Christie by Douglas John Connah.jpg|thumb|left|upright|Portrait of Christie entitled ''Lost in Reverie'', by Douglas John Connah, 1894]]
-[[File:Algiers The University (GRI).jpg|thumb|alt=A postcard showing the University of Algiers|A 20th-century postcard of the University of Algiers]]
-[[File:Library Walk 5.JPG|thumb|&quot;... Dr Rieux resolved to compile this chronicle ...&quot;]]
-
-
-
-
-[[File:2011-07-26 Belgique - Ellezelles - Hercule Poirot 002.jpg|thumb|Statuette of Poirot in [[Ellezelles]]
-[[File:Jane Marple in Case Closed.jpg|thumb|Marple, as she appeared in volume 20 of ''[[Case Closed (manga)|Case Closed]]
-[[File:Breviarium Grimani - April.jpg|thumb|April, Brevarium Grimani, fol. 5v (Flemish)]]
-[[File:Reeve and Serfs.jpg|thumb|Depiction of [[harvesting]]
-[[File:Moses and Aron before Paraoh.jpg|thumb|Moses and Aaron before Pharaoh]]
-
-
-
-
-[[File:Alcohol.png|upright=0.8|thumb|right|[[Ball-and-stick model]]
-
-
-[[File:Elizabeth Thompson our-escort-into-glenaragh.jpg|thumbnail|''Our Escort into Glenaragh'', from the sketch book and diary of [[Elizabeth Thompson]]
-
-[[File:Howl and Other Poems (first edition).jpg|thumb|First edition cover of Ginsberg's landmark poetry collection, ''[[Howl and Other Poems]]
-
-[[File:Anatoly Karpov (1967).jpg|thumb|Karpov in 1967]]
-[[File:Flag of Anarcho-capitalism.svg|thumb|alt=A two-colored flag, split diagonally, with yellow at the top and black at the bottom|The black and gold flag, a symbol of anarchism (black) and capitalism (gold) which according to Murray Rothbard was first flown in 1963 in [[Colorado]]
-[[File:Parliament of Antigua and Barbuda.JPG|250px|thumbnail|left|The parliament building in St. John's.]]
-[[File:1894 paris-rouen - albert lemaître (peugeot 3hp) 1st.jpg|thumb|[[Albert Lemaître]]
-
-[[File:KaysersbergAS.jpg|thumb|upright|Albert Schweitzer's birthplace in [[Kaysersberg]]
-[[File:Ehrentribuene Dionysostheater Athen.jpg|thumb|200px|[[Theatre of Dionysus]]
-
-[[File:Jean-baptiste Say.jpg|thumb|left|upright=0.7|[[Jean-Baptiste Say]]
-[[File:Abszess.jpg|thumb|An abscess]]
-
-
-
-[[File:Scale model of Aarhus.jpg|thumb|right|upright=1|Model of the fortified Viking town Aros (late 900s), north is up]]
-
-[[File:Alexis Carrel (1912).jpg|thumb|Carrel in 1912]]
-[[File:Non bezoekt kerkhof met Allerzielen - Nun visiting graveyard at All Souls' Day (6288419977).jpg|thumb|Nun visiting a graveyard at All Souls' Day]]
-[[File:Anatole France house, Villa Said.jpg|thumb|left|140px|France's home, 5 {{lang|fr|[[villa Saïd]]
-[[File:Amateur_footballer.jpg|thumb|Amateur [[association football]]
-[[File:Gide 1893.jpg|thumb|left|150px|Gide in 1893]]
-
-
-
-
-[[File:Almond blossom02 aug 2007.jpg|thumb|Flowering (sweet) almond tree]]
-[[File:Elps-slr.svg|center|500px]]
-[[File:A Royal Antigua and Barbuda Defense Force Coast Guard 380X Defender All-Weather Interceptor high-speed boat breeches the wake of another vessel May 24, 2013, during the maritime operations phase of Tradewinds 130524-N-HP195-034.jpg|thumb|right|200px|380X Defender of the ABDF Coast Guard during the &quot;Tradewinds 2013&quot; joint training-exercise]]
-
-[[File:Tree map export 2009 Azerbaijan.jpeg|thumb|left|Graphical depiction of Azerbaijan Product's product exports (2009)]]
-[[File:Antigua and Barbuda single age population pyramid 2020.png|350px|alt=|thumb|upright=1.4|Antigua and Barbuda [[population pyramid]]
-[[File:Statuten der Antisemiten-Liga.jpg|thumb|1879 statute of the Antisemitic League]]
-
-[[File:Azerbaijan map of Köppen climate classification.svg|thumb|300px|Azerbaijan map of Köppen climate classification zones]]
-
-
-[[File:Diplomatic relations of Azerbaijan.svg|frameless|425x425px]]
-[[File:Two Azerbaijani soldiers 1919.png|thumb|175px|left|Two Azerbaijani soldiers, members of the Guba military unit of Azerbaijan Democratic Republic (1919)]]
-
-[[File:Koppen-Geiger Map ARM present.svg|thumb|300px|Armenia map of [[Köppen climate classification]]
-[[File:Arménie Assemblée nationale 2021.svg]]
-[[File:Armenia single age population pyramid 2020.png|350px]]
-[[File:Trans-100millones-rev.jpg|thumbnail|100 million rubles banknote]]
-[[File:Armenian_Fedayees_1890-1896.jpg|left|thumb|An [[Armenian fedayi]]
-[[File:Yerevan-metro.jpg|thumb|right|Yerevan Metro train]]
-[[File:Diplomatic relations of Armenia.svg|thumb|300px|Nations with which Armenia has diplomatic relations.]]
-
-
-
-
-[[File:Samoa American Demo.png|alt=A rising line graph|thumb|Population in thousands; Data of [[Food and Agriculture Organization|FAO]]
-
-[[File:Figure 13 Canning Production Line at StarKist Samoa Cannery (49995644721) (cropped).jpg|thumb|A [[StarKist]]
-
-
-[[File:Transoxiana 8th century.svg|thumb|right|300px|alt=Geophysical map of southern Central Asia (Khurasan and Transoxiana) with the major settlements and regions|Map of [[Khurasan]]
-
-[[File:Adriaen_Van_Ostade_-_L'Analyse_-_PDUT921_-_Musée_des_Beaux-Arts_de_la_ville_de_Paris.jpg|thumb|[[Adriaen van Ostade]]
-[[File:Union Army major general rank insignia.svg|35px]]
-[[File:Amfm3-en-de.gif|thumb|right|250px|Figure 1: An audio signal (top) may be carried by a [[carrier signal]]
-[[File:Ranji 1897 page 143 F. R. Spofforth, the demon bowler.jpg|thumb|upright|[[Fred Spofforth]]
-[[File:Americasnationalgame.jpg|right|thumb]]
-[[File:Santo Domingo de Silos entronizado como obispo, por Bartolomé Bermejo.jpg|thumb|upright|St. [[Dominic of Silos]]
-[[File:Augustin Fresnel buste Broglie.jpg|thumb|Monument to Augustin Fresnel on the facade of his birthplace at 2&amp;nbsp;Rue Augustin Fresnel, [[Broglie, Eure|Broglie]]
-[[File:A321 final assembly (9351765668).jpg|thumb|An [[Airbus A321]]
-
-
-[[File:Kaurnaland.png|thumb|upright|alt= Area to the east of Gulf St Vincent highlighted|The approximate extent of Kaurna territory, based on the description by Amery (2000).]]
-[[File:Toad Hall at Blackden.JPG|thumb|left|In 1957, Garner purchased and began renovating Toad Hall at Blackden, Cheshire]]
-
-
-[[File:Klein-automorphism.svg|thumb|right|400px|An [[w:Automorphism|automorphism]]
-
-[[File:GFO taxonomy tree.png|thumb|An ontology represents knowledge as a set of concepts within a domain and the relationships between those concepts.]]
-[[File:Isosceles right triangle with legs length 1.svg|thumb|200px|The square root of 2 is an algebraic number equal to the length of the [[hypotenuse]]
-[[File:Accordionist.jpg|thumb|upright=1.2|An accordionist]]
-[[File:Presocratic graph.svg|thumb|250px|right|Graphical relationship among the various pre-Socratic [[philosopher]]
-[[File:Anaximander Mosaic (cropped, with sundial).jpg|thumb|left|Ancient Roman mosaic from Johannisstraße, [[Trier]]
-
-[[File:Masaccio, cappella brancacci, san pietro in cattedra. ritratto di filippo brunelleschi.jpg|thumb|upright|[[Filippo Brunelleschi]]
-
-[[File:Schriftprobe Latein 15 Jh.jpg|thumb|upright=1.5|Example of 15th-century [[Latin]]
-[[File:The Temple of Aphrodite, built in the Ionic order in stages during the Roman period (from 1st century BC to 2nd century AD) and later converted into a Christian basilica, Aphrodisias, Caria, Turkey (20487630885).jpg|thumb|right|upright=1.3|Ruins of the [[Aphrodisias#Temple of Aphrodite|temple of Aphrodite]]
-
-[[File:Symmetric-and-or-antisymmetric.svg|thumb|Symmetric and antisymmetric relations|340x340px]]
-[[File:Idris the prophet.jpg|thumb|A depiction of [[Idris (prophet)|Idris]]
-[[File:Aleister Crowley birthplace.jpg|thumb|alt=2017 photograph of Crowley's birthplace|Aleister Crowley was born as Edward Alexander Crowley at 30 Clarendon Square in Royal Leamington Spa, Warwickshire, on 12 October 1875.]]
-[[File:Thousandau1 space probe.jpg|thumb|Concept art for the [[TAU (spacecraft)|TAU spacecraft]]
-[[File:Akropolis by Leo von Klenze.jpg|thumb|300px|''The Acropolis at Athens'' (1846) by [[Leo von Klenze]]
-
-
-
-
-[[File:Alloy and metal samples - Beryllium-Copper, Inconel, Steel, Titanium, Aluminum, Magnesium.jpg|thumb|300x300px|From left to right: three alloys ([[beryllium copper]]
-
-
-
-[[File:T Jefferson by Charles Willson Peale 1791 2.jpg|thumb|right|200px|[[Thomas Jefferson]]
-
-[[File:Angle.svg|alt=two line bent at a point|thumb|upright=1.5|A green angle formed by two red [[Ray (geometry)|rays]]
-
-[[File:Bohr atom model.svg|thumb|In the Bohr model, the transition of an electron with n=3 to the shell n=2 is shown, where a photon is emitted. An electron from shell (n=2) must have been removed beforehand by ionization]]
-[[File:Lindsay's Wheel of Acoustics.svg|thumb|alt=Lindsay's Wheel of acoustics|upright=1.75|Lindsay's Wheel of Acoustics, which shows fields within acoustics]]
-[[File:American Sign Language ASL.svg|250px|center]]
-
-
-[[File:Tirante el Blanco 1511.jpg|thumb|Title page of the first [[Spanish language|Spanish-language]]
-
-[[File:Alan Turing (5025990183).jpg|thumb|left|upright|[[English Heritage]]
-[[File:Venustransit 2004-06-08 07-44.jpg|thumb|right|Transits of Venus across the face of the Sun were, for a long time, the best method of measuring the astronomical unit, despite the difficulties (here, the so-called &quot;[[black drop effect]]
-[[File:SquareMeterQuadrat.JPG|thumb|right|alt=A square made of PVC pipe on grass|A square metre [[quadrat]]
-[[File:Neon orbitals.png|right|thumb|upright=2|The shapes of the first five atomic orbitals are: 1s, 2s, 2p&lt;sub&gt;''x''&lt;/sub&gt;, 2p&lt;sub&gt;''y''&lt;/sub&gt;, and 2p&lt;sub&gt;''z''&lt;/sub&gt;. The two colors show the phase or sign of the wave function in each region. Each picture is [[domain coloring]]
-[[File:Amino acid generic structure.png|thumb|Structure of a generic α-amino acid in the &quot;neutral&quot; form]]
-[[File:Artist at Porthstinian, Penmaen Dewi, Sir Benfro (Pembrokeshire), Cymru 06.jpg|250px|thumb|An artist at work at [[St Justinian]]
-[[File:Rochester cathedral stained glass 2.jpg|thumb|Jesus Christ supporting an English flag and staff in the crook of his right arm depicted in a stained glass window in [[Rochester Cathedral]]
-[[File:Titian - Diana and Actaeon - Google Art Project.jpg|thumb|''[[Diana and Actaeon (Titian)|Diana and Actaeon]]
-[[File:God Save the King.ogg]]
-[[File:Map athenian empire 431 BC-no.svg|thumb|[[Delian League]]
-
-
-[[File:AshmoreandCartierIslands.png|thumb|left|A map of Ashmore and Cartier Islands]]
-
-
-
-
-
-
-
-
-[[File:Mason overseer.jpg|thumb|150px|left|upright=1.2|An 1875 ''[[Canadian Illustrated News]]
-[[File:Ashoka Rock Edict at Junagadh.jpg|thumb|[[Ashoka's Major Rock Edict]]
-[[File:Amerigo Vespucci (with turban).jpg|thumb|''America'' is named after Italian explorer [[Amerigo Vespucci]]
-
-
-[[File:Ada Lovelace 1838.jpg|right|thumbnail|157px|[[Ada Lovelace|Augusta Ada King]]
-
-[[File:Alfonso_Cuarón_(1998).jpg|thumb|right|250px|Cuarón at the [[Festival Internacional de Cine en Guadalajara|Guadalajara International Film Festival]]
-[[File:Ariusz.JPG|thumb|right|250px|Imagined portrait of Arius; detail of a [[Cretan School]]
-
-[[File:Roman coins denarius Antoninus Pius Marcus Aurelius.jpg|upright=1.35|thumb|[[Denarius]]
-
-[[File:AES (Rijndael) Round Function.png|250px]]
-
-
-
-[[File:WMAP 2010.png|thumb|upright=1.36|[[Wilkinson Microwave Anisotropy Probe|WMAP]]
-
-[[File:Alpha Decay.svg|thumb|240px|right|Visual representation of alpha decay]]
-[[File:Babbages Analytical Engine, 1834-1871. (9660574685).jpg|thumb|Portion of the calculating machine with a printing mechanism of the analytical engine, built by Charles Babbage, as displayed at the Science Museum (London)&lt;ref name=&quot;:1&quot;&gt;{{cite web|url=http://collection.sciencemuseum.org.uk/objects/co62245/babbages-analytical-engine-1834-1871-trial-model-analytical-engines|title=Babbage's Analytical Engine, 1834–1871. (Trial model)|publisher=Science Museum|access-date=23 August 2017}}&lt;/ref&gt;]]
-[[File:RSC 0022 - transparent background.png|thumb|300px|left|A [[denarius]]
-[[File:World-population-in-extreme-poverty-absolute.svg|thumb|upright=1.6|Number of people living in extreme poverty from 1820 to 2015.
-
-{{legend|#70b678|Population not in extreme poverty}}
-{{legend|#da6668|Population living in extreme poverty}}]]
-
-[[File:National Geographic Explorer in fast ice, Antarctica - edit 1.jpg|thumb|A tour boat in fast ice near the coast]]
-
-[[File:AntarcticaRockSurface.jpg|thumb|Antarctica without its ice cover. This map does not consider that sea level would rise because of the melted ice, nor that the landmass would rise by several hundred meters over a few tens of thousands of years after the weight of the ice was no longer depressing the landmass.]]
-
-[[File:William Wyatt Bibb.jpg|75px]]
-
-[[File:Notes et extraits pour servir à l'histoire des croisades au XVe siècle, pp. 126-127 (Jorga, 1915).jpg|thumb|right|upright=1.4|The apocryphal letter of Sultan [[Mehmed II]]
-[[File:Lawson T-2.jpg|left|thumb|Lawson C.2 or T-2]]
-
-
-
-[[File:Antarctica 6400px from Blue Marble.jpg|thumb|right|A satellite composite image of [[Antarctica]]
-
-[[File:Abalone Santo Andre Povoa de Varzim.jpg|thumb|Abalone with a live sponge on its shell in [[Póvoa de Varzim]]
-
-[[File:AmesIowaPopPlot.png|thumb|right|alt=The population of Ames, Iowa from US census data|The population of Ames, Iowa from US census data]]
-[[File:MONTE ROSARVM van DOORSLAER.jpg|thumb|Abbess Joanna van Doorselaer de ten Ryen, Waasmunster [[Roosenberg Abbey]]
-
-
-[[File:CantorEscalier.svg|thumb|right|250px| The [[Cantor function]]
-
-[[File:Maderturm 2.jpg|thumb|Maderturm]]
-
-
-[[File:Jacobus Arminius 02 IV 13 2 0026 01 0309 a Seite 1 Bild 0001.jpg|thumb|right|Portrait of [[Jacobus Arminius]]
-[[File:Alan Parsons Live Project.jpg|alt=|thumb|275x275px|Alan Parsons Live Project, Congress Centrum, Ulm Germany in 2017]]
-[[File:PositronDiscovery.jpg|thumb|A [[cloud chamber]]
-[[File:Benzene Structural diagram.svg|thumb|2D model of a benzene molecule. The carbon &quot;ring&quot; is what makes benzene &quot;aromatic&quot;.]]
-[[File:Gaud%C3%AD_(1910).jpg|thumb|left|upright|Antoni Gaudí in 1910]]
-
-
-[[File:Senanquecloister.jpg|thumb|right|The [[cloister]]
-[[File:Barcelona 193.JPG|thumb|upright|The [[Gaudí House Museum]]
-[[File:Casa Milà obras.jpg|thumb|left|200px|La Casa Milà being built]]
-
-
-
-
-
-
-
-[[File:Semigroup_associative.svg|thumbnail|A binary operation ∗ on the set ''S'' is associative when [[Commutative diagram|this diagram commutes]]
-[[File: Americans with Disabilities Act 1988.jpg|alt=April 28, 1988&quot;A Bill to establish a prohibition of discrimination on the basis of handicap.&quot; Authored by Senator Tom Harkin|thumb|Americans with Disabilities Act of 1988, S. 2346, Page 1&lt;ref&gt;From the George H.W. Bush Presidential Records of the George Bush Presidential Library. Folder Title: Fact Sheet on ADA [Americans of Disabilities Act]. Unrestricted.&lt;/ref&gt;]]
-
-
-
-
-
-[[File:Apple 1 Advertisement Oct 1976.jpg|thumb|left|Introductory advertisement for the Apple I computer]]
-[[File:Apatosaurus scale mmartyniuk wiki.png|thumb|left|Comparison of ''A. ajax'' (orange) and ''A.{{nbsp}}louisae'' (red) with a human (blue) and ''[[Brontosaurus parvus]]
-[[File:Allosaurus atrox Cleveland-Lloyd Quarry.jpg|thumb|''A. fragilis'' at the Cleveland-Lloyd Dinosaur Quarry museum, Utah]]
-[[File:AKMS and AK-47 DD-ST-85-01270.jpg|thumb|AKMS with a stamped Type 4B receiver (top) and an AK-47 with a milled Type 2A receiver]]
-[[File:Cono de Arita, Salta. (Argentina).jpg|thumb|&quot;[[Salar de Arizaro|Cono de Arita]]
-[[File:Atanasoff Berry Computer.gif|thumb|right|Diagram of the ABC pointing out its various components]]
-
-
-[[File:Kotwica SS Poznań.JPG|thumb|[[Stockless anchor|Stockless]]
-[[File:Anazarbe_vue_générale_1.jpg|thumb|right|300px|General view of the site]]
-[[File:Assyrian wall relief showing a scribe and a horseman trampling enemies. From Anah, Iraq. Iraq Museum.jpg|thumb|Assyrian wall relief showing a scribe and a horseman trampling enemies. From Anah, al-Anbar Governorate, Iraq. 9th-7th century BCE. Iraq Museum]]
-[[File:Anagram Listen = Silent.gif|thumb|Animation for the anagram &quot;Listen = Silent&quot;]]
-[[File:Anadyrrivermap.png|thumb|270px|Location of the Anadyr]]
-[[File:Quartz gisements.jpg|thumb|Main amethyst-producing countries]]
-[[File:Ampère - Essai sur la philosophie des sciences, 1838 - 3912601 323893 1 00011.tif|thumb|''Essai sur la philosophie des sciences'']]
-[[File:NH3-Dipole-Moment.png|thumb|Molecular structure of ammonia and its three-dimensional shape. It has a net dipole moment of 1.484&amp;nbsp;D]]
-[[File:WLANL - MicheleLovesArt - Museum Boijmans Van Beuningen - Istoriato schotel, de maaltijd der Goden op de Olympus.jpg|thumb|upright=1.2|''The Food of the Gods on Olympus'' (1530), [[Maiolica|majolica]]
-[[File:Tyrrell - Crane Albertosaure.jpg|thumb|left|[[Holotype specimen]]
-
-[[File:Altare di s. ambrogio, 824-859 ca., retro di vuolvino, storie di sant'ambrogio 06 miracolo delle api.jpg|thumb|upright=1.3|[[Relief]]
-
-
-[[File:Amber2.jpg|thumb|An ant inside [[Baltic amber]]
-[[File:Seealpsee Juni2018 Alphorn.jpg|thumb|upright|Detail of the end of an Alphorn]]
-[[File:Army Corps at the Victory parade.jpg|thumb|[[Azerbaijan Army]]
-[[File:Abby May Alcott.jpg|thumb|Abby May Alcott in her later years]]
-[[File:Alligator olseni.jpg|thumb|''A. olseni'' fore limb]]
-[[File:Alder catkins - 1 (2222383479).jpg|thumb|Female alder catkins after shedding their seeds]]
-
-
-[[File:Lioness Bast cosmetic jar 83d40m tut burial artifact.jpg|thumb|Calcite alabaster: The tomb of [[Tutankhamun]]
-[[File:093.The Death of Ahab.jpg|200px|thumbnail|right|Death of Ahab, by Gustave Doré]]
-
-[[File:Algol triple star system imaged with the CHARA interferometer.jpg|thumb|left|upright=1.6|The Algol system on 12 August 2009.  This is a [[CHARA array|CHARA]]
-[[File:Newton j.jpg|thumb|left|alt=Engraving of an older heavyset man, wearing robes, vestments, and wig|[[John Newton]]
-[[File:America Online logo.svg|thumb|left|First AOL logo as &quot;America Online&quot;, used from 1991 to 2005.]]
-[[File:Austria Klagenfurt Dome 12.jpg|thumb|''Anno Domini'' inscription at [[Klagenfurt Cathedral]]
-
-[[File:AT 13763 Roof figures at the Kunsthistorisches Museum, Vienna-8.jpg|thumb|upright|Alcuin, roof figure, Museum of History of Arts, Vienna.]]
-
-
-
-[[File:BN lat. 13159, fol. 43r.jpeg|thumb|A page from the [[Psalter of Charlemagne]]
-[[File:Primary-amine-2D-general.svg|100px|primary amine]]
-
-
-
-
-
-[[File:CelsiusKelvin.svg|thumb|right|150px|Zero [[kelvin]]
-[[File:Edward Burnett Tylor.jpg|thumb|[[Edward Tylor]]
-[[File:Amide-(tertiary).svg|thumb|right|General structure of an amide (specifically, a carboxamide)]]
-[[File:Vivaldi.jpg|thumb|upright=1.2|Probable portrait of Vivaldi, {{circa|1723}}{{refn|According to {{harvnb|Talbot|2011|p=148}}: &quot;An anonymous portrait in oils in the [[International Museum and Library of Music of Bologna|Museo Internazionale e Biblioteca della Musica di Bologna]]
-
-
-
-
-[[File:Aletschgebiet aus dem Flugzeug.jpg|thumb|right|The [[Unteraargletscher]]
-[[File:Abbotsford by Henry Fox Talbot.jpg|thumb|left|Abbotsford by [[Henry Fox Talbot]]
-[[File:Guercino Abramo ripudia Agar (cropped).jpg|247px]]
-[[File:Abraxas.png|thumb|Abraxas from ''[[Infernal Dictionary]]
-[[File:Abydos (Ancient Egypt) name in hietoglyphs.gif|Abydos_(Ancient_Egypt)_name_in_hietoglyphs]]
-
-[[File:Thracian chersonese.png|thumb|left|200px|The environs of Abydos in Antiquity]]
-[[File:Convito di Ansalonne.jpg|thumb|right|''The Banquet of Absalom'' attributed to [[Niccolò de Simone]]
-[[File:Alan Kay at the Getty Museum.jpg|thumb|right|Computer scientist Alan Kay]]
-
-[[File:Acacia Negev.JPG|thumb|''Acacia'' tree near the limit of its range in the [[Negev]]
-
-[[File:APL (programming language) logo.svg|120px]]
-[[File:Morena logo (Mexico).svg|25px|link=National Regeneration Movement]]
-[[File:Algol&amp;Fortran family-by-Borkowski.svg|thumb|alt=caption|Family tree of the Algol, [[Fortran]]
-
-[[File:POSIX awk.pdf|thumb]]
-[[File:Asgard_and_Bifrost_in_interpretation_of_Otto_Schenk_in_Wagner's_Das_Rheingold.jpg|alt=|thumb|416x416px|Asgard and Bifrost in Otto Schenk's interpretation of Wagner's drama [[Das Rheingold]]
-
-[[File:Apollo program.svg|frameless|upright]]
-[[File:Southern Chivalry.jpg|thumb|right|275px|1856 lithograph of the [[caning of Charles Sumner]]
-
-[[File:Älvalek.jpg|thumb|right|''Dancing Elves'', by [[August Malmström]]
-
-[[File:Ask and Embla by Robert Engels.jpg|thumb|upright|A depiction of Ask and Embla (1919) by Robert Engels.]]
-
-[[File:Alemanni expansion.png|thumb|upright=1.6|Area settled by the Alemanni, and sites of Roman-Alemannic battles, third to sixth centuries]]
-[[File:Curb brokers in Wall Street, New York City, 1920.jpg|thumb|350px|Curb brokers in Wall Street, New York City, 1920, a year before the trading was moved indoors. That year, journalist Edwin C. Hill described the curb trading on lower Broad Street as &quot;a roaring, swirling whirlpool... like nothing else under the astonishing sky that is its only roof.&quot;&lt;ref name=nyt-stock-cold/&gt;]]
-[[File:Wallace Mechanics Institute (crop).jpg|thumb|left|upright|A photograph from Wallace's autobiography shows the building Wallace and his brother John designed and built for the Neath [[Mechanics' Institute]]
-
-
-
-[[File:StateLibQld 1 46636 After the swearing in of the Dawson ministry of the Labor Party Brisbane, Queensland.jpg|thumb|left|[[Anderson Dawson]]
-
-
-[[File:Alice in Wonderland by Arthur Rackham - 03 - But who has won?.jpg|thumb|left|upright|Depiction by [[Arthur Rackham]]
-
-
-
-
-
-
-
-
-
-[[File:Albrecht von Hohenzollern.jpg|thumb|upright|left|As grand master of the Teutonic Order, painting from 1522]]
-[[File:Albrecht of Brandeburg Duerer VandA E.653-1940.jpg|thumb|right|Cardinal Albert, Archbishop of Magdeburg and Mainz, by [[Albrecht Dürer]]
-
-
-
-
-[[File:Karte Aachen Stadtbezirke.png|thumb|Aachen districts and quarters]]
-[[File:Faceted Botswana agate.jpg|thumb|Botswana agate]]
-[[File:Aspirin synthesis.svg|thumb|Aspirin synthesis|center|490px]]
-[[File:Sultan Ahmed I.jpg|thumb|[[Ottoman miniature]]
-[[File:Maciejowski Bible Leaf 37 3.jpg|thumb|Abner (in green) taking [[Michal]]
-[[File:Levni 002 detail.jpg|thumb|A [[Portrait miniature|miniature]]
-[[File:PIC 2004-08-23 09-12 9807.JPG|thumb|262px|''The [[mausoleum]]
-
-[[File:Ainu old man circa 1930.JPG|thumb|Hokkaido Ainu clan leader, 1930]]
-
-
-
-[[File:The Acropolis of Athens on June 1, 2021.jpg|thumb|upright=1.5|[[Acropolis of Athens]]
-[[File:Aeneas' Flight from Troy by Federico Barocci.jpg|thumb|''Aeneas flees burning Troy'', [[Federico Barocci]]
-[[File:Aiguille d acupuncture avec regle.dsc02265.untilted+cropped+WB.jpg|thumb|One type of acupuncture needle]]
-[[File:Amaranth und WW.jpg|thumb|Amaranth grain (left) and [[wheat]]
-
-
-[[File:Assuan 9785.JPG|thumb|Mausoleum of Aga Khan – [[Aswan]]
-[[File:Alexander Agassiz crop - Harvard Daguerreotypes - sAg 168.70.1.jpg|thumb|left|Agassiz {{circa|1860}}]]
-[[File:Lekanis Agamemnon MNA Taranto.jpg|thumb|Depiction of Agamemnon from the late fifth century BCE]]
-
-
-
-[[File:Feuerbach symposium.jpg|thumb|This painting by [[Anselm Feuerbach]]
-[[File:CUH Agesilaus and Pharnabazus.jpg|thumb|Meeting between Spartan king Agesilaus (left) and [[Pharnabazus II]]
-
-[[File:Agrippa wearing Naval Crown.jpg|thumb|left|A ''[[denarius]]
-
-
-[[File:Domizio enobarbo, padre di nerone, busto di restauro, inv. 2222.JPG|thumb|left|Bust of [[Gnaeus Domitius Ahenobarbus (consul 32)|Gnaeus Domitius Ahenobarbus]]
-[[File:Pandara American-Chinese restaurant in Ecopark.jpg|300px|thumb|right|A Chinese American restaurant in the [[Hưng Yên province]]
-[[File:Ruins of old Kandahar Citadel in 1881.jpg|left|thumb|upright|An 1881 photo showing Shah [[Hussain Hotak]]
-
-
-
-[[File:Ailanthus altissima 002.JPG|thumb|''Ailanthus altissima'', male flowers]]
-[[File:Ajax the Lesser, Son of Oileus, by Francesco Sabatelli 1829.png|thumb|Ajax the Lesser by Francesco Sabatelli, 1829]]
-[[File:Sargon_of_Akkad_on_his_victory_stele.jpg|30px]]
-
-[[File: The Belvedere Torso depicting Ajax.jpg|thumb|The [[Belvedere Torso]]
-[[File:Alarich steel engraving.jpg|right|thumb|Imaginary portrait of Alaric in C. Strahlheim, ''Das Welttheater'', 4. Band, Frankfurt a.M., 1836]]
-[[File:Alarico II, rey de los Visigodos (Museo del Prado).jpg|thumb|Imaginary portrait of Alaric II by Carlos Esquivel y Rivas. Oil on canvas (1856)]]
-
-[[File:Vipava valley from Nanos.jpg|thumb|left|alt=A photo showing a valley and a mountain|The Vipava Valley in Slovenia, through which Alboin led the Lombards into Italy]]
-[[File:Vincenzo onofri, sant'alberto magno, 1493.JPG|thumb|right|Bust of Albertus Magnus by [[Vincenzo Onofri]]
-[[File:Coat of arms of Albuquerque (antiga).svg|upright|thumb|Coat of arms of Albuquerque]]
-[[File:Alkaios Sappho Staatliche Antikensammlungen 2416 n1.jpg|thumb|Alcaeus and [[Sappho]]
-
-[[File:Page from the edition of Virgil printed by Aldus Manutius in 1501.jpg|thumb|Page from the Aldine Vergil of 1501, the first of the standard octavo Aldines. [[British Library]]
-[[File:Herma IstArchMu747.jpg|thumb|Herm of [[Hermes]]
-
-[[File:Bayeux Edward Funeral.jpg|right|upright=2.0|thumb|The funeral cortège of [[Edward the Confessor]]
-[[File:Coin of Demetrius II Nicator, Ptolemais in Phoenicia mint.jpg|thumb|Coin of [[Demetrius II Nicator]]
-
-
-
-
-
-[[File:Tsarevitch Alexander later Alexander III 1865 by Sergei Levitsky.jpg|thumb|150px|right|Alexander III as [[Tsesarevich]]
-[[File:Royal Monogram of King Alexander I of Serbia.svg|50px]]
-[[File:Alexander II (Alba) ii.JPG|thumb|left|Alexander the warrior and knight: the reverse side of Alexander II's [[Great Seal]]
-[[File:Monument to Alexander III, west of Kinghorn, by Hippolyte Blanc.png|thumb|Monument to Alexander III, west of [[Kinghorn]]
-
-[[File:Julia mammea01 pushkin.jpg|200px]]
-[[File:Alexander of Aphrodisias de Fato 1658 page 7.jpg|right|thumb|Opening paragraph of the treatise ''On Fate'' (''Peri eimarmenes'') by Alexander of Aphrodisias dedicated to Emperors (autokratoras). From an anonymous edition published in 1658.]]
-
-
-
-
-
-
-
-
-[[File:WillemSwiddeAlexanderJannaeus.jpg|thumb|Alexander Jannaeus feasting during the crucifixion of the Pharisees, engraving by [[Willem Swidde]]
-
-
-[[File:Seal of Alexios Komnenos as Grand Domestic of the West.jpg|thumb|250px|Seal of Alexios as &quot;[[Domestic of the Schools|Grand Domestic of the West]]
-
-
-[[File:Manuel I, Alexios II and Agnes (Vat.gr.1851 folio 7r).jpg|thumb|Alexios II, [[Manuel I Komnenos]]
-[[File:Aspron trachy of Alexios III Angelos.png|thumb|[[Aspron trachy]]
-[[File:Alexius V.JPG|thumb|Miniature from a 13th-century chronicle of [[Niketas Choniates]]
-[[File:Andrew Johnsons First Home 2006.jpg|thumb|Johnson's birthplace and childhood home, located at the [[Mordecai House|Mordecai Historic Park]]
-[[File:Charlotte Christine of Brunswick-Wolfenbüttel.jpg|thumb|left|Grand Duchess Charlotte of Russia]]
-[[File:The Brave Boy of the Waxhalls2.jpg|thumb|upright=1|''The Brave Boy of the Waxhaws'', a [[lithography|lithograph]]
-
-
-[[File:The Town House, Old Aberdeen - geograph.org.uk - 320069.jpg|thumb|left|upright|The [[Old Town House, Old Aberdeen]]
-[[File:RIAN archive 6624 Alexander Solzhenitsyn and Mstislav Rostropovich.jpg|thumb|Solzhenitsyn (right) and his long-time friend [[Mstislav Rostropovich]]
-[[File:Aquaculturechile.jpg|thumb|Aquaculture installations in [[Zona Sur|southern Chile]]
-
-
-
-[[File:Kolmogorov complexity and computable lower bounds svg.svg|thumb|right|600px|Kolmogorov complexity {{color|#ff0000|''K''(''s'')}}, and two computable lower bound functions &lt;code&gt;{{color|#00e000|prog1(s)}}&lt;/code&gt;, &lt;code&gt;{{color|#0000ff|prog2(s)}}&lt;/code&gt;. The horizontal axis ([[logarithmic scale]]
-
-
-
-
-[[File:Britain 886.jpg|thumb|upright=1.35|Map of Britain in 886]]
-[[File:Civitates orbis terrarum. De praecipuis totius universi urbibus. Liber secundus (page 128).jpg|thumb|Algiers by [[Antonio Salamanca]]
-[[File:Alessandro algardi, il cardinale paolo emilio zacchia, 1650 ca..JPG|thumb|Terracotta [[modello]]
-
-[[File:Alessandro Allori - Bianca Capello (Dallas Museum).jpg|thumb|left|''Portrait of Grand Duchess Bianca Capello de Medici'', by Allori, [[Dallas Museum of Art]]
-[[File:Electrum trite, Alyattes II, Lydia, 610-560 BC.jpg|thumb|upright=1.5|Electrum trite, Alyattes, Lydia, 610-560 BC. (inscribed ''KUKALI[M]''&lt;ref&gt;Interpreted as the given name {{transl|xld|Kukaś}}, equivalent to ''Gyges''
-Wallace, “KUKALIṂ”, pl. 1, 1–4 = Weidauer Group XVIII, ''Triton'' XV no. 1241 (3 January 2012).
-Auctioned in 2013 for CHF 25000. ([https://cngcoins.com/Coin.aspx?CoinID=243846 Classical Numismatics Group])&lt;/ref&gt;)]]
-[[File:Camel Rider 1413 Mecia Viladestes map.jpg|thumb|A 15th century depiction of the 11th century Almoravid general [[Abu Bakr ibn Umar]]
-[[File:Thesaurus opticus Titelblatt.jpg|thumb|upright|Front page of the ''Opticae Thesaurus'', which included the first printed Latin translation of Alhazen's ''Book of Optics''. The illustration incorporates many examples of optical phenomena including perspective effects, the rainbow, mirrors, and refraction.]]
-[[File:Split Aloe.jpg|thumb|180px|[[Succulent plant]]
-
-[[File:Ritratto femminile di tipo ariadne-amalasunta, 480-525 dc ca, da s.m. ai monti (musei capitolini).jpg|thumb|Bust at the [[Capitoline Museums]]
-[[File:Age of Consent - Global.svg|400px|alt=Map of the world's countries, with countries colored by age of consent|thumb|upright=2|Age of consent for heterosexual sex in various countries. [[Australia]]
-
-
-[[File:Marabotin à l'effigie d'Alphonse III dit le Boulonnais (cropped).jpg|left|thumb|Effigy of King Afonso III in a coin]]
-
-[[File:Afonso II, 23-4-1185 - 25-3-1223, retrato anónimo (siglo XIII).jpg|thumb|left|Afonso II as depicted in a 13th-century manuscript.]]
-
-[[File:Infante D. Afonso e um pajem negro (c. 1653) - Avelar Rebelo.png|thumb|left|320px|''Portrait of Infante Afonso''; José de Avelar Rebelo, 1653.]]
-[[File:Cruzade d'Alphonse V dit l'africain.jpg|thumb|Gold [[Portuguese real#Coins|cruzado]]
-
-[[File:Alfonsobig.jpg|thumb|Alfonso II in the twelfth-century ''[[Libro de los Testamentos]]
-[[File:Amarakosha.jpg|thumb|Cover of a modern copy of ''Amara kosha'']]
-
-
-[[File:Alfonso_XIII, cadete, de Manuel García Hispaleto.jpg|thumb|left|Alfonso XIII as a cadet; by [[Manuel García Hispaleto]]
-[[File:Alfonso XII con el duque de Sesto.jpg|thumb|left|upright|A young Alfonso with his mentor, the [[José Osorio y Silva|Duke of Sesto]]
-
-[[File:Amaryllis belladonna flowers.jpg|thumb|right|''Amaryllis belladonna'' flowers]]
-
-[[File:Arbre-Sobrarb-ANFUS-REX-ARA-GON-Alfons-I-Aragó-1104-1134.jpg|thumb|A ''[[denarius]]
-
-
-[[File:Ancient kingdoms of Cyprus en.svg|thumb|Ancient kingdoms of Cyprus]]
-
-[[File:Polykrates with Pharao Amasis II.jpg|thumb|[[Polycrates]]
-
-[[File:Escudo armas Alfonso V de Aragón en Satyrarum hecatostichon cropped.jpg|thumb|Coat of arms in ''Satyrarum hecatostichon'' by [[Francesco Filelfo]]
-[[File:Andrea Amati violin - Met Museum NY.jpg|thumb|upright=0.85|This [[Andrea Amati]]
-
-
-
-
-[[File:Amazzone ferita - Musei Capitolini.jpg|thumb|Wounded Amazon of the Capitoline Museums, Rome]]
-[[File:Ambergris.jpg|thumb|upright=1.3|Ambergris]]
-
-
-[[File:Amazonas und Reliefkarte.png|thumb|upright=1.3|Topography of the Amazon River Basin]]
-
-
-
-
-
-
-
-
-
-
-
-
-[[File:Abu Bakr stops Meccan Mob.jpg|200px|thumb|Abu Bakr Abdullah stops Meccan Mobs, who are against Muslims.]]
-
-[[File:AmbroseOfMilan.jpg|thumb|225px|Late Antique Mosaic of Saint Ambrose (~337-397) in [[Basilica of Sant'Ambrogio|Sant'Ambrogio church]]
-
-[[File:Statue of an Ammonite deified King on display at the Jordan Museum.jpg|thumb|right|Statue of an Ammonite deified King on display at the [[Jordan Museum]]
-[[File:History of the Kings (f.66) Emrys Wledig.jpg|thumb|Emrys Wledig. A crude illustration from a 15th-century Welsh language version of [[Geoffrey of Monmouth]]
-[[File:Ammonios Hermeiou.jpg|thumb|right|First page of the [[editio princeps|first edition]]
-
-[[File: Stamp of Israel - Tenth Anniversary Exhibition.jpg|thumb|left|Quote from Amos on an [[Israeli stamp]]
-
-[[File:Plan Amphipolis-en.svg|thumb|Map of Amphipolis]]
-
-
-
-
-[[File:Manarat Anah 2.jpg|thumb|[[Minaret of Anah]]
-[[File:Mahajanapadas (c. 500 BCE).png|thumb|Map of India, {{circa}} 500 BCE |alt=Map of India with names of major areas |upright=1.4]]
-[[File:Jose de Ribera - Anaxagoras.jpg|thumb|''Anaxagoras'' (1636) by [[Jusepe de Ribera]]
-
-
-
-
-
-
-
-
-[[File:Anderson, Alexander – Supplementum Apollonii redivivi, 1612 – BEIC 17635.jpg|thumb|''Supplementum Apollonii redivivi'', 1612]]
-[[File:Anaximenes of Miletus Drawing.jpg|thumb|left|Anaximenes of Miletus as depicted in the ''[[Nuremberg Chronicle]]
-[[File:Ancus-Martius.jpg|thumb|left|Fictional 16th-century depiction in the ''[[Promptuarii Iconum Insigniorum]]
-[[File:Andaman nicobar 76.jpg|thumb|upright=1.2|{{center|Detailed map&lt;br /&gt;of the Andaman and Nicobar Islands}}]]
-
-[[File:Triunphus Caesaris plate 1 - Andreani.jpg|thumb|''Triumphus Caesari'', by Andreani, after a painting by Mantegna]]
-[[File:Coa Hungary Country History Andrew II (1205-1235).svg|thumb |right |190px |alt= The &quot;Árpád stripes&quot;: four silver and four red stripes |The &quot;[[Árpád stripes]]
-[[File:David Hume.jpg|thumb|right|150px|David Hume by [[Allan Ramsay (artist)|Allan Ramsay]]
-[[File:P._Juventius_Thalna,_denarius,_179-170_BC,_RRC_161-1.png|thumb|Possible denarius minted by Publius Juventius Thalna c. 179–170 BC.{{sfn|Crawford|1974|p=225}}]]
-[[File:Vitrail Cathédrale de Moulins 160609 19.jpg|thumb|{{clarify|reason=Not clear why this image is here or what any possible connnection with Longjumeau may be in this case|date=August 2023}}]]
-[[File:1340withKey.png|thumb|The Byzantine Empire in 1340, including Bulgaria, Serbia and the Ottoman Beylik.]]
-[[File:Entrada de Roger de Flor en Constantinopla (Palacio del Senado de España).jpg|thumb|The Catalan Company led by [[Roger de Flor]]
-
-
-[[File:Hyperpyron of Andronikos I (reverse).jpg|thumb|''[[Hyperpyron]]
-
-
-
-[[File:Bust of Constantius II (Mary Harrsch).jpg|thumb|230px|Bust of Emperor [[Constantius II]]
-
-[[File:AS-205 crew.jpg|thumb|right|Schirra's crew in training for Apollo{{nbs}}2, 1966]]
-
-
-[[File:1970 Mission Control Apollo 13.jpg|thumb|left|alt=see caption|Mission Operations Control Room during the TV broadcast just before the Apollo&amp;nbsp;13 accident. Astronaut [[Fred Haise]]
-[[File:Apollo 9 Flown Silver Robbins Medallion (SN-260).jpg|thumb|alt=Both sides of a silver medal|Apollo{{nbsp}}9 space-flown silver [[NASA space-flown Robbins medallions of the Apollo missions|Robbins medallion]]
-
-[[File:Laskarbit.jpg|thumb|200px|Acetylene fuel container/burner as used in the island of [[Bali]]
-[[File:Gout Signs and Symptoms.jpg|thumb|Illustration of gout affected foot.]]
-
-[[File:Hindu-Arabic numerals.svg|upright=1.5|thumb|alt=Numbers written from 0 to 9|Arabic numerals set in [[Source Sans]]
-
-
-
-
-[[File:Apuleius-Kontorniat-2.jpg|thumb|left|Imagined portrait of Apuleius on a medallion of the 4th century.]]
-[[File:Rob-cru.png|thumb|left|alt=Shaded relief map of Robinson Crusoe Island with blue ocean background|Map of [[Robinson Crusoe Island]]
-
-
-[[File:Comparison of units of area.png|thumb|Image comparing the acre (the small pink area at lower left) to other units. The entire yellow square is one [[square mile]]
-[[File:OBV GBI 1.jpg|thumb|right|A [[Ground-Based Interceptor]]
-[[File:AdenosineTriphosphate.qutemol.svg|alt=A chemical formula|thumb|Interactive animation of the structure of ATP]]
-
-[[File:Thal - Geburtshaus Arnold Schwarzenegger1.jpg|thumb|right|Schwarzenegger's birthplace]]
-[[File:The Water-Sprite and Ägir's Daughters (Nils Blommér) - Nationalmuseum - 18200.tif|thumb|''Näcken och Ägirs döttrar'' by [[Nils Blommér]]
-[[File:Choosing Wisely antibiotics poster small English.pdf|thumb|right|Health advocacy messages such as this one encourage patients to talk with their doctor about safety in using antibiotics.]]
-
-
-[[File:Battle of Actium-en.svg|thumb|300px|A map showing the [[Battle of Actium]]
-[[File:Amway Japan Head Office.jpg|thumb|upright|Amway Japan head office]]
-
-
-[[File:Adam Smith's mother.JPG|thumb|upright=0.75|Portrait of Smith's mother, Margaret Douglas]]
-
-[[File:Institut de France, Paris 13 June 2017.jpg|thumb|The ''[[Collège des Quatre-Nations]]
-
-
-
-
-
-[[File:Amitabh Young.jpg|thumb|Bachchan in his younger days|left]]
-
-[[File:Phoneme-allophone-determination-chart.svg|thumb|A simplified procedure to determine whether two sounds represent the same or different phonemes. The cases on the extreme left and the extreme right are those in which the sounds are allophones.]]
-
-
-
-[[File:Diamond and graphite.jpg|thumb|193x193px|[[Diamond]]
-[[File:Pearl Poet.jpg|thumb|''Pearl'', miniature from [[Pearl Manuscript|Cotton Nero A.x]]
-[[File:SyracuseAgathocle.jpg|thumb|250px|right|Coin of Agathocles.]]
-[[File:Augustin-Louis Cauchy.jpg|thumb|left|Cauchy in later life]]
-[[File:Alberta, Canada.svg|thumb|left|Alberta's location within Canada]]
-[[File:Cog-scripted-svg-blue.svg|12px|link=File:truncatedtetrahedron.gif]]
-[[File:Marcia.angell.jpg|thumb|upright|[[Marcia Angell]]
-[[File:Cicero Discovering the Tomb of Archimedes by Benjamin West.jpeg|thumb|right|''[[Cicero]]
-
-[[File:Triangular antiprismatic graph.png|100px]]
-[[File:Africa in the world (red) (W3).svg|frameless|right]]
-[[File:Africa map of Köppen climate classification.svg|thumb|Africa map of [[Köppen climate classification]]
-
-[[File:Approval ballot.svg|thumb|On an [[approval ballot]]
-
-
-[[File:Pres. Theodore Roosevelt at Old Main of Arizona State University.jpg|thumb|President Theodore Roosevelt addresses a crowd of students on the steps of the Old Main at Tempe Normal School (future Arizona State University), March 20, 1911.]]
-[[File:Astoria, Oregon, looking out the mouth of the Columbia River LCCN2007662739.tif|link=|frameless|85px]]
-
-
-[[File:Alfred Jarry, Deux aspects de la marionnette originale d'Ubu Roi.jpg|thumb|Alfred Jarry, ''Deux aspects de la marionnette original d'Ubu Roi'', premiered at the Théâtre de l'Œuvre on 10 December 1896.]]
-[[File:Gui sybila.jpg|thumb|right|alt=A young crowned man (surrounded by bishops and clerics) puts the hands of a young woman and man together|Marriage of Aimery's younger brother, [[Guy of Lusignan]]
-[[File:Amaury Coin (1163-1174).jpg|thumb|Coin of Amaury (1163-1174): Amaury and his successors used the Holy Sepulchre on the obverse image for their deniers as a way of strengthening their relationship with the church where they were both crowned and buried. This helped to reinforce the legitimacy of the dynasty's claims to the Kingdom of Jerusalem.]]
-[[File:Anthemius Trallianus – Fragment d'un ouvrage grec d'Anthèmius sur des Paradoxes de mècanique, 1777 – BEIC 4780621.jpg|thumb|Fragment of a Greek work by Anthemius on Paradoxes of mechanics (''Fragment d'un ouvrage grec d'Anthèmius sur des Paradoxes de mècanique''), 1777]]
-[[File:Bishop Absalon topples the god Svantevit at Arkona.PNG|thumb|left|Bishop Absalon topples the god Svantevit at Arkona, as imagined by [[Laurits Tuxen]]
-
-
-
-[[File:Alphonse de Poitiers 01.jpg|thumb|Alphonse, as Count of Toulouse, recognised the autonomy of the [[Medieval commune|commune]]
-[[File:Carte provence 1125.png|thumb|upright|left|Division of Provence obtained by Alfonso Jordan in 1125. He ruled the marquisate.]]
-
-[[File:aa example1.png|thumb|300px|&quot;Oldskool&quot; or &quot;Amiga&quot; style]]
-
-
-[[File:Joseph Csaky, 1912, Danseuse, Femme à l'éventail, Femme à la cruche, original plaster, photo from Csaky archives AC.110.jpg|thumb|upright|[[Joseph Csaky]]
-
-[[File:Non-RhoticityUSA.png|thumb|upright=1.15|The red dots show every U.S. metropolitan area where over 50% non-rhotic speech was documented among some of that area's white speakers in the 1990s. Non-rhoticity may be heard among [[African-American English|black speakers]]
-[[File:1871 Albert Spalding Baseball-card-Boston Red Stockings.jpg|thumb|Albert Spalding on a [[1871 in baseball|1871]]
-
-[[File:Acquire game.JPG|250px]]
-
-[[File:Australia 2021 English language spoken at home.png|thumb|341x341px|The percentage of people who speak only the English language at home, 2021]]
-[[File:Hani Hanjour 2.jpg|thumb|Pilot hijacker Hani Hanjour, who commandeered American Airlines Flight 77 and crashed it into the Pentagon]]
-
-
-[[File:Bac Le Ambush.jpeg|thumb|right|upright=1.3|The [[Bắc Lệ ambush]]
-[[File:Darwin's finches.jpeg|thumb|Four of the 14 finch species found in the [[Galápagos Islands|Galápagos Archipelago]]
-
-[[File:ABO blood type.svg|thumb|upright=1.45|In the [[ABO blood group system]]
-[[File:Two percent Agarose Gel in Borate Buffer cast in a Gel Tray (Front, angled).jpg|right|thumb|An agarose gel cast in tray, to be used for gel electrophoresis]]
-
-[[File:Ampicillin with amine highlighted.svg|thumb|The amino group (highlighted in magenta) is present on ampicillin but not [[penicillin G]]
-[[File:Antibiotic sensitivity and resistance.jpg|thumb|upright=1.4|[[Disk diffusion test|Antibiotic resistance tests]]
-[[File:Antibody.svg|thumb|255px|An illustration that shows how antigens induce the [[immune system]]
-
-[[File:Human male karyotype.gif|331px|center]]
-
-[[File:Carina &amp; Puppis &amp; Pyxis &amp; Vela.gif|thumb|The ship in animated dark-to-lighter-to-dark sky and then illustrated with a stick-figure drawing]]
-
-[[File:VoltaBattery.JPG|thumb|Volta battery, at the [[Tempio Voltiano]]
-[[File:Sidney Hall - Urania's Mirror - Gloria Frederici, Andromeda, and Triangula.jpg|thumb|upright|The [[constellation]]
-[[File:46-Ara-Constellation.PNG|left|thumb|350px|Ara as depicted on The [[Abu al-Fath Manuchihr Khan|Manuchihr]]
-[[File:Antlia bode.JPG|thumb|upright=1.38|left|Johann Bode's depiction of Antlia as a double-cylinder air pump]]
-
-[[File:Chromesun toltec mounds photo01.jpg|thumb|left|[[Platform mound]]
-
-[[File:BayerUran1661apuschamtri.jpg|thumb|left|upright|Detail of [[Johann Bayer]]
-[[File:Exploded tank, remains in Abadan as symbol of Iran–Iraq War.jpg|thumb|The burnt-out shell of an Iraqi [[T-54/55]]
-
-
-[[File:Andrew Carnegie in National Portrait Gallery IMG 4441.JPG|upright|thumb|Carnegie as he appears in the [[National Portrait Gallery (United States)|National Portrait Gallery]]
-[[File:PenicillinPSAedit.jpg|thumb|An advertisement advertising penicillin's &quot;miracle cure&quot;]]
-
-[[File:John Flamsteed (Gemälde).jpg|thumb|220px|[[John Flamsteed]]
-[[File:Flag of Jihad (Variant).svg|border|23px]]
-[[File:HainesChipp.jpg|thumb|[[Janine Haines]]
-[[File:Europe to South American in 3 Days Poster (19482266291).jpg|thumb|1930s German poster advertising a weekly [[airmail]]
-[[File:ACT-Jervis Bay-Sydney-MJC.png|left|thumb|125px|Location of the ACT and Jervis Bay]]
 
