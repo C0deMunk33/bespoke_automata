@@ -25,8 +25,7 @@ DIMENSION = 768
 INSERTION_BATCH_SIZE = 10
 
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
-model = AutoModel.from_pretrained(MODEL)
+
 
 def parse_wiki_page(page_text):
     id_start = page_text.find('<id>') + 4
@@ -82,7 +81,8 @@ def parse_wiki_page(page_text):
         if word.isnumeric():
             numbers.append(float(word))
     
-    # TODO: vectorize
+    tokenizer = AutoTokenizer.from_pretrained(MODEL)
+    model = AutoModel.from_pretrained(MODEL)
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     
     
