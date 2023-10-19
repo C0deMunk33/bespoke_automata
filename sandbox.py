@@ -79,13 +79,13 @@ def parse_wiki_page(page_text, tokenizer):
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
     #truncate the strings
-    title = title[:1000]
-    body = body[:65000]
-    description = description[:10000]
-    categories = categories[0:1000]
-    image_file = image_file[:2000]
-    redirect_title = redirect_title[:1000]
-    sha1 = sha1[:500]
+    title = truncate_to_bytes(title, 1024*2)
+    body = truncate_to_bytes(body, 65535*2)
+    description = truncate_to_bytes(description, 12100*2)
+    categories =   truncate_to_bytes(categories, 1024*2)
+    image_file =  truncate_to_bytes(image_file, 2048*2)
+    redirect_title =    truncate_to_bytes(redirect_title, 1024*2)
+    sha1 =  truncate_to_bytes(sha1, 510*2)
 
     print(id)
     return {
@@ -199,6 +199,13 @@ def insert_wiki_pages(batch, collection):
         # exit program if insert failed
         exit(1)
 
+def truncate_to_bytes(s, max_bytes):
+    """Truncate string `s` to `max_bytes`."""
+    encoded = s.encode('utf-8')
+    while len(encoded) > max_bytes:
+        s = s[:-1]
+        encoded = s.encode('utf-8')
+    return s
 
 def iterate_pages(file_name, start_line=0):
     with open(file_name, 'r', encoding='utf-8') as file:
