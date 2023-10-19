@@ -81,19 +81,27 @@ def parse_wiki_page(page_text, tokenizer):
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
     print("page parsed")
+    #truncate the strings
+    title = title[:1000]
+    body = body[:65535]
+    description = description[:5000]
+    categories = categories[:1000]
+    image_file = image_file[:2000]
+    redirect_title = redirect_title[:1000]
+    sha1 = sha1[:500]
     return {
         'id': id,
-        'title': title[:1000],
+        'title': title,
         'title_tokens': title_tokens,  # store tokens, will embed later
-        'body': body[:65535],
-        'description': description[:5000],
-        'categories': categories[:1000],
-        'image_filename': image_file[:500],
-        'redirect_title': redirect_title[:1000],
+        'body': body,
+        'description': description,
+        'categories': categories,
+        'image_filename': image_file,
+        'redirect_title': redirect_title,
         'revision_hash': sha1
     }
 
-def embed_title(title_tokens):
+def embed_title(title_tokens, model):
     #title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
     title_embedding = model(
                 input_ids=title_tokens['input_ids'],
@@ -105,7 +113,7 @@ def embed_title(title_tokens):
     title_vector = title_vector.tolist()[0]
     return title_vector
  
-def insert_pages_in_parallel(articles_filename, tokenizer):
+def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collection):
     batch = []
     file_count = 0
     futures = []
@@ -118,7 +126,7 @@ def insert_pages_in_parallel(articles_filename, tokenizer):
             if len(futures) == INSERTION_BATCH_SIZE:
                 for future in as_completed(futures):
                     parsed_page = future.result()
-                    parsed_page['title_vector'] = embed_title(parsed_page['title_tokens'])  # embed in main process
+                    parsed_page['title_vector'] = embed_title(parsed_page['title_tokens'], model)  # embed in main process
                     del parsed_page['title_tokens']  # remove tokens if you don't want to store them
                     batch.append(parsed_page)
                     file_count += 1
@@ -154,7 +162,7 @@ def create_wiki_collection():
             FieldSchema(name="title_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             FieldSchema(name="body", dtype=DataType.VARCHAR, max_length=65535),
             FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=10000),         
-            FieldSchema(name="image_filename", dtype=DataType.VARCHAR, max_length=500),          
+            FieldSchema(name="image_filename", dtype=DataType.VARCHAR, max_length=2000),          
             FieldSchema(name="categories", dtype=DataType.VARCHAR, max_length=1000),
             FieldSchema(name="redirect_title", dtype=DataType.VARCHAR, max_length=1000),
             FieldSchema(name="revision_hash", dtype=DataType.VARCHAR, max_length=500),
@@ -178,8 +186,20 @@ def insert_wiki_page(page_text, collection, tokenizer):
 
 def insert_wiki_pages(batch, collection):
     print("inserting batch")
-    collection.insert(batch)
-    collection.flush()
+    try:
+
+        collection.insert(batch)
+        collection.flush()
+    except Exception as e:
+        # save all the image filenames in the batch to file
+        with open('./failed_batch.txt', 'w') as file:
+            for page in batch:
+                file.write(page['image_filename'] + '\n')
+        print(e)
+        print("insert failed")
+        # exit program if insert failed
+        exit(1)
+
 
 def iterate_pages(file_name, start_line=0):
     with open(file_name, 'r', encoding='utf-8') as file:
@@ -204,7 +224,7 @@ def main():
 
 
     wiki_collection = create_wiki_collection()
-    insert_pages_in_parallel(articles_filename, tokenizer)
+    insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collection)
 
 if __name__ == '__main__':
     multiprocessing.set_start_method('spawn', force=True)
