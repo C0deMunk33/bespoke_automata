@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, AutoModel
 
 
 import torch
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import logging
 
 # suppress weight loading warning from transformers
