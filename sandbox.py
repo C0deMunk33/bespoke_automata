@@ -19,6 +19,8 @@ TOKENIZATION_BATCH_SIZE = 1000
 DIMENSION = 768 
 INSERTION_BATCH_SIZE = 1000
 WORKERS = 32
+articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
+#articles_filename = './wiki_pages/page_0.xml'
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModel.from_pretrained(MODEL)
