@@ -1,0 +1,6 @@
+towhee
+pymilvus==2.2.11
+pandas
+numpy
+transformers
+torch
