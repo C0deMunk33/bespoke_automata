@@ -8,8 +8,8 @@ from transformers import AutoTokenizer, AutoModel
 import torch
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import logging
+import multiprocessing
 
-logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 connections.connect(host='192.168.0.8', port='19530')
 print("connected to milvus")
@@ -22,11 +22,9 @@ WORKERS = 32
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 #articles_filename = './wiki_pages/page_0.xml'
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
-model = AutoModel.from_pretrained(MODEL)
-model.share_memory()
 
-def parse_wiki_page(page_text):
+
+def parse_wiki_page(page_text, tokenizer):
     id_start = page_text.find('<id>') + 4
     id_end = page_text.find('</id>')
     id = page_text[id_start:id_end]
@@ -81,21 +79,22 @@ def parse_wiki_page(page_text):
             numbers.append(float(word))
     
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
-    
+    title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
     print("page parsed")
     return {
         'id': id,
-        'title': title,
+        'title': title[:1000],
         'title_tokens': title_tokens,  # store tokens, will embed later
         'body': body[:65535],
-        'description': description,
-        'categories': categories,
-        'image_filename': image_file,
-        'redirect_title': redirect_title,
+        'description': description[:5000],
+        'categories': categories[:1000],
+        'image_filename': image_file[:500],
+        'redirect_title': redirect_title[:1000],
         'revision_hash': sha1
     }
 
 def embed_title(title_tokens):
+    #title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
     title_embedding = model(
                 input_ids=title_tokens['input_ids'],
                 token_type_ids=title_tokens['token_type_ids'],
@@ -105,15 +104,15 @@ def embed_title(title_tokens):
     title_vector = (title_embedding * input_mask_expanded).sum(1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
     title_vector = title_vector.tolist()[0]
     return title_vector
-
-def insert_pages_in_parallel(articles_filename):
+ 
+def insert_pages_in_parallel(articles_filename, tokenizer):
     batch = []
     file_count = 0
     futures = []
 
     with ProcessPoolExecutor(max_workers=WORKERS) as executor:
         for page in iterate_pages(articles_filename):
-            future = executor.submit(parse_wiki_page, page)  # only parse, don't embed
+            future = executor.submit(parse_wiki_page, page, tokenizer)  # only parse, don't embed
             futures.append(future)
             
             if len(futures) == INSERTION_BATCH_SIZE:
@@ -125,6 +124,7 @@ def insert_pages_in_parallel(articles_filename):
                     file_count += 1
 
                     if file_count % INSERTION_BATCH_SIZE == 0:
+                        print("inserting batch")
                         insert_wiki_pages(batch, wiki_collection)
                         print(f"Inserted {file_count} pages")
                         batch.clear()
@@ -140,6 +140,7 @@ def insert_pages_in_parallel(articles_filename):
 
     # Flush any remaining batch
     if batch:
+        print("inserting remaining batch")
         insert_wiki_pages(batch, wiki_collection)
         print(f"Inserted a total of {file_count} pages")
 
@@ -152,7 +153,7 @@ def create_wiki_collection():
             FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=1000),   
             FieldSchema(name="title_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
             FieldSchema(name="body", dtype=DataType.VARCHAR, max_length=65535),
-            FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=5000),         
+            FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=10000),         
             FieldSchema(name="image_filename", dtype=DataType.VARCHAR, max_length=500),          
             FieldSchema(name="categories", dtype=DataType.VARCHAR, max_length=1000),
             FieldSchema(name="redirect_title", dtype=DataType.VARCHAR, max_length=1000),
@@ -170,8 +171,8 @@ def create_wiki_collection():
     return collection
 
 
-def insert_wiki_page(page_text, collection):
-    insertable = parse_wiki_page(page_text)
+def insert_wiki_page(page_text, collection, tokenizer):
+    insertable = parse_wiki_page(page_text, tokenizer)
     collection.insert(insertable)
     collection.flush()
 
@@ -191,6 +192,20 @@ def iterate_pages(file_name, start_line=0):
                     if '</page>' in line:
                         yield page
                         break   
+                    
+def main():
+    logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
-wiki_collection = create_wiki_collection()
-insert_pages_in_parallel(articles_filename)
+
+    tokenizer = AutoTokenizer.from_pretrained(MODEL)
+    model = AutoModel.from_pretrained(MODEL).to('cuda:0')
+    model.share_memory()
+
+
+
+    wiki_collection = create_wiki_collection()
+    insert_pages_in_parallel(articles_filename, tokenizer)
+
+if __name__ == '__main__':
+    multiprocessing.set_start_method('spawn', force=True)
+    main()
