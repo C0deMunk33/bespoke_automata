@@ -3,19 +3,21 @@ from towhee import ops, pipe, DataCollection
 import numpy as np
 import time
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
-from transformers import AutoTokenizer, AutoModel
+
 
 import torch
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import logging
 import multiprocessing
 
+from sentence_transformers import SentenceTransformer
 
 
+#MODEL = 'bert-base-uncased'
+MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
 
-MODEL = 'bert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
-DIMENSION = 768 
+DIMENSION = 384 
 INSERTION_BATCH_SIZE = 5000
 WORKERS = 32
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
@@ -23,7 +25,8 @@ articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 
 
 
-def parse_wiki_page(page_text, tokenizer):
+
+def parse_wiki_page(page_text):
     id_start = page_text.find('<id>') + 4
     id_end = page_text.find('</id>')
     id = page_text[id_start:id_end]
@@ -76,8 +79,8 @@ def parse_wiki_page(page_text, tokenizer):
         if word.isnumeric():
             numbers.append(float(word))
     
-    title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
-    title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
+    title_tokens = title  # you'll pass this directly to embed_title or embed_titles_batch
+
     #truncate the strings
     title = truncate_to_bytes(title, 1024)
     body = truncate_to_bytes(body, 65535)
@@ -99,36 +102,16 @@ def parse_wiki_page(page_text, tokenizer):
         'revision_hash': sha1
     }
 
-def embed_title(title_tokens, model):
-    #title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
-    title_embedding = model(
-                input_ids=title_tokens['input_ids'],
-                token_type_ids=title_tokens['token_type_ids'],
-                attention_mask=title_tokens['attention_mask']
-                )[0]
-    input_mask_expanded = title_tokens['attention_mask'].unsqueeze(-1).expand(title_embedding.size()).float()
-    title_vector = (title_embedding * input_mask_expanded).sum(1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-    title_vector = title_vector.tolist()[0]
-    return title_vector
+def embed_title(title, model):
+    title_vector = model.encode(title, convert_to_tensor=True)
+    return title_vector.tolist()
 
-
-def embed_titles_batch(title_tokens_batch, model):
-    input_ids = torch.stack([item['input_ids'].squeeze() for item in title_tokens_batch]).to('cuda:0')
-    token_type_ids = torch.stack([item['token_type_ids'].squeeze() for item in title_tokens_batch]).to('cuda:0')
-    attention_mask = torch.stack([item['attention_mask'].squeeze() for item in title_tokens_batch]).to('cuda:0')
-    
-    title_embeddings = model(
-                input_ids=input_ids,
-                token_type_ids=token_type_ids,
-                attention_mask=attention_mask
-                )[0]
-    
-    input_mask_expanded = attention_mask.unsqueeze(-1).expand(title_embeddings.size()).float()
-    title_vectors = (title_embeddings * input_mask_expanded).sum(1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-    
+def embed_titles_batch(titles_batch, model):
+    title_vectors = model.encode(titles_batch, convert_to_tensor=True)
     return title_vectors.tolist()
+
  
-def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collection):
+def insert_pages_in_parallel(articles_filename, model, wiki_collection):
     batch = []
     file_count = 0
     futures = []
@@ -136,7 +119,7 @@ def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collectio
     
     with ProcessPoolExecutor(max_workers=WORKERS) as executor:
         for page in iterate_pages(articles_filename):
-            future = executor.submit(parse_wiki_page, page, tokenizer)  # only parse, don't embed
+            future = executor.submit(parse_wiki_page, page)  # only parse, don't embed
             futures.append(future)
             
             if len(futures) == INSERTION_BATCH_SIZE:
@@ -144,7 +127,7 @@ def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collectio
                 parsed_pages = [future.result() for future in as_completed(futures)]
                 
                 # Batch-embed the titles
-                title_tokens_batch = [page['title_tokens'] for page in parsed_pages]
+                title_tokens_batch = [page['title_tokens'] for page in parsed_pages]  # This line remains unchanged but now 'title_tokens' contains the title text directly
                 title_vectors = embed_titles_batch(title_tokens_batch, model)
                 
                 # Assign the embedded vectors back to the parsed pages and add them to the batch
@@ -188,7 +171,7 @@ def create_wiki_collection():
     fields = [
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=False),
             FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=1024),   
-            FieldSchema(name="title_vector", dtype=DataType.FLOAT_VECTOR, dim=768),
+            FieldSchema(name="title_vector", dtype=DataType.FLOAT_VECTOR, dim=384),
             FieldSchema(name="body", dtype=DataType.VARCHAR, max_length=65535),
             FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=12100),         
             FieldSchema(name="image_filename", dtype=DataType.VARCHAR, max_length=2048),          
@@ -268,14 +251,14 @@ def main():
     logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModel.from_pretrained(MODEL).to('cuda:0')
+    
+    model = SentenceTransformer(MODEL).to('cuda:0')
     model.share_memory()
 
 
 
     wiki_collection = create_wiki_collection()
-    insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collection)
+    insert_pages_in_parallel(articles_filename, model, wiki_collection)
 
 if __name__ == '__main__':
     connections.connect(host='192.168.0.8', port='19530')
