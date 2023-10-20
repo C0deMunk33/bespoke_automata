@@ -246,17 +246,50 @@ def iterate_pages(file_name, start_line=0):
                     if '</page>' in line:
                         yield page
                         break   
-                    
+
+
+
+def insert_pages(articles_filename, model, wiki_collection):
+    batch = []
+    file_count = 0
+    start_time = time.time()
+    
+    for page in iterate_pages(articles_filename):
+        parsed_page = parse_wiki_page(page)
+        title_vector = embed_title(parsed_page['title_tokens'], model)
+        parsed_page['title_vector'] = title_vector
+        del parsed_page['title_tokens']
+        batch.append(parsed_page)
+        file_count += 1
+
+        if file_count % INSERTION_BATCH_SIZE == 0:
+            print("inserting batch")
+            insert_wiki_pages(batch, wiki_collection)
+            print(f"Inserted {file_count} pages in {time.time() - start_time} seconds")
+            # show avg rate of insertion
+            print(f"Insertion rate: {file_count / (time.time() - start_time)} pages per second")
+            batch.clear()
+
+    # Flush any remaining batch
+    if batch:
+        print("inserting remaining batch")
+        insert_wiki_pages(batch, wiki_collection)
+        print(f"Inserted a total of {file_count} pages")
+
 def main():
     logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
+    model = SentenceTransformer(MODEL).to('cuda:0')
+    wiki_collection = create_wiki_collection()
+    insert_pages(articles_filename, model, wiki_collection)
 
-
-    
+if __name__ == '__main__':
+    connections.connect(host='192.168.0.8', port='19530')
+    main()
+'''Multitrhead:
+def main():
+    logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
     model = SentenceTransformer(MODEL).to('cuda:0')
     model.share_memory()
-
-
-
     wiki_collection = create_wiki_collection()
     insert_pages_in_parallel(articles_filename, model, wiki_collection)
 
@@ -265,3 +298,5 @@ if __name__ == '__main__':
 
     multiprocessing.set_start_method('spawn', force=True)
     main()
+
+    '''
