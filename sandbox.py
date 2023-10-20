@@ -110,22 +110,47 @@ def embed_title(title_tokens, model):
     title_vector = (title_embedding * input_mask_expanded).sum(1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
     title_vector = title_vector.tolist()[0]
     return title_vector
+
+
+def embed_titles_batch(title_tokens_batch, model):
+    input_ids = torch.stack([item['input_ids'].squeeze() for item in title_tokens_batch]).to('cuda:0')
+    token_type_ids = torch.stack([item['token_type_ids'].squeeze() for item in title_tokens_batch]).to('cuda:0')
+    attention_mask = torch.stack([item['attention_mask'].squeeze() for item in title_tokens_batch]).to('cuda:0')
+    
+    title_embeddings = model(
+                input_ids=input_ids,
+                token_type_ids=token_type_ids,
+                attention_mask=attention_mask
+                )[0]
+    
+    input_mask_expanded = attention_mask.unsqueeze(-1).expand(title_embeddings.size()).float()
+    title_vectors = (title_embeddings * input_mask_expanded).sum(1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+    
+    return title_vectors.tolist()
  
 def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collection):
     batch = []
     file_count = 0
     futures = []
     start_time = time.time()
+    
     with ProcessPoolExecutor(max_workers=WORKERS) as executor:
         for page in iterate_pages(articles_filename):
             future = executor.submit(parse_wiki_page, page, tokenizer)  # only parse, don't embed
             futures.append(future)
             
             if len(futures) == INSERTION_BATCH_SIZE:
-                for future in as_completed(futures):
-                    parsed_page = future.result()
-                    parsed_page['title_vector'] = embed_title(parsed_page['title_tokens'], model)  # embed in main process
-                    del parsed_page['title_tokens']  # remove tokens if you don't want to store them
+                # Collect the parsed pages from the completed futures
+                parsed_pages = [future.result() for future in as_completed(futures)]
+                
+                # Batch-embed the titles
+                title_tokens_batch = [page['title_tokens'] for page in parsed_pages]
+                title_vectors = embed_titles_batch(title_tokens_batch, model)
+                
+                # Assign the embedded vectors back to the parsed pages and add them to the batch
+                for idx, parsed_page in enumerate(parsed_pages):
+                    parsed_page['title_vector'] = title_vectors[idx]
+                    del parsed_page['title_tokens']
                     batch.append(parsed_page)
                     file_count += 1
 
@@ -136,21 +161,25 @@ def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collectio
                         # show avg rate of insertion
                         print(f"Insertion rate: {file_count / (time.time() - start_time)} pages per second")
                         batch.clear()
+                
                 futures.clear()
 
-    # Handle remaining futures
-    for future in as_completed(futures):
-        parsed_page = future.result()
-        parsed_page['title_vector'] = embed_title(parsed_page['title_tokens'])
-        del parsed_page['title_tokens']
-        batch.append(parsed_page)
-        file_count += 1
+        # Handle remaining futures
+        parsed_pages = [future.result() for future in as_completed(futures)]
+        title_tokens_batch = [page['title_tokens'] for page in parsed_pages]
+        title_vectors = embed_titles_batch(title_tokens_batch, model)
+        
+        for idx, parsed_page in enumerate(parsed_pages):
+            parsed_page['title_vector'] = title_vectors[idx]
+            del parsed_page['title_tokens']
+            batch.append(parsed_page)
+            file_count += 1
 
-    # Flush any remaining batch
-    if batch:
-        print("inserting remaining batch")
-        insert_wiki_pages(batch, wiki_collection)
-        print(f"Inserted a total of {file_count} pages")
+        # Flush any remaining batch
+        if batch:
+            print("inserting remaining batch")
+            insert_wiki_pages(batch, wiki_collection)
+            print(f"Inserted a total of {file_count} pages")
 
 def create_wiki_collection():
     if utility.has_collection('wiki'):
