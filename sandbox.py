@@ -200,11 +200,26 @@ def insert_wiki_pages(batch, collection):
         exit(1)
 
 def truncate_to_bytes(s, max_bytes):
-    """Truncate string `s` to `max_bytes`."""
-    encoded = s.encode('utf-8')
+    """
+    Truncate a string to the specified byte length without breaking utf-8 encoding.
+    
+    Args:
+    - s (str): The input string.
+    - max_bytes (int): The maximum byte length.
+
+    Returns:
+    - str: The truncated string.
+    """
+    
+    # Step 1: Filter out characters that are not representable in utf8 (3 bytes max)
+    s = ''.join(ch for ch in s if len(ch.encode('utf8')) <= 3)
+    
+    # Step 2: Truncate string based on byte length
+    encoded = s.encode('utf8')
     while len(encoded) > max_bytes:
         s = s[:-1]
-        encoded = s.encode('utf-8')
+        encoded = s.encode('utf8')
+    
     return s
 
 def iterate_pages(file_name, start_line=0):
