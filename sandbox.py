@@ -16,7 +16,7 @@ import multiprocessing
 MODEL = 'bert-base-uncased'
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 768 
-INSERTION_BATCH_SIZE = 200
+INSERTION_BATCH_SIZE = 5000
 WORKERS = 32
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 #articles_filename = './wiki_pages/page_0.xml'
@@ -79,15 +79,14 @@ def parse_wiki_page(page_text, tokenizer):
     title_tokens = tokenizer(title, add_special_tokens=True, truncation=True, padding="max_length", return_attention_mask=True, return_tensors="pt")
     title_tokens = {k: v.to('cuda:0') for k, v in title_tokens.items()}
     #truncate the strings
-    title = truncate_to_bytes(title, 1024*2)
-    body = truncate_to_bytes(body, 65535*2)
-    description = truncate_to_bytes(description, 12100*2)
-    categories =   truncate_to_bytes(categories, 1024*2)
-    image_file =  truncate_to_bytes(image_file, 2048*2)
-    redirect_title =    truncate_to_bytes(redirect_title, 1024*2)
-    sha1 =  truncate_to_bytes(sha1, 510*2)
+    title = truncate_to_bytes(title, 1024)
+    body = truncate_to_bytes(body, 65535)
+    description = truncate_to_bytes(description, 12100)
+    categories =   truncate_to_bytes(categories, 1024)
+    image_file =  truncate_to_bytes(image_file, 2048)
+    redirect_title =    truncate_to_bytes(redirect_title, 1024)
+    sha1 =  truncate_to_bytes(sha1, 510)
 
-    print(id)
     return {
         'id': id,
         'title': title,
@@ -116,7 +115,7 @@ def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collectio
     batch = []
     file_count = 0
     futures = []
-
+    start_time = time.time()
     with ProcessPoolExecutor(max_workers=WORKERS) as executor:
         for page in iterate_pages(articles_filename):
             future = executor.submit(parse_wiki_page, page, tokenizer)  # only parse, don't embed
@@ -133,7 +132,9 @@ def insert_pages_in_parallel(articles_filename, tokenizer, model, wiki_collectio
                     if file_count % INSERTION_BATCH_SIZE == 0:
                         print("inserting batch")
                         insert_wiki_pages(batch, wiki_collection)
-                        print(f"Inserted {file_count} pages")
+                        print(f"Inserted {file_count} pages in {time.time() - start_time} seconds")
+                        # show avg rate of insertion
+                        print(f"Insertion rate: {file_count / (time.time() - start_time)} pages per second")
                         batch.clear()
                 futures.clear()
 
