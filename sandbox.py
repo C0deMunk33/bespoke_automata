@@ -18,8 +18,8 @@ MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
 
 TOKENIZATION_BATCH_SIZE = 1000 
 DIMENSION = 384 
-INSERTION_BATCH_SIZE = 5000
-WORKERS = 32
+INSERTION_BATCH_SIZE = 7500
+WORKERS = 50
 articles_filename ='enwiki-20231001-pages-articles-multistream.xml'
 #articles_filename = './wiki_pages/page_0.xml'
 
@@ -74,11 +74,12 @@ def parse_wiki_page(page_text):
     sha1_start = page_text.find('<sha1>') + 6
     sha1_end = page_text.find('</sha1>')
     sha1 = page_text[sha1_start:sha1_end]
+    '''
     numbers = []
     for word in body.split():
         if word.isnumeric():
             numbers.append(float(word))
-    
+    '''
     title_tokens = title  # you'll pass this directly to embed_title or embed_titles_batch
 
     #truncate the strings
@@ -249,43 +250,6 @@ def iterate_pages(file_name, start_line=0):
 
 
 
-def insert_pages(articles_filename, model, wiki_collection):
-    batch = []
-    file_count = 0
-    start_time = time.time()
-    
-    for page in iterate_pages(articles_filename):
-        parsed_page = parse_wiki_page(page)
-        title_vector = embed_title(parsed_page['title_tokens'], model)
-        parsed_page['title_vector'] = title_vector
-        del parsed_page['title_tokens']
-        batch.append(parsed_page)
-        file_count += 1
-
-        if file_count % INSERTION_BATCH_SIZE == 0:
-            print("inserting batch")
-            insert_wiki_pages(batch, wiki_collection)
-            print(f"Inserted {file_count} pages in {time.time() - start_time} seconds")
-            # show avg rate of insertion
-            print(f"Insertion rate: {file_count / (time.time() - start_time)} pages per second")
-            batch.clear()
-
-    # Flush any remaining batch
-    if batch:
-        print("inserting remaining batch")
-        insert_wiki_pages(batch, wiki_collection)
-        print(f"Inserted a total of {file_count} pages")
-
-def main():
-    logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
-    model = SentenceTransformer(MODEL).to('cuda:0')
-    wiki_collection = create_wiki_collection()
-    insert_pages(articles_filename, model, wiki_collection)
-
-if __name__ == '__main__':
-    connections.connect(host='192.168.0.8', port='19530')
-    main()
-'''Multitrhead:
 def main():
     logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
     model = SentenceTransformer(MODEL).to('cuda:0')
@@ -299,4 +263,4 @@ if __name__ == '__main__':
     multiprocessing.set_start_method('spawn', force=True)
     main()
 
-    '''
+    
