@@ -5,8 +5,8 @@ import os
 app = Flask(__name__)
 
 # Default model path
-model_path = os.path.join(os.getcwd(), 'mistral_model')
-model = AutoModelForCausalLM.from_pretrained(model_path)
+model_path = "../../models/Mistral-7B-Instruct"
+model = AutoModelForCausalLM.from_pretrained(model_path).to('cuda')
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 
 @app.route('/load_model', methods=['POST'])
@@ -45,6 +45,26 @@ def generate_text():
     generated_text = tokenizer.batch_decode(generated_ids)[0]
     
     return jsonify({'generated_text': generated_text})
+
+def generate(prompt):
+    # Prepare the text input for the model
+    model_inputs = tokenizer([prompt], return_tensors="pt")
+    
+    # Generate a response with optional LLM parameters
+    generated_ids = model.generate(
+        **model_inputs, 
+        max_length=100, 
+        temperature=1.0, 
+        do_sample=True
+    )
+    generated_text = tokenizer.batch_decode(generated_ids)[0]
+    
+    return generated_text
+
+
+result = generate("Hello, my name is")
+print(result)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
