@@ -35,6 +35,44 @@
 
 	}
 
+	async function searchMilvus(collectionName, vector, token, outputFields = [], filter = "", limit = 100, offset = 0) {
+		const MILVUS_HOST = 'YOUR_MILVUS_HOST'; // Replace with your Milvus host
+		const MILVUS_PORT = 'YOUR_MILVUS_PORT'; // Replace with your Milvus port
+	
+		const url = `http://${MILVUS_HOST}:${MILVUS_PORT}/v1/vector/search`;
+		const headers = {
+			'Authorization': `Bearer ${token}`,
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		};
+	
+		const body = {
+			collectionName: collectionName,
+			vector: vector,
+			outputFields: outputFields,
+			filter: filter,
+			limit: limit,
+			offset: offset
+		};
+	
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(body)
+			});
+	
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			
+			return await response.json();
+		} catch (error) {
+			console.error('Error during Milvus API call:', error);
+		}
+	}
+	
+
 
 	class EventEmitter {
 		constructor() {
