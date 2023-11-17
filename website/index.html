@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Image with Placeholder</title>
+    <style>
+        /* Full viewport height and width */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000000; 
+
+        /* Centering the container */
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* Image styles */
+        img.centered-image {
+            max-width: 90%; /* Make sure image doesn't overflow the viewport */
+            max-height: 90%;
+        }
+    </style>
+</head>
+<body>
+    <div class="center-container">
+        <img src="background.jpg" alt="Centered Image" class="centered-image">
+    </div>
+</body>
+</html>

@@ -8,6 +8,34 @@
 	}
 
 
+
+	const gpt_endpoint = 'https://api.openai.com/v1/chat/completions';
+	
+	
+	call_gpt = async function(messages, api_key, url=gpt_endpoint) { 
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${api_key}`
+		  };
+
+		  const data = {
+			model: "gpt-3.5-turbo",
+			messages: messages,
+			max_tokens: 2000
+		  };
+		
+		  const response = await fetch(url, {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(data)
+		  });
+		
+		  const responseData = await response.json();
+		  return responseData.choices[0].message.content;
+
+	}
+
+
 	class EventEmitter {
 		constructor() {
 			this.events = {};
@@ -1074,6 +1102,103 @@
 		this.setOutputData(0, llm_response);
 	}
 
+	function GPT_Node() {
+		this.addInput("system", "string");
+		this.addInput("user", "string");
+		this.addInput("server url", "string")
+		this.addInput("api key", "string");
+
+		// yes/no switch widget for memory on/off
+		this.properties = {
+			server_url: "",
+			api_key: "",
+			buffer_length: 10,
+			chat_buffer: [],
+			last_user_input: "",
+			last_output: ""
+		};
+
+		// buffer length widget
+		this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length, "buffer_length", {precision:0, step:10});
+		// clear buffer button
+		this.addInput("clear", LiteGraph.ACTION);
+		this.addWidget("button","Clear Buffer","", ()=>{
+			this.properties.buffer = [];
+			this.properties.last_user_input = "";
+			this.properties.last_output = "";
+		});
+
+		this.addOutput("out", "string");
+	}
+	GPT_Node.title = "GPT";
+	GPT_Node.prototype.onExecute = async function() {
+		let system = this.getInputData(0);
+		if(system === undefined) {
+			this.setOutputData(0, "");
+			return;
+		}
+
+		let user = this.getInputData(1);
+		if(user === undefined || user === "") {
+			this.setOutputData(0, "");
+			return;
+		}
+
+		if(user === this.properties.last_user_input) {
+			this.setOutputData(0, this.properties.last_output);
+			return;
+		}
+
+		if(this.getInputData(2) !== undefined) {
+			this.properties.server_url = this.getInputData(2);
+		} else {
+			this.properties.server_url = gpt_endpoint;
+		}
+
+		let api_key = this.getInputData(3);
+		if(api_key === undefined) {
+			console.log("GPT API key not set");
+			this.setOutputData(0, "");
+			return;
+		}
+
+		let system_role = {"role": "system", "content": system};
+
+		this.properties.api_key = api_key;
+		this.properties.buffer.push({"role": "user", "content": user});
+
+		// check for buffer overflow
+		if(this.properties.buffer.length > this.properties.buffer_length) {
+			this.properties.buffer.shift();
+		}
+
+		let messages = this.properties.buffer.map((item) => item);
+		// prepend system message
+		messages.unshift(system_role);
+
+		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url);
+		console.log(gpt_response);
+		this.properties.last_user_input = user;
+		this.properties.last_output = gpt_response;
+
+		this.properties.buffer.push({"role": "assistant", "content": gpt_response});
+		this.setOutputData(0, gpt_response);
+	}
+
+	function Password_Node() {
+		// just a text input node that hides the text and an output
+		this.addOutput("out", "string");
+
+		this.properties = {
+			password: ""
+		};
+		this.text_widget = this.addWidget("text","Password",this.properties.password, "password");
+	}
+	Password_Node.title = "Password";
+	Password_Node.prototype.onExecute = function() {
+		this.setOutputData(0, this.text_widget.value);
+	}
+
 	function Llama_Node_With_Memory() {
 		this.addInput("constitution", "string");
 		this.addInput("instruction", "string");
@@ -1147,8 +1272,6 @@
 		this.setOutputData(2, JSON.stringify([this.properties.chat_buffer[this.properties.chat_buffer.length - 2], this.properties.chat_buffer[this.properties.chat_buffer.length - 1]]));
 	}
 
-	
-	
 	//audio generation node, text in, play audio out
 	function Audio_Generation_Node(){
 		this.addInput("text", "string");
@@ -1228,6 +1351,98 @@
 
 		
 	}
+
+	function Prompt_Gate_GPT(){
+		this.addInput("in", "string");
+		this.addInput("context", "string");
+		this.addInput("system", "string");
+		this.addInput("prompt", "string");
+		this.addInput("server url", "string");
+		this.addInput("api key", "string");
+
+		this.addOutput("yes", LiteGraph.ACTION);
+		this.addOutput("no", LiteGraph.ACTION);
+		this.addOutput("yes", "string");
+		this.addOutput("no", "string");
+		this.addOutput("reasoning", "string");
+		this.properties = {
+			prompt: "",
+			url: gpt_endpoint,
+			api_key: "",
+			reasoning: "",
+			last_input: ""
+		 };
+		this.prompt_widget = this.addWidget("text","Prompt",this.properties.prompt, "prompt");
+
+	}
+	Prompt_Gate_GPT.title = "Prompt Gate (GPT)";
+	Prompt_Gate_GPT.prototype.onExecute = async function() {
+		let in_prompt = this.getInputData(3)||"";
+		// trim the in_prompt
+		in_prompt = in_prompt.trim();
+		// needs to check for if input(3) isn't undefined, isn't blank, and is different from last prompt, etc
+		if(in_prompt !== undefined && in_prompt !== "" && in_prompt !== this.properties.prompt) {
+			this.properties.prompt = in_prompt;
+			this.prompt_widget.value = this.properties.prompt;
+		} else if (this.prompt_widget.value !== this.properties.prompt) {
+			this.properties.prompt = this.prompt_widget.value;
+		}
+
+		let input = this.getInputData(0);
+		if(input === undefined || input === "") {
+			this.setOutputData(2, "");
+			this.setOutputData(3, "");
+			this.properties.last_input = "";
+			return;
+		} else if(input === this.properties.last_input) {
+			return;
+		} else {
+			this.properties.last_input = input.trim();
+			
+		}
+
+		let context = this.getInputData(1) || "";
+		let system = this.getInputData(2) || "";
+
+		if (context !== "") {
+			system += " Answer the question below given the following context: " + context 
+		}
+		system += " Answer the question below about this text with yes or no, followed by paragraph on your reasoning: " + input;
+
+		let server_url = this.getInputData(4) || gpt_endpoint;
+		let api_key = this.getInputData(5);
+		if(api_key === undefined) {
+			console.log("GPT API key not set");
+			this.setOutputData(2, "");
+			this.setOutputData(3, "");
+			return;
+		}
+
+		let messages = [];
+		messages.push({"role": "system", "content": system});
+		messages.push({"role": "user", "content": this.properties.prompt});
+
+		let gpt_response = await call_gpt(messages, api_key, server_url);
+		console.log(gpt_response);
+		
+		this.properties.reasoning = gpt_response;
+		this.setOutputData(4, gpt_response);
+
+		const positive_words = ["yes", "yeah"]
+
+		if(containsWords(positive_words,gpt_response.toLowerCase())) {
+			console.log("yes")
+			this.trigger("yes", this.properties.last_input);
+			this.setOutputData(2, this.properties.last_input);
+			this.setOutputData(3, "");
+		}
+		else {
+			this.trigger("no", this.properties.last_input);
+			this.setOutputData(2, "");
+			this.setOutputData(3, this.properties.last_input);
+		}
+	}
+
 
 	// prefix text node
 	function Prefix_Text_Node(){
@@ -1896,6 +2111,9 @@
 			JSON_API_Node: JSON_API_Node,
 			Emit_Node: Emit_Node,
 			Shared_Chat_Buffer_Node: Shared_Chat_Buffer_Node,
-			Event_Text_Receiver_Node: Event_Text_Receiver_Node
+			Event_Text_Receiver_Node: Event_Text_Receiver_Node,
+			GPT_Node: GPT_Node,
+			Password_Node: Password_Node,
+			Prompt_Gate_GPT: Prompt_Gate_GPT
 		};
 	}

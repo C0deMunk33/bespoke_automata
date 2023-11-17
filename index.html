@@ -299,6 +299,12 @@
 		LiteGraph.registerNodeType("Storage/Shared Chat Buffer", Shared_Chat_Buffer_Node );
 		// Event_Text_Receiver_Node
 		LiteGraph.registerNodeType("Control/Event Receiver", Event_Text_Receiver_Node );
+		// GPT_Node
+		LiteGraph.registerNodeType("LLM/GPT", GPT_Node );
+		// Password_Node
+		LiteGraph.registerNodeType("Text/Password", Password_Node );
+		//Prompt_Gate_GPT
+		LiteGraph.registerNodeType("Control/Prompt Gate (GPT)", Prompt_Gate_GPT );
 	}
 
 	var graph = new LGraph();

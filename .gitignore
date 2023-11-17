@@ -1,6 +1,9 @@
 # Misc
 enwiki-20231001-pages-articles-multistream.xml
 
+# Private
+.openai
+
 # Logs
 logs
 *.log

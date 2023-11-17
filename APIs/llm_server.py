@@ -45,7 +45,8 @@ def generate_text():
 def get_text(prompt):
     return generator(prompt, max_length=100, do_sample=True, temperature=1.0)[0]['generated_text']
 
-get_text("Hello, my name is")
+text = get_text("Hello, my name is")
+print(text)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
