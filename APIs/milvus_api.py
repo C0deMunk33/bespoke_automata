@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
-
+import json
+import re
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 app = Flask(__name__)
 from sentence_transformers import SentenceTransformer
@@ -45,7 +46,7 @@ def get_collection(collection_name):
 
 # query_collection takes in a vector, a collection, and a top_k value
 # and returns the top_k most similar vectors to the input vector
-def query_collection(vector, collection, top_k):
+def query_collection(vector, collection, top_k, vector_field_name='tag_vector'):
     search_params = {
         "metric_type": "L2", 
         "offset": 0, 
@@ -53,9 +54,61 @@ def query_collection(vector, collection, top_k):
         "params": {"nprobe": 10}
     }
 
-    results = collection.search(vector, "tag_vector", search_params, top_k=top_k)
+    results = collection.search(vector, vector_field_name, search_params, top_k)
     return results
 
+def query_wiki(query_vector, top_k):
+    collection = get_collection('wiki')
+    results = query_collection(query_vector, collection, top_k, "title_vector")
+    return results
+
+def get_wiki_descriptions(text, top_k):   
+
+    text_vectors = vectorize_text_batch([text], model)
+    result = query_wiki(text_vectors, top_k)
+    collection = get_collection('wiki')
+    url_pattern = r'(http[s]?://|www\.)\S+'
+    out_text = ""
+    # iterate over results
+    for res in result[0]:
+        item = collection.query(
+            expr=f'id in {[res.id]}',
+            output_fields=['title', 'body',"redirect_title", "description"]
+        )[0]
+        if(item['redirect_title'] != ""):
+            item = collection.query(
+                expr=f'title in {[item["redirect_title"]]}',
+                output_fields=['title', 'body',"redirect_title", "description"]
+            )[0]
+
+        description_text = item["description"]
+        # remove [] and '' as well as *
+        description_text = description_text.replace("[", "")
+        description_text = description_text.replace("]", "")
+        description_text = description_text.replace("{", "")
+        description_text = description_text.replace("}", "")
+        # &lt
+        description_text = description_text.replace("&lt;/small", "")
+        description_text = description_text.replace("&lt;/", "")
+        description_text = description_text.replace("&lt;", "")
+        # &gt
+        description_text = description_text.replace("&gt;/small", "")
+        description_text = description_text.replace("small&gt;", "")
+        description_text = description_text.replace("&gt;", "")
+        description_text = description_text.replace("'", "")
+        description_text = description_text.replace("**", "")
+        description_text = description_text.replace("==", "")
+        # |
+        description_text = description_text.replace("|", "")
+        # &quot;
+        description_text = description_text.replace("&quot;", "\"")
+        # url=
+        description_text = description_text.replace("url=", "")
+        # remove web links, use regex
+        description_text = re.sub(url_pattern, '', description_text)
+        
+        out_text += description_text
+    return out_text
 
 @app.route('/create_collection', methods=['POST'])
 def create_collection():
@@ -63,8 +116,6 @@ def create_collection():
     collection_name = data.get('collection_name')
     collection = get_collection(collection_name)
     return jsonify({'collection_name': collection_name})
-
-
 
 
 @app.route('/tokenize_batch', methods=['POST'])
@@ -79,11 +130,30 @@ def tokenize_batch():
 
     return jsonify({'tokens': tokens})
 
-if __name__ == '__main__':
-    text = "spanish inquisition"
-    text_vectors = vectorize_text_batch([text], model)
-    print(text_vectors)
-    result = query_collection(text_vectors, get_collection('wiki'), 10)
-    print(result)
 
-    #app.run(debug=True)
+@app.route("/wiki", methods=["POST"])
+def wiki():
+    data = request.json
+    text = data.get('text')
+    top_k = data.get('top_k', 10)
+
+    if text is None:
+        return jsonify({'error': 'No text provided'}), 400
+
+    out_text = get_wiki_descriptions(text, top_k)
+    # return as concatenated string
+    return jsonify({'wiki': out_text.join("/n")})
+
+# get that does wiki search from url param
+@app.route("/wiki/<text>", methods=["GET"])
+def wiki_get(text):
+    query_text = text.replace("+", " ")
+    top_k = 10
+    out_text = get_wiki_descriptions(query_text, top_k)
+    # return as concatenated string
+    return jsonify({'wiki': out_text.join("/n")})
+
+if __name__ == '__main__':
+    print(get_wiki_descriptions("hello world", 10))
+
+    app.run(host='0.0.0.0', port=5000, debug=True)
