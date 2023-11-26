@@ -35,44 +35,25 @@
 
 	}
 
-	async function searchMilvus(collectionName, vector, token, outputFields = [], filter = "", limit = 100, offset = 0) {
-		const MILVUS_HOST = 'YOUR_MILVUS_HOST'; // Replace with your Milvus host
-		const MILVUS_PORT = 'YOUR_MILVUS_PORT'; // Replace with your Milvus port
-	
-		const url = `http://${MILVUS_HOST}:${MILVUS_PORT}/v1/vector/search`;
+	query_wikipedia = async function(query, milvus_url, top_k=3) {
 		const headers = {
-			'Authorization': `Bearer ${token}`,
-			'Accept': 'application/json',
 			'Content-Type': 'application/json'
-		};
-	
-		const body = {
-			collectionName: collectionName,
-			vector: vector,
-			outputFields: outputFields,
-			filter: filter,
-			limit: limit,
-			offset: offset
-		};
-	
-		try {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers: headers,
-				body: JSON.stringify(body)
-			});
-	
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-			
-			return await response.json();
-		} catch (error) {
-			console.error('Error during Milvus API call:', error);
-		}
-	}
-	
+		  };
 
+		  const data = {
+			"query": query,
+			"top_k": top_k
+		  };
+		
+		  const response = await fetch(milvus_url + "/wiki", {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(data)
+		  });
+		
+		  const responseData = await response.json();
+		  return responseData;
+	}
 
 	class EventEmitter {
 		constructor() {
@@ -944,6 +925,57 @@
 				this.setOutputData(1, this.properties.class_key );
 			}
 		}
+	}
+
+	function Wiki_Query_Node(){
+		this.addInput("query", "string");
+		this.addInput("class key", "string");
+		this.addInput("record count", "number");
+		this.addInput("milvus url", "string");
+		this.addOutput("out", "string");
+		
+		this.properties = {
+			query: "",
+			result: "",
+			top_n: 3,
+			last_query: "",
+			last_result: "",
+			milvus_url: "http://192.168.0.8:5000"
+		};
+
+		//record count widget
+		this.record_count_widget = this.addWidget("number","Record Count",this.properties.top_n, "top_n", {precision:0, step:1});
+		//milvus url widget
+		this.milvus_url_widget = this.addWidget("text","Milvus URL",this.properties.milvus_url, "milvus_url");
+	}
+	Wiki_Query_Node.title = "Wiki Query";
+	Wiki_Query_Node.prototype.onExecute = async function() {
+		// set record count property
+		this.properties.top_n = this.record_count_widget.value;
+
+		// if record count input is not undefined, set record count property
+		if(this.getInputData(2) !== undefined && this.getInputData(2) > 0) {
+			this.properties.top_n = this.getInputData(2);
+			this.record_count_widget.value = this.getInputData(2);
+		}
+
+		// if query input is not undefined and not blank, query wikipedia
+		if(this.getInputData(0) !== undefined && this.getInputData(0) != ""
+			&& this.getInputData(0) !== this.properties.last_query) {
+			this.properties.query = this.getInputData(0);
+			let query = this.getInputData(0);
+			console.log("querying wikipedia with: " + query)
+			let result = await query_wikipedia(query, this.properties.milvus_url, this.properties.top_n);
+			
+			this.properties.last_query = this.properties.query;
+			this.properties.last_result = result.wiki;	
+		}
+
+		if(this.getInputData(3) !== undefined && this.getInputData(3) != "") {
+			this.properties.milvus_url = this.getInputData(3);
+			this.milvus_url_widget.value = this.getInputData(3);
+		}
+		this.setOutputData(0, this.properties.last_result );
 	}
 
 
@@ -2152,6 +2184,7 @@
 			Event_Text_Receiver_Node: Event_Text_Receiver_Node,
 			GPT_Node: GPT_Node,
 			Password_Node: Password_Node,
-			Prompt_Gate_GPT: Prompt_Gate_GPT
+			Prompt_Gate_GPT: Prompt_Gate_GPT,
+			Wiki_Query_Node: Wiki_Query_Node
 		};
 	}

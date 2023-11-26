@@ -134,7 +134,7 @@ def tokenize_batch():
 @app.route("/wiki", methods=["POST"])
 def wiki():
     data = request.json
-    text = data.get('text')
+    text = data.get('query')
     top_k = data.get('top_k', 10)
 
     if text is None:
