@@ -55,6 +55,27 @@
 		  return responseData;
 	}
 
+	query_milvus = async function(class_key, query, milvus_url, top_k=3) {
+		const headers = {
+			'Content-Type': 'application/json'
+		  };
+
+		  const data = {
+			"query": query,
+			"class_key": class_key,
+			"top_k": top_k
+		  };
+		
+		  const response = await fetch(milvus_url + "/" + class_key, {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(data)
+		  });
+		
+		  const responseData = await response.json();
+		  return responseData;
+	}
+
 	class EventEmitter {
 		constructor() {
 			this.events = {};
