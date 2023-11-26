@@ -62,7 +62,7 @@
 
 		  const data = {
 			"query": query,
-			"class_key": class_key,
+			"collection_name": class_key,
 			"top_k": top_k
 		  };
 		
