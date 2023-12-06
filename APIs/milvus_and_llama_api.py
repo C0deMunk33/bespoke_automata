@@ -174,6 +174,17 @@ def chat_completions():
     n_ctx = data.get('n_ctx')
     n_gpu_layers = data.get('n_gpu_layers')
     chat_format = data.get('chat_format')
+    print("messages")
+    print(messages)
+    print("model_path")
+    print(model_path)
+    print("n_ctx")
+    print(n_ctx)
+    print("n_gpu_layers")
+    print(n_gpu_layers)
+    print("chat_format")
+    print(chat_format)
+    
 
     if messages is None:
         return jsonify({'error': 'No messages provided'}), 400
@@ -196,6 +207,4 @@ def chat_completions():
 
 #*****************END LLAMA*****************
 if __name__ == '__main__':
-    print(get_wiki_descriptions("hello world", 10))
-
     app.run(host='0.0.0.0', port=5000, debug=True)
