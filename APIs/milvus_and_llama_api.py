@@ -169,6 +169,8 @@ def get_llama_chat_completion(messages, model_path, n_ctx, n_gpu_layers, chat_fo
 @app.route("/v1/chat/completions", methods=["POST"])
 def chat_completions():
     data = request.json
+    print("data")
+    print(data)
     messages = data.get('messages')
     model_path = data.get('model_path')
     n_ctx = data.get('n_ctx')
@@ -184,7 +186,7 @@ def chat_completions():
     print(n_gpu_layers)
     print("chat_format")
     print(chat_format)
-    
+
 
     if messages is None:
         return jsonify({'error': 'No messages provided'}), 400
