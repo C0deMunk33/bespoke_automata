@@ -6,7 +6,9 @@ app = Flask(__name__)
 from sentence_transformers import SentenceTransformer
 MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
 model = SentenceTransformer(MODEL)#.to('cuda:0')
-
+# CORS
+from flask_cors import CORS
+CORS(app)
 
 connections.connect(host='192.168.0.8', port='19530')
 
