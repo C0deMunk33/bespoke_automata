@@ -172,20 +172,9 @@ def chat_completions():
     print("data")
     print(data)
     messages = data.get('messages')
-    model_path = data.get('model_path')
-    n_ctx = data.get('n_ctx')
-    n_gpu_layers = data.get('n_gpu_layers')
-    chat_format = data.get('chat_format')
-    print("messages")
-    print(messages)
-    print("model_path")
-    print(model_path)
-    print("n_ctx")
-    print(n_ctx)
-    print("n_gpu_layers")
-    print(n_gpu_layers)
-    print("chat_format")
-    print(chat_format)
+    model_path = data.get('model')
+    n_ctx = data.get('max_tokens')
+   
 
 
     if messages is None:
@@ -197,13 +186,10 @@ def chat_completions():
     if n_ctx is None:
         return jsonify({'error': 'No n_ctx provided'}), 400
 
-    if n_gpu_layers is None:
-        return jsonify({'error': 'No n_gpu_layers provided'}), 400
-
-    if chat_format is None:
-        return jsonify({'error': 'No chat_format provided'}), 400
-
-    out_text = get_llama_chat_completion(messages, model_path, n_ctx, n_gpu_layers, chat_format)
+    
+    out_text = get_llama_chat_completion(messages, model_path, n_ctx, 100, "chatml")
+    print("out_text")
+    print(out_text)
     return jsonify({'chat': out_text})
 
 
