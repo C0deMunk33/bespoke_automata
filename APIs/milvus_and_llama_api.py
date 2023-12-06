@@ -162,7 +162,7 @@ from llama_cpp import Llama
 
 def get_llama_chat_completion(messages, model_path, n_ctx, n_gpu_layers, chat_format):
     llm = Llama(model_path=model_path, n_ctx=n_ctx, n_gpu_layers=n_gpu_layers, chat_format=chat_format)
-    llm.create_chat_completion(messages=messages)
+    llm.create_completion(messages=messages)
     return llm.get_chat_completion()
 
 # /v1/chat/completions post endpoint
