@@ -9,22 +9,26 @@
 
 
 
-	const gpt_endpoint = 'https://api.openai.com/v1/chat/completions';
+	const gpt_endpoint = '/v1/chat/completions';
+	const gpt_url = 'https://api.openai.com'
+	const default_gpt_model = "gpt-3.5-turbo";
 	
-	
-	call_gpt = async function(messages, api_key, url=gpt_endpoint) { 
+	call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model) { 
 		const headers = {
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${api_key}`
 		  };
 
 		  const data = {
-			model: "gpt-3.5-turbo",
+			model: model,
 			messages: messages,
-			max_tokens: 2000
+			max_tokens: 2000,
+			stream: false
 		  };
+		  final_url = url + gpt_endpoint;
+		  console.log("final url: " + final_url);
 		
-		  const response = await fetch(url, {
+		  const response = await fetch(final_url, {
 			method: 'POST',
 			headers: headers,
 			body: JSON.stringify(data)
@@ -66,7 +70,7 @@
 			"top_k": top_k
 		  };
 		
-		  const response = await fetch(milvus_url + "/" + class_key, {
+		  const response = await fetch(milvus_url + "/query_collection", {
 			method: 'POST',
 			headers: headers,
 			body: JSON.stringify(data)
@@ -74,6 +78,73 @@
 		
 		  const responseData = await response.json();
 		  return responseData;
+	}
+
+	create_milvus_collection = async function(class_key, milvus_url) {
+		if(class_key === "" || class_key === "wiki") {
+			return;
+		}
+		const headers = {
+			'Content-Type': 'application/json'
+		  };
+
+		  const data = {
+			"collection_name": class_key,
+			"dimension": 768
+		  };
+		
+		  const response = await fetch(milvus_url + "/create_collection", {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(data)
+		  });
+		
+		  const responseData = await response.json();
+		  return responseData;
+	}
+
+	insert_milvus = async function(class_key, text, milvus_url) {
+		const headers = {
+			'Content-Type': 'application/json'
+		  };
+
+		  const data = {
+			"collection_name": class_key,
+			"vectors": [text]
+		  };
+		
+		  const response = await fetch(milvus_url + "/insert", {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(data)
+		  });
+		
+		  const responseData = await response.json();
+		  return responseData;
+	}
+
+	delete_milvus_collection = async function(class_key, milvus_url) {
+		if (class_key === "" || class_key === "wiki") {
+			return;
+		}
+
+		const headers = {
+			'Content-Type': 'application/json'
+
+		};
+
+		const data = {
+			"collection_name": class_key
+		};
+
+		const response = await fetch(milvus_url + "/drop_collection", {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(data)
+		});
+
+		const responseData = await response.json();
+		return responseData;
 	}
 
 	class EventEmitter {
@@ -1198,6 +1269,7 @@
 		this.addInput("user", "string");
 		this.addInput("server url", "string")
 		this.addInput("api key", "string");
+		this.addInput("model", "string");
 
 		// yes/no switch widget for memory on/off
 		this.properties = {
@@ -1206,7 +1278,8 @@
 			buffer_length: 10,
 			chat_buffer: [],
 			last_user_input: "",
-			last_output: ""
+			last_output: "",
+			model: "gpt-3.5-turbo"
 		};
 
 		// buffer length widget
@@ -1253,6 +1326,9 @@
 			return;
 		}
 
+		if(this.getInputData(4) !== undefined && this.getInputData(4) !== "") {
+			this.properties.model = this.getInputData(4);
+		}
 		let system_role = {"role": "system", "content": system};
 
 		this.properties.api_key = api_key;
@@ -1267,7 +1343,7 @@
 		// prepend system message
 		messages.unshift(system_role);
 
-		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url);
+		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model);
 		console.log(gpt_response);
 		this.properties.last_user_input = user;
 		this.properties.last_output = gpt_response;

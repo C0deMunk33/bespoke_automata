@@ -7,6 +7,7 @@ from sentence_transformers import SentenceTransformer
 MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
 model = SentenceTransformer(MODEL)#.to('cuda:0')
 
+
 connections.connect(host='192.168.0.8', port='19530')
 
 def vectorize_text_batch(text_batch, model):
@@ -153,6 +154,45 @@ def wiki_get(text):
     # return as concatenated string
     return jsonify({'wiki': out_text.join("/n")})
 
+#*****************LLAMA*****************
+
+from llama_cpp import Llama
+
+def get_llama_chat_completion(messages, model_path, n_ctx, n_gpu_layers, chat_format):
+    llm = Llama(model_path=model_path, n_ctx=n_ctx, n_gpu_layers=n_gpu_layers, chat_format=chat_format)
+    llm.create_chat_completion(messages=messages)
+    return llm.get_chat_completion()
+
+# /v1/chat/completions post endpoint
+@app.route("/v1/chat/completions", methods=["POST"])
+def chat_completions():
+    data = request.json
+    messages = data.get('messages')
+    model_path = data.get('model_path')
+    n_ctx = data.get('n_ctx')
+    n_gpu_layers = data.get('n_gpu_layers')
+    chat_format = data.get('chat_format')
+
+    if messages is None:
+        return jsonify({'error': 'No messages provided'}), 400
+
+    if model_path is None:
+        return jsonify({'error': 'No model_path provided'}), 400
+
+    if n_ctx is None:
+        return jsonify({'error': 'No n_ctx provided'}), 400
+
+    if n_gpu_layers is None:
+        return jsonify({'error': 'No n_gpu_layers provided'}), 400
+
+    if chat_format is None:
+        return jsonify({'error': 'No chat_format provided'}), 400
+
+    out_text = get_llama_chat_completion(messages, model_path, n_ctx, n_gpu_layers, chat_format)
+    return jsonify({'chat': out_text})
+
+
+#*****************END LLAMA*****************
 if __name__ == '__main__':
     print(get_wiki_descriptions("hello world", 10))
 
