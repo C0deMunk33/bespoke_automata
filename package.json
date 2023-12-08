@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@zilliz/milvus2-sdk-node": "^2.3.2",
+    "electron-forge": "^5.2.4",
     "electron-squirrel-startup": "^1.0.0"
   }
 }

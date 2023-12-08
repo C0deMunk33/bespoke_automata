@@ -389,7 +389,205 @@
 
 		return llm_response.results[0].text;
 	}
-	  
+
+	async function create_simple_vector_db_collection(collection_name, url) {
+		let insert_response = await fetch(url + "/create_collection", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name, dimension: 768 })
+		});
+	}
+
+	async function insert_simple_vector_db(collection_name, vectors, url) {
+		let insert_response = await fetch(url + "/add_document", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name, vectors: vectors })
+		});
+	}
+	// delete a collection from simple vector db
+	async function delete_simple_vector_db_collection(collection_name, url) {
+		let insert_response = await fetch(url + "/delete_collection", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name })
+		});
+	}
+
+	// delete a document from simple vector db
+	async function delete_simple_vector_db_document(collection_name, document_id, url) {
+		let insert_response = await fetch(url + "/delete_document", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name, document_id: document_id })
+		});
+
+	}
+	//get_document_by_id
+	async function get_document_by_id(collection_name, document_id, url) {
+		let insert_response = await fetch(url + "/get_document_by_id", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name, document_id: document_id })
+		});
+		return insert_response.json();
+	}
+	//get_document_by_title
+	async function get_document_by_title(collection_name, title, url) {
+		let insert_response = await fetch(url + "/get_document_by_title", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name, title: title })
+		});
+		return insert_response.json();
+	}
+	//get_similar_documents_by_cos
+	async function get_similar_documents_by_cos(collection_name, document_id, top_k, url) {
+		let insert_response = await fetch(url + "/get_similar_documents_by_cos", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name, document_id: document_id, top_k: top_k })
+		});
+		return insert_response.json();
+	}
+
+	//get_similar_documents_by_euclidean
+	async function get_similar_documents_by_euclidean(collection_name, document_id, top_k, url) {
+		console.log(url)
+		let insert_response = await fetch(url + "/get_similar_documents_by_euclidean", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name, document_id: document_id, top_k: top_k })
+		});
+		return insert_response.json();
+	}
+
+	//collection_exists
+	async function collection_exists(collection_name, url) {
+		let insert_response = await fetch(url + "/collection_exists", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ collection_name: collection_name })
+		});
+		return insert_response.json();
+	}
+
+
+	/////////////////////NODES START HERE/////////////////////////
+	// simple vector db write node
+	function Simple_Vector_DB_Write_Node(){
+		this.addInput("in", "string");
+		this.addInput("collection", "string");
+		this.addInput("svdb_url", "string");
+		this.properties = { 
+			collection: "",
+			last_input: "" ,
+			svdb_url: ""
+		};
+		this.text_widget = this.addWidget("text","Collection",this.properties.collection, "collection");
+	}
+	Simple_Vector_DB_Write_Node.title = "Vector DB Write";
+	Simple_Vector_DB_Write_Node.prototype.onExecute = async function() {
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.collection = this.getInputData(1);
+			this.text_widget.value = this.getInputData(1);
+		}
+
+		if(this.properties.collection === "") {
+			console.log("no collection specified");
+			return;
+		}
+
+		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
+			this.properties.svdb_url = this.getInputData(2);
+		} else {
+			console.log("no simple vector db url specified");
+			return;
+		}
+
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "" && this.getInputData(0) !== this.properties.last_input) {
+			this.properties.last_input = this.getInputData(0);
+			console.log("writing to simple vector db");
+			console.log(this.properties.last_input);
+			console.log(this.properties.collection);
+			console.log(this.properties.svdb_url);
+			if(!(await collection_exists(this.properties.collection, this.properties.svdb_url))) {
+				//create collection
+				console.log("creating collection");
+				let create_response = await create_simple_vector_db_collection(this.properties.collection, this.properties.svdb_url);
+				console.log(create_response);
+			}
+
+			let insert_response = await insert_simple_vector_db(this.properties.collection, [this.properties.last_input], this.properties.svdb_url);
+		}
+	}
+
+	// simple vector db read node
+	function Simple_Vector_DB_Read_Node(){
+		this.addInput("query", "string");
+		this.addInput("collection", "string");
+		this.addInput("svdb_url", "string");
+		this.addOutput("out", "string");
+		this.properties = {
+			collection: "",
+			svdb_url: ""		
+		};
+		this.text_widget = this.addWidget("text","Collection",this.properties.collection, "collection");
+	}
+	Simple_Vector_DB_Read_Node.title = "Vector DB Read";
+	Simple_Vector_DB_Read_Node.prototype.onExecute = async function() {
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.collection = this.getInputData(1);
+			this.text_widget.value = this.getInputData(1);
+		}
+
+		if(this.properties.collection === "") {
+			console.log("no collection specified");
+			return;
+		}
+
+		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
+			this.properties.svdb_url = this.getInputData(2);
+		} else {
+			console.log("no simple vector db url specified");
+			return;
+		}
+
+		// check if collection exists
+		if(!(await collection_exists(this.properties.collection, this.properties.svdb_url))) {
+			console.log("collection does not exist");
+			return;
+		}
+
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			console.log("reading from simple vector db");
+			console.log(this.getInputData(0));
+			console.log(this.properties.collection);
+			console.log(this.properties.svdb_url);
+			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0),1, this.properties.svdb_url);
+			console.log(response);
+			this.setOutputData(0, response);
+		}
+	}
+
 	// Text node
 	function Text_Node(){
 		this.addOutput("out", "string");
@@ -2282,6 +2480,8 @@
 			GPT_Node: GPT_Node,
 			Password_Node: Password_Node,
 			Prompt_Gate_GPT: Prompt_Gate_GPT,
-			Wiki_Query_Node: Wiki_Query_Node
+			Wiki_Query_Node: Wiki_Query_Node,
+			Simple_Vector_DB_Read_Node: Simple_Vector_DB_Read_Node,
+			Simple_Vector_DB_Write_Node: Simple_Vector_DB_Write_Node
 		};
 	}
