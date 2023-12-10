@@ -501,6 +501,15 @@
 
 
 	/////////////////////NODES START HERE/////////////////////////
+
+	// brain node
+	// properties:
+	// local: true or false, this will load a brain into memory as a subgraph 
+	// url: url of brain, if local is true, this will be ignored
+	// brain_name: name of brain, if local is true, this will be the filename of the brain in the brains folder
+
+	
+
 	// simple vector db write node
 	function Simple_Vector_DB_Write_Node(){
 		this.addInput("in", "string");
