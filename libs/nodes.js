@@ -400,13 +400,18 @@
 		});
 	}
 
-	async function insert_simple_vector_db(collection_name, vectors, url) {
+	async function insert_simple_vector_db(collection_name, title, text, url) {
+		console.log("inserting into simple vector db")
 		let insert_response = await fetch(url + "/add_document", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ collection_name: collection_name, vectors: vectors })
+			body: JSON.stringify({ 
+				collection_name: collection_name, 
+				title: title,
+				text: text 
+			})
 		});
 	}
 	// delete a collection from simple vector db
@@ -466,16 +471,20 @@
 	}
 
 	//get_similar_documents_by_euclidean
-	async function get_similar_documents_by_euclidean(collection_name, document_id, top_k, url) {
+	async function get_similar_documents_by_euclidean(collection_name, query, top_n, url) {
 		console.log(url)
-		let insert_response = await fetch(url + "/get_similar_documents_by_euclidean", {
+		let query_response = await fetch(url + "/get_similar_documents_by_euclidean", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ collection_name: collection_name, document_id: document_id, top_k: top_k })
+			body: JSON.stringify({ 
+				collection_name: collection_name, 
+				text: query,
+				top_n: top_n
+			 })
 		});
-		return insert_response.json();
+		return (await query_response.json()).text;
 	}
 
 	//collection_exists
@@ -529,14 +538,16 @@
 			console.log(this.properties.last_input);
 			console.log(this.properties.collection);
 			console.log(this.properties.svdb_url);
-			if(!(await collection_exists(this.properties.collection, this.properties.svdb_url))) {
+			let collection_exists_response = await collection_exists(this.properties.collection, this.properties.svdb_url);
+			console.log(collection_exists_response);
+			if(!collection_exists_response.exists) {
 				//create collection
 				console.log("creating collection");
 				let create_response = await create_simple_vector_db_collection(this.properties.collection, this.properties.svdb_url);
 				console.log(create_response);
 			}
 
-			let insert_response = await insert_simple_vector_db(this.properties.collection, [this.properties.last_input], this.properties.svdb_url);
+			let insert_response = await insert_simple_vector_db(this.properties.collection, this.properties.last_input, this.properties.last_input, this.properties.svdb_url);
 		}
 	}
 

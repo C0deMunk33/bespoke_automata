@@ -71,12 +71,17 @@ def get_similar_documents_by_cos():
 # get similar documents by euclidean distance
 @app.route('/get_similar_documents_by_euclidean', methods=['POST'])
 def get_similar_documents_by_euclidean():
-    text1 = request.args.get('text')
-    top_n = int(request.args.get('top_n', 1))
+    text1 = request.json['text']
+    top_n = int(request.json['top_n'])
     vector = db.get_embedding(text1)
-    collection_name = request.args.get('collection_name')
+    collection_name = request.json['collection_name']
     results = db.vector_search_euclidean(collection_name, vector, top_n)
-    return jsonify(results)
+    print(results[0][1]['text'])
+    return jsonify({
+        'text': results[0][1]['text'],
+        'title': results[0][1]['title'],
+        'score': results[0][0]
+    })
 
 # collection exists
 @app.route('/collection_exists', methods=['POST'])
