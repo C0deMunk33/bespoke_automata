@@ -503,10 +503,143 @@
 	/////////////////////NODES START HERE/////////////////////////
 
 	// brain node
+	// handles a single pass of a brain
 	// properties:
-	// local: true or false, this will load a brain into memory as a subgraph 
+	// local: true or false, this will load a brain into memory as a subgraph. if local, creates a unique instance of the brain
 	// url: url of brain, if local is true, this will be ignored
 	// brain_name: name of brain, if local is true, this will be the filename of the brain in the brains folder
+	// input variables: json dictionary of input variables
+	// output variables: json dictionary of output variables
+	// inputs:
+	// input variables: json dictionary of input variables
+	// url: url of brain, if local is true, this will be ignored
+	// brain_name: name of brain, if local is true, this will be the filename of the brain in the brains folder
+	// outputs:
+	// output variables: json dictionary of output variables
+	function Brain_Node(){
+		this.addInput("input dict", "string");
+		this.addInput("url", "string");
+		this.addInput("brain_name", "string");
+		this.addOutput("output dict", "string");
+		this.properties = {
+			local: true,
+			url: "",
+			brain_name: "",
+			input_variables: {},
+			output_variables: {}
+		};
+		// local selection widget
+		this.local_widget = this.addWidget("toggle","Local",this.properties.local,"local");
+		// brain name widget
+		this.brain_name_widget = this.addWidget("text","Brain Name",this.properties.brain_name,"brain_name");
+	}
+	Brain_Node.title = "Brain";
+	Brain_Node.prototype.onExecute = async function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.input_variables = JSON.parse(this.getInputData(0));
+		}
+
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.url = this.getInputData(1);
+		}
+
+		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
+			this.properties.brain_name = this.getInputData(2);
+			this.brain_name_widget.value = this.getInputData(2);
+		}
+
+		if(this.properties.local) {
+			// load brain from local file
+			let brain = await load_brain(this.properties.brain_name);
+			// run brain
+			let output = await run_brain(brain, this.properties.input_variables);
+			// set output
+			this.setOutputData(0, JSON.stringify(output));
+		} else {
+			// call brain api
+			let output = await call_brain(this.properties.url, this.properties.input_variables);
+			// set output
+			this.setOutputData(0, JSON.stringify(output));
+		}
+
+	}
+
+	// variable forward node
+	// takes a json dictionary and extracts a variable from it
+	// properties:
+	// variable_name: name of variable to forward
+	// inputs:
+	// json dictionary to extract variable from
+	// variable name: name of variable to extract
+	// outputs:
+	// variable value: value of variable extracted
+	function Variable_Forward_Node(){
+		this.addInput("in dict", "string");
+		this.addInput("var name", "string");
+		this.addOutput("var value", "string");
+		this.properties = { 
+			variable_name: ""
+		};
+		this.text_widget = this.addWidget("text","Variable Name",this.properties.variable_name,"variable_name");
+	}
+	Variable_Forward_Node.title = "Variable Forward";
+	Variable_Forward_Node.prototype.onExecute = function() {
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.variable_name = this.getInputData(1);
+			this.text_widget.value = this.getInputData(1);
+		} else if (this.text_widget.value !== this.properties.variable_name) {
+			this.properties.variable_name = this.text_widget.value;
+		}
+
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			let input_dict = JSON.parse(this.getInputData(0));
+			this.setOutputData(0, input_dict[this.properties.variable_name]);
+		}
+	}
+
+	// dictionary assembler node
+	// takes a json dictionary and adds a variable to it
+	// properties:
+	// variable_name: name of variable to add
+	// variable_value: value of variable to add
+	// inputs:
+	// json dictionary to add variable to
+	// new variable name: name of variable to add
+	// new variable value: value of variable to add
+	// outputs:
+	// json dictionary with new variable added
+	function Dictionary_Assembler_Node(){
+		this.addInput("in dict", "string");
+		this.addInput("var name", "string");
+		this.addInput("var value", "string");
+		this.addOutput("out dict", "string");
+		this.properties = { 
+			variable_name: "",
+			variable_value: ""
+		};
+		this.text_widget = this.addWidget("text","Variable Name",this.properties.variable_name,"variable_name");
+	}
+	Dictionary_Assembler_Node.title = "Dictionary Assembler";
+	Dictionary_Assembler_Node.prototype.onExecute = function() {
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.variable_name = this.getInputData(1);
+			this.text_widget.value = this.getInputData(1);
+		}
+
+		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
+			this.properties.variable_value = this.getInputData(2);
+		}
+
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			let input_dict = JSON.parse(this.getInputData(0));
+			input_dict[this.properties.variable_name] = this.properties.variable_value;
+			this.setOutputData(0, JSON.stringify(input_dict));
+		} else {
+			let input_dict = {};
+			input_dict[this.properties.variable_name] = this.properties.variable_value;
+			this.setOutputData(0, JSON.stringify(input_dict));
+		}
+	}
 
 	
 
@@ -2502,6 +2635,10 @@
 			Prompt_Gate_GPT: Prompt_Gate_GPT,
 			Wiki_Query_Node: Wiki_Query_Node,
 			Simple_Vector_DB_Read_Node: Simple_Vector_DB_Read_Node,
-			Simple_Vector_DB_Write_Node: Simple_Vector_DB_Write_Node
+			Simple_Vector_DB_Write_Node: Simple_Vector_DB_Write_Node,
+			Brain_Node: Brain_Node,
+			Variable_Forward_Node: Variable_Forward_Node,
+			Dictionary_Assembler_Node:Dictionary_Assembler_Node
+
 		};
 	}
