@@ -1195,9 +1195,15 @@
                     console.log(output)
                     if (output && output.links) {
                         for (var j = 0; j < output.links.length; j++) {
+                            console.log("!!!!!!!!!!!!!!!!!!!")
+                            console.log(output.links[j])
+                            console.log("!!!!!!!!!!!!!!!!!!!")
+                            console.log(nodes)
+                            console.log("!!!!!!!!!!!!!!!!!!!")
+                            console.log(nodes[output.links[j]])
+                            console.log("!!!!!!!!!!!!!!!!!!!")
                             
-                            var link = this.links[output.links[j]];
-                            var targetNode = this.getNodeById(link.target_id);
+                            var targetNode = nodes[output.links[j]];
                             computeDepth(targetNode, currentDepth + 1);
                         }
                     }
@@ -1207,9 +1213,6 @@
     
         // Compute depths starting from nodes with no inputs
         nodes.forEach(node => {
-            console.log("!!!!!!!!!!!!!!!!!!!!!!!")
-            console.log(node.inputs)
-            console.log("!!!!!!!!!!!!!!!!!!!!!!!")
             if ( node.inputs === undefined || !node.inputs || node.inputs.length == 0
                 || node.inputs.every(input => input.link == null)
                 ) {
