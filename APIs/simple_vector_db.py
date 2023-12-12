@@ -55,7 +55,9 @@ class SimpleVectorDB:
         for id, doc in self.db[collection_name].items():
             score = self.get_euclidean_distance(doc['vector'], vector)
             results.append((score, doc))
-
+        # for each in results: print text
+        for each in sorted(results, key=lambda x: x[0], reverse=False):
+            print(each[1]['text'])
         return sorted(results, key=lambda x: x[0], reverse=False)[:top_n]
     
     def get_cos_simmilarity(self, v1, v2):

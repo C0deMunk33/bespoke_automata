@@ -391,6 +391,7 @@
 	}
 
 	async function create_simple_vector_db_collection(collection_name, url) {
+		console.log("creating collection: " + collection_name)
 		let insert_response = await fetch(url + "/create_collection", {
 			method: 'POST',
 			headers: {
@@ -401,7 +402,7 @@
 	}
 
 	async function insert_simple_vector_db(collection_name, title, text, url) {
-		console.log("inserting into simple vector db")
+		console.log("inserting into simple vector db: " + text)
 		let insert_response = await fetch(url + "/add_document", {
 			method: 'POST',
 			headers: {
@@ -2566,31 +2567,65 @@
 
 	}
 	
-	// event text receiver node, 0 inputs, 1 output, 1 widget for event name
-	function Event_Text_Receiver_Node() {
-		this.eventEmmiter = eventEmitter;
-		this.addOutput("out", "string");
-		this.addInput("event name", "string");
-		this.properties = {
-			"event_name": ""
-		};
-		this.event_name_widget = this.addWidget("text","Event Name",this.properties.event_name, "event_name");
-	}
-	Event_Text_Receiver_Node.title = "Event Text Receiver";
-	Event_Text_Receiver_Node.prototype.onLoad = function(node) {
-		node.eventEmmiter.on(node.properties.event_name, (text)=>{
-			node.setOutputData(0, text);
-		}, node);
-	}
-	Event_Text_Receiver_Node.prototype.onExecute = function() {
-		// update properties
-		if(this.event_name_widget.value !== "") {
-			this.properties.event_name = this.event_name_widget.value;
-		}
-		// reconnect itself in case something happened
-		this.onLoad(this);
-	}
 	
+	function Global_Variable_Set_Node(){
+		this.addInput("var name", "string");
+		this.addInput("var value", "string");
+
+		this.properties = {
+			"var_name": "",
+			"var_value": ""
+		};
+		this.var_name_widget = this.addWidget("text","Variable Name",this.properties.var_name, "var_name");
+	}
+	Global_Variable_Set_Node.title = "Set Global Var";
+	Global_Variable_Set_Node.prototype.onExecute = function() {
+		// update properties
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.var_name && this.getInputData(0) !== "") {
+			this.properties.var_name = this.getInputData(0);
+			// set widget value
+			this.var_name_widget.value = this.getInputData(0);
+		} else {
+			this.properties.var_name = this.var_name_widget.value;
+		}
+
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== this.properties.var_value && this.getInputData(1) !== "") {
+			this.properties.var_value = this.getInputData(1);
+		}
+
+		console.log("setting global var: " + this.properties.var_name + " to " + this.properties.var_value)
+		
+		// set global var
+		window[this.properties.var_name] = this.properties.var_value;
+	}
+
+	function Global_Variable_Get_Node(){
+		this.addInput("var name", "string");
+		this.addOutput("var value", "string");
+
+		this.properties = {
+			"var_name": "",
+			"var_value": ""
+		};
+		this.var_name_widget = this.addWidget("text","Variable Name",this.properties.var_name, "var_name");
+	}
+	Global_Variable_Get_Node.title = "Get Global Var";
+	Global_Variable_Get_Node.prototype.onExecute = function() {
+		// update properties
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.var_name && this.getInputData(0) !== "") {
+			this.properties.var_name = this.getInputData(0);
+			// set widget value
+			this.var_name_widget.value = this.getInputData(0);
+		} else {
+			this.properties.var_name = this.var_name_widget.value;
+		}
+
+		console.log("got var name: " + this.properties.var_name)
+		console.log("got var value: " + this.properties.var_value)
+		// get global var
+		this.setOutputData(0, window[this.properties.var_name]);
+	}
+
 
 	/*****************************************************************************************/
 	/*****************************************************************************************/
@@ -2627,9 +2662,7 @@
 			Text_Output_Node: Text_Output_Node,
 			Gate:Gate,
 			JSON_API_Node: JSON_API_Node,
-			Emit_Node: Emit_Node,
 			Shared_Chat_Buffer_Node: Shared_Chat_Buffer_Node,
-			Event_Text_Receiver_Node: Event_Text_Receiver_Node,
 			GPT_Node: GPT_Node,
 			Password_Node: Password_Node,
 			Prompt_Gate_GPT: Prompt_Gate_GPT,

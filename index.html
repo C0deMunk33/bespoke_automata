@@ -281,8 +281,6 @@
 		LiteGraph.registerNodeType("Audio/Audio Generation", Audio_Generation_Node );
 		//Start_Node 
 		LiteGraph.registerNodeType("Control/Start", Start_Node );
-		//Trigger_On_Text_Node
-		LiteGraph.registerNodeType("Control/Event Emitter", Emit_Node );
 		//Counter_Node
 		LiteGraph.registerNodeType("Control/Counter", Counter_Node );
 		//Checklist_Node
@@ -297,8 +295,6 @@
 		LiteGraph.registerNodeType("API/JSON API", JSON_API_Node );
 		// Shared_Chat_Buffer_Node
 		LiteGraph.registerNodeType("Storage/Shared Chat Buffer", Shared_Chat_Buffer_Node );
-		// Event_Text_Receiver_Node
-		LiteGraph.registerNodeType("Control/Event Receiver", Event_Text_Receiver_Node );
 		// GPT_Node
 		LiteGraph.registerNodeType("LLM/GPT", GPT_Node );
 		// Password_Node
@@ -317,6 +313,10 @@
 		LiteGraph.registerNodeType("Control/Variable Forward", Variable_Forward_Node );
 		//Dictionary_Assembler_Node
 		LiteGraph.registerNodeType("Text/Dictionary Assembler", Dictionary_Assembler_Node );
+		//Global_Variable_Get_Node
+		LiteGraph.registerNodeType("Control/Global Variable Get", Global_Variable_Get_Node );
+		//Global_Variable_Set_Node
+		LiteGraph.registerNodeType("Control/Global Variable Set", Global_Variable_Set_Node );
 	}
 
 	var graph = new LGraph();
