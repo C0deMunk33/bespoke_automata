@@ -1,0 +1,414 @@
+{
+    "last_node_id": 9,
+    "last_link_id": 10,
+    "nodes": [
+        {               
+            "inputs": [
+                {
+                    "name": "in dict",
+                    "type": "string",
+                    "link": null
+                },
+                {
+                    "name": "var name",
+                    "type": "string",
+                    "link": 5
+                },
+                {
+                    "name": "var value",
+                    "type": "string",
+                    "link": 8
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out dict",
+                    "type": "string",
+                    "links": [
+                        1
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "variable_name": "b",
+                "variable_value": "zzz"
+            }
+        },
+        {
+            "id": 4,
+            "type": "Text/Text",
+            "pos": [
+                671,
+                319
+            ],
+            "size": {
+                "0": 210,
+                "1": 58
+            },
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in",
+                    "type": "string",
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "string",
+                    "links": [
+                        3,
+                        4
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "value": "a"
+            }
+        },
+        {
+            "id": 5,
+            "type": "Text/Text",
+            "pos": [
+                425,
+                160
+            ],
+            "size": {
+                "0": 210,
+                "1": 58
+            },
+            "flags": {},
+            "order": 1,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in",
+                    "type": "string",
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "string",
+                    "links": [
+                        5
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "value": "b"
+            }
+        },
+        {
+            "id": 6,
+            "type": "Text/Text",
+            "pos": [
+                1683.46799134814,
+                323.8207605535333
+            ],
+            "size": {
+                "0": 210,
+                "1": 58
+            },
+            "flags": {},
+            "order": 7,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in",
+                    "type": "string",
+                    "link": 7
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "string",
+                    "links": null
+                }
+            ],
+            "properties": {
+                "value": "zzz"
+            }
+        },
+        {
+            "id": 7,
+            "type": "Text/Text",
+            "pos": [
+                333,
+                264
+            ],
+            "size": {
+                "0": 210,
+                "1": 58
+            },
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in",
+                    "type": "string",
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "string",
+                    "links": [
+                        8
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "value": "zzz"
+            }
+        },
+        {
+            "id": 1,
+            "type": "Control/Variable Forward",
+            "pos": [
+                1358,
+                315
+            ],
+            "size": {
+                "0": 210,
+                "1": 78
+            },
+            "flags": {},
+            "order": 5,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in dict",
+                    "type": "string",
+                    "link": 2
+                },
+                {
+                    "name": "var name",
+                    "type": "string",
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "var value",
+                    "type": "string",
+                    "links": [
+                        7
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "variable_name": "b"
+            }
+        },
+        {
+            "id": 3,
+            "type": "Text/Dictionary Assembler",
+            "pos": [
+                1020,
+                256
+            ],
+            "size": {
+                "0": 210,
+                "1": 98
+            },
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in dict",
+                    "type": "string",
+                    "link": 1
+                },
+                {
+                    "name": "var name",
+                    "type": "string",
+                    "link": 3
+                },
+                {
+                    "name": "var value",
+                    "type": "string",
+                    "link": 4
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out dict",
+                    "type": "string",
+                    "links": [
+                        2,
+                        9
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "variable_name": "a",
+                "variable_value": "a"
+            }
+        },
+        {
+            "id": 9,
+            "type": "Text/Text",
+            "pos": [
+                1715.080638964844,
+                127.88243200683598
+            ],
+            "size": {
+                "0": 210,
+                "1": 58
+            },
+            "flags": {},
+            "order": 8,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in",
+                    "type": "string",
+                    "link": 10
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "string",
+                    "links": null
+                }
+            ],
+            "properties": {
+                "value": "a"
+            }
+        },
+        {
+            "id": 8,
+            "type": "Control/Variable Forward",
+            "pos": [
+                1396,
+                157
+            ],
+            "size": {
+                "0": 210,
+                "1": 78
+            },
+            "flags": {},
+            "order": 6,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "in dict",
+                    "type": "string",
+                    "link": 9
+                },
+                {
+                    "name": "var name",
+                    "type": "string",
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "var value",
+                    "type": "string",
+                    "links": [
+                        10
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "variable_name": "a"
+            }
+        }
+    ],
+    "links": [
+        [
+            1,
+            2,
+            0,
+            3,
+            0,
+            "string"
+        ],
+        [
+            2,
+            3,
+            0,
+            1,
+            0,
+            "string"
+        ],
+        [
+            3,
+            4,
+            0,
+            3,
+            1,
+            "string"
+        ],
+        [
+            4,
+            4,
+            0,
+            3,
+            2,
+            "string"
+        ],
+        [
+            5,
+            5,
+            0,
+            2,
+            1,
+            "string"
+        ],
+        [
+            7,
+            1,
+            0,
+            6,
+            0,
+            "string"
+        ],
+        [
+            8,
+            7,
+            0,
+            2,
+            2,
+            "string"
+        ],
+        [
+            9,
+            3,
+            0,
+            8,
+            0,
+            "string"
+        ],
+        [
+            10,
+            8,
+            0,
+            9,
+            0,
+            "string"
+        ]
+    ],
+    "groups": [],
+    "config": {},
+    "extra": {},
+    "version": 0.4
+}
