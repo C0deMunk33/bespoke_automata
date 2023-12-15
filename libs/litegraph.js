@@ -1163,8 +1163,7 @@
      * @method updateExecutionOrder
      */
     LGraph.prototype.updateExecutionOrder = function() {
-        //this._nodes_in_order = this.computeExecutionOrder(false);
-        this._nodes_order = this.computeExecutionOrder()
+        this._nodes_in_order = this.computeExecutionOrder(false);
         this._nodes_executable = [];
         for (var i = 0; i < this._nodes_in_order.length; ++i) {
             if (this._nodes_in_order[i].onExecute) {
@@ -1172,59 +1171,6 @@
             }
         }
     };
-
-
-
-
-
-
-    LGraph.prototype.assignDepthToNodesWithPasses = function() {
-        var nodes = {}
-        // map to object where .id is key
-        this._nodes.forEach(node => {
-            console.log(node.id)
-            nodes[node.id] = node
-            nodes[node.id].order = 0
-        })
-        let links = {}
-        // map to object where .id is key
-        this.links.forEach(link => {
-            links[link.id] = link
-        })
-        
-        var L = [];
-
-
-    }
-
-
-    
-    LGraph.prototype.computeDepthBasedExecutionOrder = function() {
-        var nodes = {}
-        // map to object where .id is key
-        this._nodes.forEach(node => {
-            console.log(node.id)
-            nodes[node.id] = node
-            nodes[node.id].execution_depth = 0
-        })
-        let links = {}
-        // map to object where .id is key
-        this.links.forEach(link => {
-            links[link.id] = link
-        })
-        
-        var L = [];
-        
-        
-        // Sort nodes based on depth
-        L = items.sort((a, b) => b.execution_depth - b.execution_depth).reverse().map(item => item[1])
-        let depths = L.map(item => item.execution_depth)
-        console.log("---------------------- ")
-        console.log(depths)
-        console.log("---------------------- ")
-        return L;
-    };
-    
 
     //This is more internal, it computes the executable nodes in order and returns it
     LGraph.prototype.computeExecutionOrder = function(
@@ -1409,8 +1355,7 @@
     LGraph.prototype.arrange = function (margin, layout) {
         margin = margin || 100;
 
-        //const nodes = this.computeExecutionOrder(false, true);
-        const nodes = this.computeExecutionOrder()
+        const nodes = this.computeExecutionOrder(false, true);
         const columns = [];
         for (let i = 0; i < nodes.length; ++i) {
             const node = nodes[i];
