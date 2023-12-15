@@ -1164,7 +1164,7 @@
      */
     LGraph.prototype.updateExecutionOrder = function() {
         //this._nodes_in_order = this.computeExecutionOrder(false);
-        this._nodes_order = this.computeDepthBasedExecutionOrder()
+        this._nodes_order = this.computeExecutionOrder()
         this._nodes_executable = [];
         for (var i = 0; i < this._nodes_in_order.length; ++i) {
             if (this._nodes_in_order[i].onExecute) {
@@ -1173,59 +1173,54 @@
         }
     };
 
-    LGraph.prototype.computeDepthBasedExecutionOrder = function() {
-        var nodes = this._nodes;
-        var depths = {};
+
+
+
+
+
+    LGraph.prototype.assignDepthToNodesWithPasses = function() {
+        var nodes = {}
+        // map to object where .id is key
+        this._nodes.forEach(node => {
+            console.log(node.id)
+            nodes[node.id] = node
+            nodes[node.id].order = 0
+        })
+        let links = {}
+        // map to object where .id is key
+        this.links.forEach(link => {
+            links[link.id] = link
+        })
+        
         var L = [];
+
+
+    }
+
+
     
-        // Initialize depths
-        for (var i = 0; i < nodes.length; ++i) {
-            depths[nodes[i].id] = 0;
-        }
-    
-        // Function to compute depths
-        var computeDepth = function(node, currentDepth) {
-            if (depths[node.id] < currentDepth) {
-                depths[node.id] = currentDepth;
-            }
-            if (node.outputs) {
-                console.log(node.outputs)
-                for (var i = 0; i < node.outputs.length; i++) {
-                    var output = node.outputs[i];
-                    console.log(output)
-                    if (output && output.links) {
-                        for (var j = 0; j < output.links.length; j++) {
-                            console.log("!!!!!!!!!!!!!!!!!!!")
-                            console.log(output.links[j])
-                            console.log("!!!!!!!!!!!!!!!!!!!")
-                            console.log(nodes)
-                            console.log("!!!!!!!!!!!!!!!!!!!")
-                            console.log(nodes[output.links[j]])
-                            console.log("!!!!!!!!!!!!!!!!!!!")
-                            
-                            var targetNode = nodes[output.links[j]];
-                            computeDepth(targetNode, currentDepth + 1);
-                        }
-                    }
-                }
-            }
-        };
-    
-        // Compute depths starting from nodes with no inputs
-        nodes.forEach(node => {
-            if ( node.inputs === undefined || !node.inputs || node.inputs.length == 0
-                || node.inputs.every(input => input.link == null)
-                ) {
-                computeDepth(node, 1);
-            }
-        });
+    LGraph.prototype.computeDepthBasedExecutionOrder = function() {
+        var nodes = {}
+        // map to object where .id is key
+        this._nodes.forEach(node => {
+            console.log(node.id)
+            nodes[node.id] = node
+            nodes[node.id].execution_depth = 0
+        })
+        let links = {}
+        // map to object where .id is key
+        this.links.forEach(link => {
+            links[link.id] = link
+        })
+        
+        var L = [];
+        
+        
+        // Sort nodes based on depth
+        L = items.sort((a, b) => b.execution_depth - b.execution_depth).reverse().map(item => item[1])
+        let depths = L.map(item => item.execution_depth)
         console.log("---------------------- ")
         console.log(depths)
-        console.log("---------------------- ")
-        // Sort nodes based on depth
-        L = nodes.sort((a, b) => depths[b.id] - depths[a.id]);
-        console.log("---------------------- ")
-        console.log(L)
         console.log("---------------------- ")
         return L;
     };
@@ -1415,7 +1410,7 @@
         margin = margin || 100;
 
         //const nodes = this.computeExecutionOrder(false, true);
-        const nodes = this.computeDepthBasedExecutionOrder()
+        const nodes = this.computeExecutionOrder()
         const columns = [];
         for (let i = 0; i < nodes.length; ++i) {
             const node = nodes[i];
