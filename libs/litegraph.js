@@ -1357,13 +1357,16 @@
 
         //sort now by priority
         L = L.sort(function(A, B) {
-            
+            var Aep = A.execution_priority || 999;
+            var Bep = B.execution_priority || 999;
+            if(Aep !== Bep){
+                return (A.execution_priority ) - (B.execution_priority );
+            }
+
             var Ap = A.constructor.priority || A.priority || 0;
             var Bp = B.constructor.priority || B.priority || 0;
             if (Ap == Bp) {
-                if( (A.execution_priority || 999) != (B.execution_priority || 999)){
-                    return (A.execution_priority || 999) - (B.execution_priority || 999);
-                }
+                
                 //if same priority, sort by order
                 return A.order - B.order;
             }

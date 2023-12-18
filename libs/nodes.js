@@ -35,7 +35,8 @@
 		  });
 		
 		  const responseData = await response.json();
-		  return responseData.choices[0].message.content;
+		  console.log(responseData);
+		  return responseData.chat.choices[0].message.content;
 
 	}
 
@@ -1639,7 +1640,7 @@
 		// clear buffer button
 		this.addInput("clear", LiteGraph.ACTION);
 		this.addWidget("button","Clear Buffer","", ()=>{
-			this.properties.buffer = [];
+			this.properties.chat_buffer = [];
 			this.properties.last_user_input = "";
 			this.properties.last_output = "";
 		});
@@ -1655,6 +1656,7 @@
 		}
 
 		let user = this.getInputData(1);
+		console.log("user: " + user)
 		if(user === undefined || user === "") {
 			this.setOutputData(0, "");
 			return;
@@ -1684,14 +1686,14 @@
 		let system_role = {"role": "system", "content": system};
 
 		this.properties.api_key = api_key;
-		this.properties.buffer.push({"role": "user", "content": user});
+		this.properties.chat_buffer.push({"role": "user", "content": user});
 
 		// check for buffer overflow
-		if(this.properties.buffer.length > this.properties.buffer_length) {
-			this.properties.buffer.shift();
+		if(this.properties.chat_buffer.length > this.properties.buffer_length) {
+			this.properties.chat_buffer.shift();
 		}
 
-		let messages = this.properties.buffer.map((item) => item);
+		let messages = this.properties.chat_buffer.map((item) => item);
 		// prepend system message
 		messages.unshift(system_role);
 
@@ -1700,7 +1702,7 @@
 		this.properties.last_user_input = user;
 		this.properties.last_output = gpt_response;
 
-		this.properties.buffer.push({"role": "assistant", "content": gpt_response});
+		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
 	}
 
