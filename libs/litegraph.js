@@ -1361,8 +1361,8 @@
             var Ap = A.constructor.priority || A.priority || 0;
             var Bp = B.constructor.priority || B.priority || 0;
             if (Ap == Bp) {
-                if( A.execution_priority != B.execution_priority){
-                    return A.execution_priority - B.execution_priority;
+                if( (A.execution_priority || 999) != (B.execution_priority || 999)){
+                    return (A.execution_priority || 999) - (B.execution_priority || 999);
                 }
                 //if same priority, sort by order
                 return A.order - B.order;
