@@ -1163,8 +1163,9 @@
      * @method updateExecutionOrder
      */
     LGraph.prototype.updateExecutionOrder = function() {
-        this._nodes_in_order = this.computeExecutionOrder(false);
-        this._nodes_executable = [];
+       // this._nodes_in_order = this.computeExecutionOrder(false);
+       this._nodes_in_order = this.computeNewExecutionOrder(); 
+       this._nodes_executable = [];
         for (var i = 0; i < this._nodes_in_order.length; ++i) {
             if (this._nodes_in_order[i].onExecute) {
                 this._nodes_executable.push(this._nodes_in_order[i]);
@@ -1172,11 +1173,113 @@
         }
     };
 
+    LGraph.prototype.orderGraphNodes = function(edges) {
+        // Converts a node to a string for consistent handling
+        const convertNode = node => String(node);
+    
+        // Adds a node to the graph
+        const addNode = (graph, node) => {
+            node = convertNode(node);
+            if (!graph[node]) {
+                graph[node] = { edges: [], indegree: 0 };
+            }
+        };
+    
+        // Adds an edge to the graph
+        const addEdge = (graph, source, destination) => {
+            source = convertNode(source);
+            destination = convertNode(destination);
+            addNode(graph, source);
+            addNode(graph, destination);
+            graph[source].edges.push(destination);
+            graph[destination].indegree++;
+        };
+    
+        // Create the graph from the edges
+        const graph = {};
+        edges.forEach(([source, destination]) => {
+            addEdge(graph, source, destination);
+        });
+    
+        // Identify source nodes (nodes with no incoming edges)
+        const sourceNodes = Object.keys(graph).filter(node => graph[node].indegree === 0);
+    
+        // Perform a modified topological sort
+        const order = [];
+        const queue = [...sourceNodes]; // Start with source nodes
+    
+        while (queue.length > 0) {
+            const node = queue.shift();
+            order.push(node);
+    
+            graph[node].edges.forEach(neighbour => {
+                graph[neighbour].indegree--;
+                if (graph[neighbour].indegree === 0) {
+                    queue.push(neighbour);
+                }
+            });
+        }
+    
+        // Check for remaining nodes with non-zero indegree (indicating a cycle)
+        const remainingNodes = Object.keys(graph).filter(node => graph[node].indegree > 0);
+        if (remainingNodes.length > 0) {
+            // Append remaining nodes at the end of the order
+            remainingNodes.forEach(node => order.push(node));
+        }
+    
+        return order;
+    }
+
+    LGraph.prototype.computeNewExecutionOrder = function(){
+        let edges = this.links.map(link => [link.origin_id, link.target_id]);
+        let orderedNodes = this.orderGraphNodes(edges);
+        let L = []
+        // set order for each node
+        for (let i = 0; i < orderedNodes.length; i++) {
+            let node = this._nodes_by_id[orderedNodes[i]];
+            node.order = i;
+            L.push(node);
+        }
+
+        //sort now by priority
+        L = L.sort(function(A, B) {
+            // sort by execution order
+            if(A.execution_priority === undefined){
+                A.execution_priority = 999;
+            }
+            if(B.execution_priority === undefined){
+                B.execution_priority = 999;
+            }
+            console.log(A.execution_priority, B.execution_priority)
+            if(A.execution_priority != B.execution_priority){
+                return A.execution_priority - B.execution_priority;
+            }
+            
+            var Ap = A.constructor.priority || A.priority || 0;
+            var Bp = B.constructor.priority || B.priority || 0;
+            if (Ap == Bp) {
+                //if same priority, sort by order
+                return A.order - B.order;
+            }
+            return Ap - Bp; //sort by priority
+        });
+
+        //save order number in the node, again...
+        for (var i = 0; i < L.length; ++i) {
+            L[i].order = i;
+        }
+
+        return L;
+
+    }
+    
     //This is more internal, it computes the executable nodes in order and returns it
     LGraph.prototype.computeExecutionOrder = function(
         only_onExecute,
         set_level
     ) {
+
+        window.test = this;
         var L = [];
         var S = [];
         var M = {};
@@ -1355,7 +1458,8 @@
     LGraph.prototype.arrange = function (margin, layout) {
         margin = margin || 100;
 
-        const nodes = this.computeExecutionOrder(false, true);
+        //const nodes = this.computeExecutionOrder(false, true);
+        const nodes = this.computeNewExecutionOrder();
         const columns = [];
         for (let i = 0; i < nodes.length; ++i) {
             const node = nodes[i];
@@ -2635,6 +2739,7 @@
             size: this.size,
             flags: LiteGraph.cloneObject(this.flags),
 			order: this.order,
+            execution_priority: this.execution_priority,
             mode: this.mode
         };
 
@@ -12948,6 +13053,89 @@ LGraphNode.prototype.executeAction = function(action)
         return false;
     };
 
+    LGraphCanvas.onPrioritySetInput = function(value, options, e, menu, node) {
+        if (!node) {
+            throw "no node passed";
+        }
+
+       let dialog = document.createElement("div");
+       // add label
+         let label = document.createElement("label");
+            label.innerText = "Execution Priority (lower first):";
+            label.style.display = "block";
+            label.style.color = "white";
+            dialog.appendChild(label);
+        // add number input
+        let input = document.createElement("input");
+        // set precision to 1
+        input.step = 1;
+        // set input type to number
+        input.type = "number";
+        // set input value to current node priority
+        input.value = node.execution_priority || 0;
+        // add input to dialog
+        dialog.appendChild(input);
+        // add ok button
+        let ok = document.createElement("button");
+        ok.innerText = "OK";
+        ok.addEventListener("click", function(e) {
+            // set node priority to input value
+            node.execution_priority = input.value;
+            // close dialog
+            dialog.close();
+
+        });
+        // add ok button to dialog
+        dialog.appendChild(ok);
+        
+        // add cancel button
+        let cancel = document.createElement("button");
+        cancel.innerText = "Cancel";
+        cancel.addEventListener("click", function(e) {
+            // close dialog
+            dialog.close();
+        });
+        // add cancel button to dialog
+        dialog.appendChild(cancel);
+        // add dialog to window
+        window.document.body.appendChild(dialog);
+
+        // place in center of screen above everything
+        dialog.style.position = "fixed";
+        dialog.style.top = "50%";
+        dialog.style.left = "50%";
+        dialog.style.transform = "translate(-50%, -50%)";
+        dialog.style.zIndex = 1000;
+        // add background
+        let background = document.createElement("div");
+        background.style.position = "fixed";
+        background.style.top = "0";
+        background.style.left = "0";
+        background.style.width = "100%";
+        background.style.height = "100%";
+        background.style.backgroundColor = "rgba(0,0,0,0.5)";
+        background.style.zIndex = 999;
+        // add background to window
+        window.document.body.appendChild(background);
+        // close dialog and background on click
+        background.addEventListener("click", function(e) {
+            dialog.close();
+            window.document.body.removeChild(background);
+        });
+        dialog.close = function() {
+            window.document.body.removeChild(dialog);
+            background.remove();
+        };
+        // prevent click from propagating to background
+        dialog.addEventListener("click", function(e) {
+            e.stopPropagation();
+        });
+
+        
+       
+    }
+
+
     LGraphCanvas.onMenuNodeShapes = function(value, options, e, menu, node) {
         if (!node) {
             throw "no node passed";
@@ -13134,6 +13322,11 @@ LGraphNode.prototype.executeAction = function(action)
             options = node.getMenuOptions(this);
         } else {
             options = [
+                {
+                    content: "Priority",
+                    has_submenu: true,
+                    callback: LGraphCanvas.onPrioritySetInput
+                },
                 {
                     content: "Inputs",
                     has_submenu: true,

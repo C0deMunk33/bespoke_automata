@@ -1,46 +1,44 @@
 {
-    "last_node_id": 9,
-    "last_link_id": 10,
+    "last_node_id": 10,
+    "last_link_id": 8,
     "nodes": [
-        {               
+        {
+            "id": 3,
+            "type": "Control/Global Variable Set",
+            "pos": [
+                902,
+                203
+            ],
+            "size": {
+                "0": 210,
+                "1": 78
+            },
+            "flags": {},
+            "order": 2,
+            "mode": 0,
             "inputs": [
                 {
-                    "name": "in dict",
+                    "name": "var name",
                     "type": "string",
                     "link": null
                 },
                 {
-                    "name": "var name",
-                    "type": "string",
-                    "link": 5
-                },
-                {
                     "name": "var value",
                     "type": "string",
-                    "link": 8
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "out dict",
-                    "type": "string",
-                    "links": [
-                        1
-                    ],
-                    "slot_index": 0
+                    "link": 1
                 }
             ],
             "properties": {
-                "variable_name": "b",
-                "variable_value": "zzz"
+                "var_name": "x",
+                "var_value": "xyz bsd"
             }
         },
         {
             "id": 4,
             "type": "Text/Text",
             "pos": [
-                671,
-                319
+                1231,
+                -18
             ],
             "size": {
                 "0": 210,
@@ -61,22 +59,98 @@
                     "name": "out",
                     "type": "string",
                     "links": [
-                        3,
+                        2
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "value": "abc"
+            }
+        },
+        {
+            "id": 5,
+            "type": "Text/Concatenate Text",
+            "pos": [
+                1522,
+                81
+            ],
+            "size": {
+                "0": 210,
+                "1": 102
+            },
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "first",
+                    "type": "string",
+                    "link": 2
+                },
+                {
+                    "name": "last",
+                    "type": "string",
+                    "link": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "string",
+                    "links": [
                         4
                     ],
                     "slot_index": 0
                 }
             ],
             "properties": {
-                "value": "a"
+                "first": "abc",
+                "last": ""
             }
         },
         {
-            "id": 5,
+            "id": 6,
+            "type": "Control/Global Variable Get",
+            "pos": [
+                1240,
+                116
+            ],
+            "size": {
+                "0": 210,
+                "1": 58
+            },
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+                {
+                    "name": "var name",
+                    "type": "string",
+                    "link": 7
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "var value",
+                    "type": "string",
+                    "links": [
+                        3
+                    ],
+                    "slot_index": 0
+                }
+            ],
+            "properties": {
+                "var_name": "x",
+                "var_value": ""
+            }
+        },
+        {
+            "id": 1,
             "type": "Text/Text",
             "pos": [
-                425,
-                160
+                564,
+                24
             ],
             "size": {
                 "0": 210,
@@ -97,21 +171,21 @@
                     "name": "out",
                     "type": "string",
                     "links": [
-                        5
+                        1
                     ],
                     "slot_index": 0
                 }
             ],
             "properties": {
-                "value": "b"
+                "value": "xyz bsd"
             }
         },
         {
-            "id": 6,
+            "id": 9,
             "type": "Text/Text",
             "pos": [
-                1683.46799134814,
-                323.8207605535333
+                1939.5216620073438,
+                653.1473489335157
             ],
             "size": {
                 "0": 210,
@@ -124,7 +198,7 @@
                 {
                     "name": "in",
                     "type": "string",
-                    "link": 7
+                    "link": 5
                 }
             ],
             "outputs": [
@@ -135,28 +209,28 @@
                 }
             ],
             "properties": {
-                "value": "zzz"
+                "value": ""
             }
         },
         {
-            "id": 7,
+            "id": 8,
             "type": "Text/Text",
             "pos": [
-                333,
-                264
+                1375,
+                481
             ],
             "size": {
                 "0": 210,
                 "1": 58
             },
             "flags": {},
-            "order": 2,
+            "order": 6,
             "mode": 0,
             "inputs": [
                 {
                     "name": "in",
                     "type": "string",
-                    "link": null
+                    "link": 8
                 }
             ],
             "outputs": [
@@ -164,108 +238,56 @@
                     "name": "out",
                     "type": "string",
                     "links": [
-                        8
+                        5
                     ],
                     "slot_index": 0
                 }
             ],
             "properties": {
-                "value": "zzz"
+                "value": ""
             }
         },
         {
-            "id": 1,
-            "type": "Control/Variable Forward",
+            "id": 7,
+            "type": "Text/Text",
             "pos": [
-                1358,
-                315
+                1862.9902709960932,
+                174.41893554687482
             ],
             "size": {
                 "0": 210,
-                "1": 78
+                "1": 58
             },
             "flags": {},
             "order": 5,
             "mode": 0,
             "inputs": [
                 {
-                    "name": "in dict",
-                    "type": "string",
-                    "link": 2
-                },
-                {
-                    "name": "var name",
-                    "type": "string",
-                    "link": null
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "var value",
-                    "type": "string",
-                    "links": [
-                        7
-                    ],
-                    "slot_index": 0
-                }
-            ],
-            "properties": {
-                "variable_name": "b"
-            }
-        },
-        {
-            "id": 3,
-            "type": "Text/Dictionary Assembler",
-            "pos": [
-                1020,
-                256
-            ],
-            "size": {
-                "0": 210,
-                "1": 98
-            },
-            "flags": {},
-            "order": 4,
-            "mode": 0,
-            "inputs": [
-                {
-                    "name": "in dict",
-                    "type": "string",
-                    "link": 1
-                },
-                {
-                    "name": "var name",
-                    "type": "string",
-                    "link": 3
-                },
-                {
-                    "name": "var value",
+                    "name": "in",
                     "type": "string",
                     "link": 4
                 }
             ],
             "outputs": [
                 {
-                    "name": "out dict",
+                    "name": "out",
                     "type": "string",
                     "links": [
-                        2,
-                        9
+                        6
                     ],
                     "slot_index": 0
                 }
             ],
             "properties": {
-                "variable_name": "a",
-                "variable_value": "a"
+                "value": "abc "
             }
         },
         {
-            "id": 9,
+            "id": 10,
             "type": "Text/Text",
             "pos": [
-                1715.080638964844,
-                127.88243200683598
+                1860,
+                321
             ],
             "size": {
                 "0": 210,
@@ -278,105 +300,77 @@
                 {
                     "name": "in",
                     "type": "string",
-                    "link": 10
+                    "link": 6
                 }
             ],
             "outputs": [
                 {
                     "name": "out",
                     "type": "string",
-                    "links": null
-                }
-            ],
-            "properties": {
-                "value": "a"
-            }
-        },
-        {
-            "id": 8,
-            "type": "Control/Variable Forward",
-            "pos": [
-                1396,
-                157
-            ],
-            "size": {
-                "0": 210,
-                "1": 78
-            },
-            "flags": {},
-            "order": 6,
-            "mode": 0,
-            "inputs": [
-                {
-                    "name": "in dict",
-                    "type": "string",
-                    "link": 9
-                },
-                {
-                    "name": "var name",
-                    "type": "string",
-                    "link": null
-                }
-            ],
-            "outputs": [
-                {
-                    "name": "var value",
-                    "type": "string",
                     "links": [
-                        10
+                        7,
+                        8
                     ],
                     "slot_index": 0
                 }
             ],
             "properties": {
-                "variable_name": "a"
+                "value": ""
             }
         }
     ],
     "links": [
         [
             1,
-            2,
-            0,
-            3,
-            0,
-            "string"
-        ],
-        [
-            2,
-            3,
-            0,
             1,
-            0,
-            "string"
-        ],
-        [
-            3,
-            4,
             0,
             3,
             1,
             "string"
         ],
         [
-            4,
+            2,
             4,
             0,
+            5,
+            0,
+            "string"
+        ],
+        [
             3,
-            2,
+            6,
+            0,
+            5,
+            1,
+            "string"
+        ],
+        [
+            4,
+            5,
+            0,
+            7,
+            0,
             "string"
         ],
         [
             5,
-            5,
+            8,
             0,
-            2,
-            1,
+            9,
+            0,
+            "string"
+        ],
+        [
+            6,
+            7,
+            0,
+            10,
+            0,
             "string"
         ],
         [
             7,
-            1,
+            10,
             0,
             6,
             0,
@@ -384,25 +378,9 @@
         ],
         [
             8,
-            7,
-            0,
-            2,
-            2,
-            "string"
-        ],
-        [
-            9,
-            3,
-            0,
-            8,
-            0,
-            "string"
-        ],
-        [
             10,
-            8,
             0,
-            9,
+            8,
             0,
             "string"
         ]
