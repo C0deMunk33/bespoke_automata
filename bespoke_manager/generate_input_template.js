@@ -1,9 +1,6 @@
 
 const fs = require('fs');
 
-
-
-// generate_io.js <graph_json>
 const args = process.argv.slice(2);
 const graph = args[0];
 console.log('graph: ', graph);

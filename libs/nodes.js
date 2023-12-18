@@ -2,9 +2,10 @@
 /*****************************************************************************************/
 /***************************************NODES********************************************/
 /*****************************************************************************************/
+	
 	if(typeof module !== 'undefined') {
-		const Weaviate = require("weaviate.js");
-		const { LiteGraph } = require("litegraph.js");
+		const Weaviate = require("./weaviate.js");
+		LiteGraph = require("./litegraph.js");
 	}
 
 
@@ -338,57 +339,6 @@
 		dataView.setUint32(40, dataLength, true);
 	}
 	
-	async function call_llm(prompt, url) {
-		request = {
-			'prompt': prompt,
-			'max_new_tokens': 1000,
-
-			// Generation params. If 'preset' is set to different than 'None', the values
-			// in presets/preset-name.yaml are used instead of the individual numbers.
-			'preset': 'None',
-			'do_sample': true,
-			'temperature': 0.9,
-			'top_p': 0.14,
-			'typical_p': 1,
-			'epsilon_cutoff': 0,  // In units of 1e-4
-			'eta_cutoff': 0,  // In units of 1e-4
-			'tfs': 1,
-			'top_a': 0,
-			'repetition_penalty': 1.17,
-			'repetition_penalty_range': 0,
-			'top_k': 49,
-			'min_length': 0,
-			'no_repeat_ngram_size': 0,
-			'num_beams': 1,
-			'penalty_alpha': 0,
-			'length_penalty': 1,
-			'early_stopping': false,
-			'mirostat_mode': 0,
-			'mirostat_tau': 5,
-			'mirostat_eta': 0.1,
-
-			'seed': -1,
-			'add_bos_token': true,
-			'truncation_length': 2048,
-			'ban_eos_token': false,
-			'skip_special_tokens': true,
-			'stopping_strings': []
-		}
-		
-		let ip = "192.168.0.7";
-		let llm_response = await fetch(url + '/api/v1/generate', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(request),
-		})
-
-		llm_response = await llm_response.json();
-
-		return llm_response.results[0].text;
-	}
-
 	async function create_simple_vector_db_collection(collection_name, url) {
 		console.log("creating collection: " + collection_name)
 		let insert_response = await fetch(url + "/create_collection", {
@@ -1476,62 +1426,6 @@
 	}
 
 
-	function Llama_Node() {
-		this.addInput("constitution", "string");
-		this.addInput("instruction", "string");
-		this.addInput("prompt seed", "string");
-		this.addOutput("out", "string");
-		// server URL widget
-		this.properties = {
-			server_url: llm_server,
-			model_selection: "llama",
-			model_values: "llama;hermes;falcon;gpt3"
-		};
-		let that = this;
-		this.text_widget = this.addWidget("text","Server URL",this.properties.server_url, "server_url");
-		// add model selection widget, llama, falcon, or gpt3
-		this.model_selection_widget = this.addWidget("combo","", this.properties.model_selection, function(v){
-			that.properties.model_selection = v;
-		}, { property: "model_selection", values: this.properties.model_values.split(";") } );
-
-	}
-	Llama_Node.title = "Llama LLM";
-	Llama_Node.prototype.onExecute = async function() {
-		let constitution = this.getInputData(0);
-		let instruction = this.getInputData(1);
-		let prompt_seed = "";
-		if(this.getInputData(2) !== undefined) {
-			prompt_seed = this.getInputData(2);
-		}
-
-		this.properties.model_selection = this.model_selection_widget.value;
-		let query = "";
-		switch(this.properties.model_selection) {
-			case "llama":
-				query = "<s>[INST] <<SYS>>\n"
-				 + constitution 
-				 + "\n<</SYS>>\n\n" 
-				 + instruction + " [/INST] " + prompt_seed;
-				break;
-			case "falcon":
-				query = "System: " + constitution + "\nUser: " + instruction + "\nFalcon: " + prompt_seed;
-				break;
-			case "hermes":
-				query = "Below is an instruction that describes a task. Write a response that appropriately completes the request."
-				+ "\n\n### Instruction:\n" 
-				+ constitution + "\n"
-				+ instruction + "\n\n### Response:" + prompt_seed;
-				break;
-			default:
-				query=""
-				break;
-		}
-		
-		
-		let llm_response = await call_llm(query, this.properties.server_url);
-		
-		this.setOutputData(0, llm_response);
-	}
 
 	function GPT_Node() {
 		this.addInput("system", "string");
@@ -2230,6 +2124,9 @@
 	/*****************************************************************************************/
 
 	if (typeof module !== 'undefined' && module.exports) {
+		console.log("~~~~~~~~~~~~~~~~~~~")
+		console.log("exporting nodes")
+		console.log("~~~~~~~~~~~~~~~~~~~")
 		module.exports = {
 			/* Weaviate_Ingest_Node */
 			/* takes in text and a class name and it dumps text into the target weaviate class */
@@ -2238,7 +2135,6 @@
 			/* takes in a query and a class name and it queries the target weaviate class */
 			Weaviate_Query_Node: Weaviate_Query_Node,
 			
-			Llama_Node: Llama_Node,
 			Random_Selection_Node: Random_Selection_Node,
 			Prompt_Template_Node: Prompt_Template_Node,
 			Text_Node: Text_Node,

@@ -1237,7 +1237,6 @@
         set_level
     ) {
 
-        window.test = this;
         var L = [];
         var S = [];
         var M = {};

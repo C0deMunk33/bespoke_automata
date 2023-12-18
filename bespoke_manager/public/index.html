@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Interface with API Avatar</title>
+    <title>Simple Interface</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -93,11 +93,11 @@
             console.log('Calling API with message:', message);
 
             let msg = {
-                name: "user_input",
+                name: "user_in",
                 value: message
             }
             // API endpoint is localhost:9999/brains/test_chat_1 and must be post request
-            const response = await fetch('http://localhost:9999/brains/test_chat_1', {
+            const response = await fetch('http://localhost:9999/brains/Assistant_Brain_1', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

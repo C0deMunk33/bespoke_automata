@@ -1,59 +1,71 @@
 const express = require('express');
 const fs = require('fs');
 
-const { LGraph, LGraphCanvas, LiteGraph } = require('../public/libs/litegraph.js');
-const nodes = require('../public/libs/nodes.js');
+const { LGraph, LGraphCanvas, LiteGraph } = require('../libs/litegraph.js');
+const Nodes = require('../libs/nodes.js');
 
 
 
 async function load_graph(graph_file){
+    console.log("loading graph: ", graph_file)
     const graphData = JSON.parse(fs.readFileSync(graph_file, 'utf8'));
     const graph = new LGraph();
+    console.log("graphData: ", graphData)
     LiteGraph.clearRegisteredTypes()
-    LiteGraph.registerNodeType("LLM/Llama", nodes.Llama_Node );
-    LiteGraph.registerNodeType("Text/Text", nodes.Text_Node );
-    LiteGraph.registerNodeType("Text/Random Text", nodes.Random_Selection_Node );
-    LiteGraph.registerNodeType("Templates/Persona Template", nodes.Persona_Template_Node );
-    LiteGraph.registerNodeType("Templates/Prompt Template", nodes.Prompt_Template_Node );
-    LiteGraph.registerNodeType("Storage/Chat Buffer", nodes.Chat_Log_Buffer_Node );
+    LiteGraph.registerNodeType("Text/Text", Nodes.Text_Node );
+    LiteGraph.registerNodeType("Text/Random Text", Nodes.Random_Selection_Node );
+    LiteGraph.registerNodeType("Templates/Persona Template", Nodes.Persona_Template_Node );
+    LiteGraph.registerNodeType("Templates/Prompt Template", Nodes.Prompt_Template_Node );
+
     
-    LiteGraph.registerNodeType("Control/Interrupt", nodes.Interrupt_Node );
-    LiteGraph.registerNodeType("Control/Prompt Gate (Llama)", nodes.Prompt_Gate_Llama );
-    LiteGraph.registerNodeType("LLM/Llama Query Text", nodes.Query_Text_Node );
+    LiteGraph.registerNodeType("Text/Prefix Text", Nodes.Prefix_Text_Node );
+    LiteGraph.registerNodeType("Text/Suffix Text", Nodes.Suffix_Text_Node );
+    LiteGraph.registerNodeType("Text/Concatenate Text", Nodes.Concatenate_Text_Node );
 
-    LiteGraph.registerNodeType("Text/Prefix Text", nodes.Prefix_Text_Node );
-    LiteGraph.registerNodeType("Text/Suffix Text", nodes.Suffix_Text_Node );
-    LiteGraph.registerNodeType("Text/Concatenate Text", nodes.Concatenate_Text_Node );
+    LiteGraph.registerNodeType("Storage/Weaviate Store", Nodes.Weaviate_Ingest_Node );
+    LiteGraph.registerNodeType("Storage/Weaviate Query", Nodes.Weaviate_Query_Node );
 
-    LiteGraph.registerNodeType("Storage/Weaviate Store", nodes.Weaviate_Ingest_Node );
-    LiteGraph.registerNodeType("Storage/Weaviate Query", nodes.Weaviate_Query_Node );
-
-    LiteGraph.registerNodeType("IO/Text Input", nodes.Text_Input_Node );
-
-    LiteGraph.registerNodeType("IO/Text Output", nodes.Text_Output_Node );
+    LiteGraph.registerNodeType("IO/Text Input", Nodes.Text_Input_Node );
+    LiteGraph.registerNodeType("IO/Text Output", Nodes.Text_Output_Node );
 
     //Audio_Generation_Node
-    LiteGraph.registerNodeType("Audio/Audio Generation", nodes.Audio_Generation_Node );
+    LiteGraph.registerNodeType("Audio/Audio Generation", Nodes.Audio_Generation_Node );
     //Start_Node 
-    LiteGraph.registerNodeType("Control/Start", nodes.Start_Node );
-    //Trigger_On_Text_Node
-    LiteGraph.registerNodeType("Control/Event Emitter", nodes.Emit_Node );
+    LiteGraph.registerNodeType("Control/Start", Nodes.Start_Node );
     //Counter_Node
-    LiteGraph.registerNodeType("Control/Counter", nodes.Counter_Node );
-    //Checklist_Node
-    LiteGraph.registerNodeType("Control/Checklist", nodes.Checklist_Node );
+    LiteGraph.registerNodeType("Control/Counter", Nodes.Counter_Node );
     //Random_Number_Node
-    LiteGraph.registerNodeType("Text/Random Number", nodes.Random_Number_Node );
-    //Llama_Node_With_Memory
-    LiteGraph.registerNodeType("LLM/Llama With Memory", nodes.Llama_Node_With_Memory );
+    LiteGraph.registerNodeType("Text/Random Number", Nodes.Random_Number_Node );
     // Gate
-    LiteGraph.registerNodeType("Control/Gate", nodes.Gate );
+    LiteGraph.registerNodeType("Control/Gate", Nodes.Gate );
     // JSON_API_Node
-    LiteGraph.registerNodeType("API/JSON API", nodes.JSON_API_Node );
-    // Shared_Chat_Buffer_Node
-    LiteGraph.registerNodeType("Storage/Shared Chat Buffer", nodes.Shared_Chat_Buffer_Node );
-    // Event_Text_Receiver_Node
-    LiteGraph.registerNodeType("Control/Event Receiver", nodes.Event_Text_Receiver_Node );
+    LiteGraph.registerNodeType("API/JSON API", Nodes.JSON_API_Node );
+    // GPT_Node
+    LiteGraph.registerNodeType("LLM/GPT", Nodes.GPT_Node );
+    // Password_Node
+    LiteGraph.registerNodeType("Text/Password", Nodes.Password_Node );
+    //Prompt_Gate_GPT
+    LiteGraph.registerNodeType("Control/Prompt Gate (GPT)", Nodes.Prompt_Gate_GPT );
+    //Simple_Vector_DB_Read_Node
+    LiteGraph.registerNodeType("Storage/Simple Vector DB Read", Nodes.Simple_Vector_DB_Read_Node );
+    //Simple_Vector_DB_Write_Node
+    LiteGraph.registerNodeType("Storage/Simple Vector DB Write", Nodes.Simple_Vector_DB_Write_Node );
+    // Brain_Node
+    LiteGraph.registerNodeType("Brains/Brain",Nodes.Brain_Node );
+    // Variable_Forward_Node
+    LiteGraph.registerNodeType("Text/Variable Forward", Nodes.Variable_Forward_Node );
+    //Dictionary_Assembler_Node
+    LiteGraph.registerNodeType("Text/Dictionary Assembler", Nodes.Dictionary_Assembler_Node );
+    //Global_Variable_Get_Node
+    LiteGraph.registerNodeType("Control/Global Variable Get", Nodes.Global_Variable_Get_Node );
+    //Global_Variable_Set_Node
+    LiteGraph.registerNodeType("Control/Global Variable Set", Nodes.Global_Variable_Set_Node );
+    //Array_Assembler_Node
+    LiteGraph.registerNodeType("Text/Array Assembler", Nodes.Array_Assembler_Node );
+    //Array_Item_Forward_Node
+    LiteGraph.registerNodeType("Text/Array Item Forward", Nodes.Array_Item_Forward_Node );
+    //Array_Stepper_Node
+    LiteGraph.registerNodeType("Control/Array Stepper", Nodes.Array_Stepper_Node );
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);
@@ -160,6 +172,7 @@ async function load_graphs(app){
         });
         // add a schema endpoint for each graph
         app.get('/brains/' + filename + '/schema', async (req, res) => {
+            
             res.send({
                 "inputs": inputs,
                 "outputs": outputs
