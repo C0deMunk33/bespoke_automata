@@ -1163,8 +1163,8 @@
      * @method updateExecutionOrder
      */
     LGraph.prototype.updateExecutionOrder = function() {
-       // this._nodes_in_order = this.computeExecutionOrder(false);
-       this._nodes_in_order = this.computeNewExecutionOrder(); 
+       this._nodes_in_order = this.computeExecutionOrder(false);
+       // this._nodes_in_order = this.computeNewExecutionOrder(); 
        this._nodes_executable = [];
         for (var i = 0; i < this._nodes_in_order.length; ++i) {
             if (this._nodes_in_order[i].onExecute) {
@@ -1230,49 +1230,7 @@
         return order;
     }
 
-    LGraph.prototype.computeNewExecutionOrder = function(){
-        let edges = this.links.map(link => [link.origin_id, link.target_id]);
-        let orderedNodes = this.orderGraphNodes(edges);
-        let L = []
-        // set order for each node
-        for (let i = 0; i < orderedNodes.length; i++) {
-            let node = this._nodes_by_id[orderedNodes[i]];
-            node.order = i;
-            L.push(node);
-        }
 
-        //sort now by priority
-        L = L.sort(function(A, B) {
-            // sort by execution order
-            if(A.execution_priority === undefined){
-                A.execution_priority = 999;
-            }
-            if(B.execution_priority === undefined){
-                B.execution_priority = 999;
-            }
-            console.log(A.execution_priority, B.execution_priority)
-            if(A.execution_priority != B.execution_priority){
-                return A.execution_priority - B.execution_priority;
-            }
-            
-            var Ap = A.constructor.priority || A.priority || 0;
-            var Bp = B.constructor.priority || B.priority || 0;
-            if (Ap == Bp) {
-                //if same priority, sort by order
-                return A.order - B.order;
-            }
-            return Ap - Bp; //sort by priority
-        });
-
-        //save order number in the node, again...
-        for (var i = 0; i < L.length; ++i) {
-            L[i].order = i;
-        }
-
-        return L;
-
-    }
-    
     //This is more internal, it computes the executable nodes in order and returns it
     LGraph.prototype.computeExecutionOrder = function(
         only_onExecute,
@@ -1399,9 +1357,13 @@
 
         //sort now by priority
         L = L.sort(function(A, B) {
+            
             var Ap = A.constructor.priority || A.priority || 0;
             var Bp = B.constructor.priority || B.priority || 0;
             if (Ap == Bp) {
+                if( A.execution_priority != B.execution_priority){
+                    return A.execution_priority - B.execution_priority;
+                }
                 //if same priority, sort by order
                 return A.order - B.order;
             }
@@ -1458,8 +1420,8 @@
     LGraph.prototype.arrange = function (margin, layout) {
         margin = margin || 100;
 
-        //const nodes = this.computeExecutionOrder(false, true);
-        const nodes = this.computeNewExecutionOrder();
+        const nodes = this.computeExecutionOrder(false, true);
+        //const nodes = this.computeNewExecutionOrder();
         const columns = [];
         for (let i = 0; i < nodes.length; ++i) {
             const node = nodes[i];
@@ -13072,7 +13034,7 @@ LGraphNode.prototype.executeAction = function(action)
         // set input type to number
         input.type = "number";
         // set input value to current node priority
-        input.value = node.execution_priority || 0;
+        input.value = node.execution_priority || 999;
         // add input to dialog
         dialog.appendChild(input);
         // add ok button

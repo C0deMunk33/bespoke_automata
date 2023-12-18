@@ -86,7 +86,8 @@ def get_similar_documents_by_euclidean():
 # collection exists
 @app.route('/collection_exists', methods=['POST'])
 def collection_exists():
-    collection_name = request.args.get('collection_name')
+
+    collection_name = request.json['collection_name']
     return jsonify({'exists': db.collection_exists(collection_name)})
 
 # run the app
