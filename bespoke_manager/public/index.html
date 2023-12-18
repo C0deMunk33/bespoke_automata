@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface with API Avatar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3a3a3a;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #chat-box {
+            width: 300px;
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #4a4a4a;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #e5e5e5;
+        }
+
+        #input-box {
+            width: 300px;
+            display: flex;
+            gap: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #input-box input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            background-color: #5a5a5a;
+            color: #e5e5e5;
+            border-radius: 10px 0 0 10px;
+        }
+
+        #input-box button {
+            padding: 0 15px;
+            border: none;
+            background-color: #6a6a6a;
+            cursor: pointer;
+            color: #e5e5e5;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #5a5a5a;
+            margin: 5px 0;
+        }
+
+        .api-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #6a6a6a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #e5e5e5;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="chat-box">
+        <!-- Messages will appear here -->
+    </div>
+    <div id="input-box">
+        <input type="text" id="user-input" placeholder="Type a message..." onkeyup="checkEnter(event)">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        async function callAPI(message, callback) {
+            console.log('Calling API with message:', message);
+
+            let msg = {
+                name: "user_input",
+                value: message
+            }
+            // API endpoint is localhost:9999/brains/test_chat_1 and must be post request
+            const response = await fetch('http://localhost:9999/brains/test_chat_1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(msg)
+            });
+            // get response json
+            const data = await response.json();
+            console.log('API response:', data);
+            // data.value is the response from the API
+            callback(data[0].value);
+        }
+
+        function sendMessage() {
+            const inputElem = document.getElementById('user-input');
+            const chatBoxElem = document.getElementById('chat-box');
+
+            const userMessage = inputElem.value;
+            if (userMessage.trim() === "") return;
+
+            chatBoxElem.innerHTML += `<div>User: ${userMessage}</div>`;
+
+            callAPI(userMessage, (apiResponse) => {
+                chatBoxElem.innerHTML += `
+                <div class="message">
+                    <div class="api-avatar">A</div>
+                    <div>${apiResponse}</div>
+                </div>`;
+            });
+
+            inputElem.value = ''; // clear the input
+        }
+
+        function checkEnter(event) {
+            if (event.keyCode === 13) { // 13 is the key code for 'Enter'
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+
+</html>
