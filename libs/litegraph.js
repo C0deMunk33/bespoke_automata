@@ -13285,7 +13285,7 @@ LGraphNode.prototype.executeAction = function(action)
         } else {
             options = [
                 {
-                    content: "Priority",
+                    content: "Priority (" + (node.execution_priority || 999) + ")",
                     has_submenu: true,
                     callback: LGraphCanvas.onPrioritySetInput
                 },
