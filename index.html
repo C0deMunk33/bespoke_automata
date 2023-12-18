@@ -283,8 +283,6 @@
 		LiteGraph.registerNodeType("Control/Start", Start_Node );
 		//Counter_Node
 		LiteGraph.registerNodeType("Control/Counter", Counter_Node );
-		//Checklist_Node
-		LiteGraph.registerNodeType("Control/Checklist", Checklist_Node );
 		//Random_Number_Node
 		LiteGraph.registerNodeType("Text/Random Number", Random_Number_Node );
 		//Llama_Node_With_Memory
@@ -310,13 +308,19 @@
 		// Brain_Node
 		LiteGraph.registerNodeType("Brains/Brain", Brain_Node );
 		// Variable_Forward_Node
-		LiteGraph.registerNodeType("Control/Variable Forward", Variable_Forward_Node );
+		LiteGraph.registerNodeType("Text/Variable Forward", Variable_Forward_Node );
 		//Dictionary_Assembler_Node
 		LiteGraph.registerNodeType("Text/Dictionary Assembler", Dictionary_Assembler_Node );
 		//Global_Variable_Get_Node
 		LiteGraph.registerNodeType("Control/Global Variable Get", Global_Variable_Get_Node );
 		//Global_Variable_Set_Node
 		LiteGraph.registerNodeType("Control/Global Variable Set", Global_Variable_Set_Node );
+		//Array_Assembler_Node
+		LiteGraph.registerNodeType("Text/Array Assembler", Array_Assembler_Node );
+		//Array_Item_Forward_Node
+		LiteGraph.registerNodeType("Text/Array Item Forward", Array_Item_Forward_Node );
+		//Array_Stepper_Node
+		LiteGraph.registerNodeType("Control/Array Stepper", Array_Stepper_Node );
 	}
 
 	var graph = new LGraph();

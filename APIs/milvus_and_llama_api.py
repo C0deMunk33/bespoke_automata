@@ -10,6 +10,7 @@ model = SentenceTransformer(MODEL)#.to('cuda:0')
 from flask_cors import CORS
 CORS(app)
 
+# connect to milvus
 connections.connect(host='192.168.0.8', port='19530')
 
 def vectorize_text_batch(text_batch, model):
@@ -192,6 +193,14 @@ def chat_completions():
     print(out_text)
     return jsonify({'chat': out_text})
 
+# lists all .gguf files in the model directory (default ../../models/text/)
+@app.route("/models", methods=["GET"])
+def models():
+    import os
+    import glob
+    path = "../../models/text/"
+    files = [f for f in glob.glob(path + "**/*.gguf", recursive=True)]
+    return jsonify({'models': files})
 
 #*****************END LLAMA*****************
 if __name__ == '__main__':

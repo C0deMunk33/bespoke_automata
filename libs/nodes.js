@@ -26,7 +26,6 @@
 			stream: false
 		  };
 		  final_url = url + gpt_endpoint;
-		  console.log("final url: " + final_url);
 		
 		  const response = await fetch(final_url, {
 			method: 'POST',
@@ -35,7 +34,6 @@
 		  });
 		
 		  const responseData = await response.json();
-		  console.log(responseData);
 		  return responseData.chat.choices[0].message.content;
 
 	}
@@ -643,7 +641,112 @@
 		}
 	}
 
+	function Array_Assembler_Node(){
+		this.addInput("in array", "string");
+		this.addInput("var value", "string");
+		this.addOutput("out array", "string");
+		this.properties = {
+			variable_value: "",
+			array: []
+		};
+	}
+	Array_Assembler_Node.title = "Array Assembler";
+	Array_Assembler_Node.prototype.onExecute = function() {
+		if(this.getInputData(1) !== undefined 
+		&& this.getInputData(1) !== ""
+		&& this.getInputData(1) !== this.properties.variable_value) {
+			this.properties.variable_value = this.getInputData(1);
+		} else {
+			return;
+		}
+
+
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			let input_array = JSON.parse(this.getInputData(0));
+			input_array.push(this.properties.variable_value);
+			this.setOutputData(0, JSON.stringify(input_array));
+			this.properties.array = input_array;
+		} else {
+			let input_array = [];
+			input_array.push(this.properties.variable_value);
+			this.setOutputData(0, JSON.stringify(input_array));
+			this.properties.array = input_array;
+		}
+	}
+
+	function Array_Item_Forward_Node(){
+		this.addInput("in array", "string");
+		this.addInput("index", "number");
+		this.addOutput("out item", "string");
+		this.properties = {
+			index: 0
+		};
+		this.index_widget = this.addWidget("number","Index",this.properties.index,"index", {precision:0, step:10});
+	}
+	Array_Item_Forward_Node.title = "Array Item Forward";
+	Array_Item_Forward_Node.prototype.onExecute = function() {
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			let index_int = parseInt(this.getInputData(1));
+			this.properties.index =  index_int;
+			this.index_widget.value = index_int;
+		} else if (this.index_widget.value !== this.properties.index) {
+			this.properties.index = parseInt(this.index_widget.value);
+		}
+
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			let input_array = JSON.parse(this.getInputData(0));
+			// check that index is in bounds
+			if(this.properties.index < 0 || this.properties.index >= input_array.length) {
+				console.log("index out of bounds");
+				return;
+			}
+			this.setOutputData(0, input_array[this.properties.index]);
+		}
+	}
 	
+	function Array_Stepper_Node(){
+		this.addInput("in array", "string");
+		this.addInput("step text", "string");
+		this.addInput("reset text", "string");
+		this.addOutput("out item", "string");
+		this.properties = {
+			step: 0,
+			last_step_text: "",
+			last_reset_text: ""
+
+		};
+		this.step_widget = this.addWidget("number","Step",this.properties.step,"step", {precision:0, step:10});
+	}
+	Array_Stepper_Node.title = "Array Stepper";
+	Array_Stepper_Node.prototype.onExecute = function() {
+		// check for reset
+		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {	
+			if(this.getInputData(2) !== this.properties.last_reset_text) {
+				this.properties.step = 0;
+				this.step_widget.value = 0;
+				this.properties.last_reset_text = this.getInputData(2);
+				this.setOutputData(0, "");
+			}
+		}
+		
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			let input_array = JSON.parse(this.getInputData(0));
+			if(this.getInputData(1) !== undefined 
+				&& this.getInputData(1) !== ""
+				&& this.getInputData(1) !== this.properties.last_step_text) {
+				this.properties.step += 1;
+				if(this.properties.step >= input_array.length) {
+					this.properties.step = 0;
+				}
+
+				this.properties.last_step_text = this.getInputData(1);
+				this.step_widget.value = this.properties.step;
+
+				// set output
+				this.setOutputData(0, input_array[this.properties.step]);
+			}
+		}
+	}
 
 	// simple vector db write node
 	function Simple_Vector_DB_Write_Node(){
@@ -1694,6 +1797,8 @@
 		}
 
 		let messages = this.properties.chat_buffer.map((item) => item);
+
+		console.log(messages)
 		// prepend system message
 		messages.unshift(system_role);
 
@@ -1704,6 +1809,13 @@
 
 		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
+	}
+	GPT_Node.prototype.onAction = function(action, param) {
+		if(action == "clear") {
+			this.properties.chat_buffer = [];
+			this.properties.last_user_input = "";
+			this.properties.last_output = "";
+		}
 	}
 
 	function Password_Node() {
@@ -2135,94 +2247,7 @@
 		}
 	}
 
-	//checklist node, 0 inputs 5 text widgets, text output and trigger output once complete
-	function Checklist_Node(){
-		this.addInput("in", LiteGraph.ACTION);
-		this.addInput("reset", LiteGraph.ACTION);
-		this.addOutput("out", LiteGraph.ACTION);
-		this.addOutput("text", "string");
-		this.properties = {
-			"item_0": "",
-			"item_1": "",
-			"item_2": "",
-			"item_3": "",
-			"item_4": "",
-			"current_item": 0
-		};
-		this.addWidget("button","Reset","", ()=>{
-			this.properties.current_item = 0;
-			this.setOutputData(1, "");
-			this.current_item_widget.value = this.properties.current_item;
-		})
-		this.current_item_widget = this.addWidget("text","Current Item",this.properties.current_item, "current_item");
 
-		this.text_widget_0 = this.addWidget("text","Item 0", this.properties.item_0, "item_0");
-		this.text_widget_1 = this.addWidget("text","Item 1", this.properties.item_1, "item_1");
-		this.text_widget_2 = this.addWidget("text","Item 2", this.properties.item_2, "item_2");
-		this.text_widget_3 = this.addWidget("text","Item 3", this.properties.item_3, "item_3");
-		this.text_widget_4 = this.addWidget("text","Item 4", this.properties.item_4, "item_4");
-	}
-	Checklist_Node.title = "Checklist";
-	Checklist_Node.prototype.onExecute = function() {
-		// gather checklist items
-		if(this.text_widget_0.value !== "") {
-			this.properties.item_0 = this.text_widget_0.value;
-		}
-		if(this.text_widget_1.value !== "") {
-			this.properties.item_1 = this.text_widget_1.value;
-		}
-		if(this.text_widget_2.value !== "") {
-			this.properties.item_2 = this.text_widget_2.value;
-		}
-		if(this.text_widget_3.value !== "") {
-			this.properties.item_3 = this.text_widget_3.value;
-		}
-		if(this.text_widget_4.value !== "") {
-			this.properties.item_4 = this.text_widget_4.value;
-		}
-
-		// set output to current item
-		this.setOutputData(1, this.properties["item_" + this.properties.current_item]);
-	}
-	Checklist_Node.prototype.onAction = function(action, param) {
-		if(action == "in") {
-			// gather checklist items
-			if(this.text_widget_0.value !== "") {
-				this.properties.item_0 = this.text_widget_0.value;
-			}
-			if(this.text_widget_1.value !== "") {
-				this.properties.item_1 = this.text_widget_1.value;
-			}
-			if(this.text_widget_2.value !== "") {
-				this.properties.item_2 = this.text_widget_2.value;
-			}
-			if(this.text_widget_3.value !== "") {
-				this.properties.item_3 = this.text_widget_3.value;
-			}
-			if(this.text_widget_4.value !== "") {
-				this.properties.item_4 = this.text_widget_4.value;
-			}
-
-
-			// increment current item
-			this.properties.current_item++;
-			// set current item widget value
-			this.current_item_widget.value = this.properties.current_item;
-			// if current item is greater than checklist length, trigger out
-			if(this.properties.current_item >= 5) {
-				this.trigger("out", this.properties.checklist);
-				this.properties.current_item = 6;
-			} else {
-				// set output to current item
-				this.setOutputData(1, this.properties["item_" + this.properties.current_item]);
-			}
-		}
-		if(action == "reset") {
-			this.properties.current_item = 0;
-			this.setOutputData(1, "");
-			this.current_item_widget.value = this.properties.current_item;
-		}
-	}
 
 	// random number node, 0 inputs, 1 number output, 2 widgets for min and max
 	function Random_Number_Node(){
@@ -2271,6 +2296,8 @@
 		// set output to text
 		this.setOutputData(0, this.properties.text);
 	}
+
+
 
 	// Text output node, 1 input, 0 outputs, 1 widget for text output
 	function Text_Output_Node() {
@@ -2657,7 +2684,6 @@
 			Concatenate_Text_Node: Concatenate_Text_Node,
 			Start_Node: Start_Node,
 			Counter_Node: Counter_Node,
-			Checklist_Node: Checklist_Node,
 			Prompt_Gate_Llama: Prompt_Gate_Llama,
 			Random_Number_Node: Random_Number_Node,
 			Text_Input_Node: Text_Input_Node,
@@ -2673,7 +2699,12 @@
 			Simple_Vector_DB_Write_Node: Simple_Vector_DB_Write_Node,
 			Brain_Node: Brain_Node,
 			Variable_Forward_Node: Variable_Forward_Node,
-			Dictionary_Assembler_Node:Dictionary_Assembler_Node
+			Dictionary_Assembler_Node:Dictionary_Assembler_Node,
+			Global_Variable_Get_Node:Global_Variable_Get_Node,
+			Global_Variable_Set_Node:Global_Variable_Set_Node,
+			Array_Assembler_Node:Array_Assembler_Node,
+			Array_Item_Forward_Node:Array_Item_Forward_Node,
+			Array_Stepper_Node,Array_Stepper_Node
 
 		};
 	}
