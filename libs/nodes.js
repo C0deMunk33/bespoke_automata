@@ -1475,193 +1475,6 @@
 		}
 	}
 
-	function Wiki_Query_Node(){
-		this.addInput("query", "string");
-		this.addInput("class key", "string");
-		this.addInput("record count", "number");
-		this.addInput("milvus url", "string");
-		this.addOutput("out", "string");
-		
-		this.properties = {
-			query: "",
-			result: "",
-			top_n: 3,
-			last_query: "",
-			last_result: "",
-			milvus_url: "http://192.168.0.8:5000"
-		};
-
-		//record count widget
-		this.record_count_widget = this.addWidget("number","Record Count",this.properties.top_n, "top_n", {precision:0, step:1});
-		//milvus url widget
-		this.milvus_url_widget = this.addWidget("text","Milvus URL",this.properties.milvus_url, "milvus_url");
-	}
-	Wiki_Query_Node.title = "Wiki Query";
-	Wiki_Query_Node.prototype.onExecute = async function() {
-		// set record count property
-		this.properties.top_n = this.record_count_widget.value;
-
-		// if record count input is not undefined, set record count property
-		if(this.getInputData(2) !== undefined && this.getInputData(2) > 0) {
-			this.properties.top_n = this.getInputData(2);
-			this.record_count_widget.value = this.getInputData(2);
-		}
-
-		// if query input is not undefined and not blank, query wikipedia
-		if(this.getInputData(0) !== undefined && this.getInputData(0) != ""
-			&& this.getInputData(0) !== this.properties.last_query) {
-			this.properties.query = this.getInputData(0);
-			let query = this.getInputData(0);
-			console.log("querying wikipedia with: " + query)
-			let result = await query_wikipedia(query, this.properties.milvus_url, this.properties.top_n);
-			
-			this.properties.last_query = this.properties.query;
-			this.properties.last_result = result.wiki;	
-		}
-
-		if(this.getInputData(3) !== undefined && this.getInputData(3) != "") {
-			this.properties.milvus_url = this.getInputData(3);
-			this.milvus_url_widget.value = this.getInputData(3);
-		}
-		this.setOutputData(0, this.properties.last_result );
-	}
-
-
-		
-
-	// chat log buffer node
-	function Chat_Log_Buffer_Node(){
-		this.addInput("in_0", "string");
-		this.addInput("in_1", "string");
-		this.addOutput("buffer", "string");
-		// clear buffer button
-		this.addInput("clear", LiteGraph.ACTION);
-		this.addWidget("button","Clear Buffer","", ()=>{
-			this.memory_buffer = [];
-			this.last_0_memory = "";
-			this.last_1_memory = "";
-
-			this.setOutputData(0, "" );
-		});
-		//add log buffer button
-		this.addWidget("button", "Log", "", ()=>{
-			//console.log("logging")
-			console.log(this.memory_buffer);
-		});
-		this.properties = { 
-			buffer_size: 10,
-			prefix_0: "",
-			prefix_1: ""
-		 };
-		this.text_widget = this.addWidget("number","Buffer Size",this.properties.buffer_size, "buffer_size", {precision:0, step:10});
-		
-		this.last_0_memory = "";
-		this.last_1_memory = "";
-		this.memory_buffer = [];
-	}
-	Chat_Log_Buffer_Node.title = "Chat Buffer";
-	Chat_Log_Buffer_Node.prototype.onExecute = function() {
-
-		// if 0 or 1 is not undefined, and 0 and 1 are different from last memory, add to buffer
-		if(this.getInputData(0) !== undefined && this.last_0_memory !== this.getInputData(0)) {
-			// add to buffer
-			this.memory_buffer.push( this.getInputData(0));
-			// if buffer is too big, remove oldest memory
-			if(this.memory_buffer.length > this.properties.buffer_size) {
-				this.memory_buffer.shift();
-			}
-			this.last_0_memory = this.getInputData(0);
-		}
-
-		if(this.getInputData(1) !== undefined && this.last_1_memory !== this.getInputData(1)) {
-			// add to buffer
-			this.memory_buffer.push( this.getInputData(1));
-			// if buffer is too big, remove oldest memory
-			if(this.memory_buffer.length > this.properties.buffer_size) {
-				this.memory_buffer.shift();
-			}
-			this.last_1_memory = this.getInputData(1);
-		}		
-		
-		// join memory buffer into one string separated by newlines (using join or map or something)
-		let buffer_string = this.memory_buffer.join("\n");
-		this.setOutputData(0, buffer_string );
-	}
-	Chat_Log_Buffer_Node.prototype.onAction = function(action, param) {
-		if(action == "clear") {
-			this.memory_buffer = [];
-			this.last_0_memory = "";
-			this.last_1_memory = "";
-
-			this.setOutputData(0, "" );
-		}
-	}
-
-	// file to text node
-	// interrupt node
-	function Interrupt_Node(){
-		this.addInput("main", "string");
-		this.addInput("interrupt", "string");
-		this.addOutput("out", "string");
-		this.properties = { 
-			last_interrupt: "",
-			
-		 };
-		this.text_widget = this.addWidget("text","Interrupt Message",this.properties.interrupt_message, "interrupt_message");
-	}
-	Interrupt_Node.title = "Interrupt";
-	Interrupt_Node.prototype.onExecute = function() {
-		
-		if(this.getInputData(1) !== undefined && this.properties.last_interrupt !== this.getInputData(1)){
-			this.properties.last_interrupt = this.getInputData(1);
-			this.setOutputData(0, this.properties.last_interrupt);
-		} else if(this.getInputData(0) !== undefined) {
-			this.setOutputData(0, this.getInputData(0));
-		} else {
-			this.setOutputData(0, "");
-		}
-		
-	}
-
-	// query text node (text in, query in, text out)
-	function Query_Text_Node(){
-		this.addInput("text in", "string");
-		this.addInput("constitution", "string");
-		this.addInput("instruction", "string");
-		this.addInput("prompt seed", "string")
-		
-		this.addOutput("out", "string");
-		// add chunk trigger word widget
-		this.properties = {
-			chunk_trigger_word: "<chunk>",
-		};
-		this.text_widget = this.addWidget("text","Chunk Word",this.properties.chunk_trigger_word, "chunk_trigger_word");
-	}
-	Query_Text_Node.title = "Query Text";
-	Query_Text_Node.prototype.onExecute = async function() {
-        // split input(0) into chunks based on a trigger word like <chunk>
-		let text_in = this.getInputData(0);
-		let constitution = this.getInputData(1);
-		let instruction = this.getInputData(2);
-		let prompt_seed = this.getInputData(3);
-		let chunks = text_in.split(this.properties.chunk_trigger_word);
-		let output = "";
-
-		
-        // for each chunk, run it through the LLM with the query in a templatized prompt
-		for(let i = 0; i < chunks.length; i++) {
-			let pre_chunk_prompt = "<s>[INST] <<SYS>>\n" + constitution + " Chapter: "+chunks[i]+"<</SYS>>\n\n";
-			//console.log("CHUNK " + i + ": " + chunks[i])
-			// build prompt
-			let chunk_prompt = pre_chunk_prompt + "\n\n "+ instruction +" [/INST] " + prompt_seed;
-			// call LLM with prompt
-			let llm_response = await call_llm(chunk_prompt, llm_server);
-			output += llm_response;
-			//console.log(llm_response)
-		}
-		// output the string
-		this.setOutputData(0, output);
-	}
 
 	function Llama_Node() {
 		this.addInput("constitution", "string");
@@ -1832,78 +1645,7 @@
 		this.setOutputData(0, this.text_widget.value);
 	}
 
-	function Llama_Node_With_Memory() {
-		this.addInput("constitution", "string");
-		this.addInput("instruction", "string");
-		this.addInput("prompt seed", "string");
-		this.addInput("chat buffer", "string"); // chat buffer should be in json format where the first item is the user message and the second item is the model response and they alternate
-		this.addOutput("out", "string");
-		this.addOutput("chat buffer", "string"); // json strig of chat buffer
-		this.addOutput("latest pair", "string"); // latest pair of chat buffer (user message, model response
-		// server URL widget
-		this.properties = {
-			server_url: llm_server,
-			chat_buffer: [],
-			last_buffer_input: ""
-		};
-
-		this.text_widget = this.addWidget("text","Server URL",this.properties.server_url, "server_url");
-		// clear buffer button
-		this.addInput("clear", LiteGraph.ACTION);
-		this.addWidget("button","Clear Buffer","", ()=>{
-			this.properties.chat_buffer = [];
-			this.properties.last_buffer_input = "";
-			this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
-		});
-
-	}
-	Llama_Node_With_Memory.title = "Llama LLM With Memory";
-	Llama_Node_With_Memory.prototype.onExecute = async function() {
-		let constitution = this.getInputData(0);
-		let instruction = this.getInputData(1);
-		let prompt_seed = ""
-		if(this.getInputData(2) !== undefined) {
-			prompt_seed = this.getInputData(2);
-		}
-
-
-		// if input(3) is not undefined and is different from last_buffer_input, replace chat buffer with input(3)
-		if(this.getInputData(3) !== undefined && this.getInputData(3) !== this.properties.last_buffer_input) {
-			this.properties.chat_buffer = JSON.parse(this.getInputData(3));
-			this.properties.last_buffer_input = this.getInputData(3);
-		}
-
-		let query = "<s>[INST] <<SYS>>\n" + constitution + "\n<</SYS>>\n\n";
-
-		// add chat buffer to query
-		// {{ user_msg_1 }} [/INST] {{ model_answer_1 }} </s><s>[INST] {{ user_msg_2 }} [/INST]
-		for(let i = 0; i < this.properties.chat_buffer.length; i += 2) {
-			if(i !== 0){
-				//query
-			}
-			query += this.properties.chat_buffer[i] + " [/INST] " + this.properties.chat_buffer[i+1]  + "</s><s>[INST]";
-		}
-
-		query += instruction + " [/INST]" + prompt_seed;
-
-		console.log("Query: " + query)
-		let llm_response = await call_llm(query, this.properties.server_url);
-
-		// add instruction to chat buffer
-		this.properties.chat_buffer.push(instruction);
-		// add llm response to chat buffer
-		this.properties.chat_buffer.push(llm_response);
-
-		// clean buffer
-		if(this.properties.chat_buffer.length > 8) {
-			this.properties.chat_buffer.shift();
-			this.properties.chat_buffer.shift();
-		}
-
-		this.setOutputData(0, llm_response);
-		this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
-		this.setOutputData(2, JSON.stringify([this.properties.chat_buffer[this.properties.chat_buffer.length - 2], this.properties.chat_buffer[this.properties.chat_buffer.length - 1]]));
-	}
+	
 
 	//audio generation node, text in, play audio out
 	function Audio_Generation_Node(){
@@ -1928,62 +1670,7 @@
 
 	}
 
-	function Prompt_Gate_Llama(){
-		this.addInput("in", "string");
-		this.addInput("context", "string")
-		this.addInput("constitution", "string");
-	
-		this.addOutput("yes", LiteGraph.ACTION);
-		this.addOutput("no", LiteGraph.ACTION);
-		this.addOutput("yes", "string");
-		this.addOutput("no", "string");
-		this.addOutput("reasoning", "string");
-		this.properties = { 			
-			prompt: "",
-			url: llm_server,
-			reasoning: ""
-		 };
-		this.text_widget = this.addWidget("text","Prompt",this.properties.prompt, "prompt");
-		this.text_widget2 = this.addWidget("text", "Url", this.properties.url, "url")
-	}
-	Prompt_Gate_Llama.title = "Prompt Gate (Llama)";
-	Prompt_Gate_Llama.prototype.onExecute = async function() {
-		this.properties.prompt = this.text_widget.value;
-		this.properties.url = this.text_widget2.value;
 
-		
-		let assembled_prompt = 
-			"<s>[INST] <<SYS>>\n" 
-			+ this.getInputData(2) 
-			+ " context: " 
-			+ this.getInputData(1)
-			+ " input: "
-			+ this.getInputData(0)
-			+ "<</SYS>>\n\n"
-			+ this.properties.prompt
-			+ ". Start your answer with yes or no[/INST] [assistant]";
-		let llm_response = await call_llm(assembled_prompt, this.properties.url);
-		// does the llm_response(string) text contain "yes"
-
-		console.log(llm_response.toLowerCase())
-		this.properties.reasoning = llm_response;
-		this.setOutputData(4, llm_response);
-
-		const positive_words = ["yes", "yeah"]
-
-		if(containsWords(positive_words,llm_response.toLowerCase())) {
-			console.log("yes")
-			this.trigger("yes", this.properties.prompt);
-			this.setOutputData(2, this.getInputData(0));
-			this.setOutputData(3, "");
-		} else {
-			this.trigger("no", this.properties.prompt);
-			this.setOutputData(2, "");
-			this.setOutputData(3, this.getInputData(0));
-		}	
-
-		
-	}
 
 	function Prompt_Gate_GPT(){
 		this.addInput("in", "string");
@@ -2478,124 +2165,7 @@
 		this.setOutputData(0, await getJSON(this.properties.url));
 	}
 
-	function Shared_Chat_Buffer_Node(){
-		this.eventEmitter = eventEmitter;
-		this.addInput("text in", "string");
-		this.addInput("input event name", "string");
-		this.addInput("output event name", "string");
-		this.addInput("max length event name", "string");
-		this.addInput("reset event name", "string");
 
-		this.addOutput("text out", "string");
-		this.properties = {
-			"chat_buffer": [],
-			"input_event_key": "",
-			"output_event_key": "",
-			"max_length_event_key": "",
-			"reset_event_key": "",
-			"buffer_length": 8,
-		};
-		this.input_event_name_widget = this.addWidget("text","Input Event Name",this.properties.input_event_key, "input_event_key");
-		this.output_event_name_widget = this.addWidget("text","Output Event Name",this.properties.output_event_key, "output_event_key");
-		this.max_len_name_widget = this.addWidget("text","Buffer Length Event Name",this.properties.max_length_event_key, "max_length_event_key");
-		this.reset_event_name_widget = this.addWidget("text","Reset Event Name",this.properties.reset_event_key, "reset_event_key");
-		this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length, "buffer_length", {precision:0, step:1});
-		this.addWidget("button","Clear","", ()=>{
-			this.properties.chat_buffer = [];
-		})
-		// input class name widget
-
-	}
-	Shared_Chat_Buffer_Node.title = "Shared Chat Buffer";
-	Shared_Chat_Buffer_Node.prototype.onLoad = function(node) {
-		this.eventEmitter.on(node.properties.input_event_key, (text)=>{
-			console.log("Shared Chat Buffer Node: " + text)
-			node.properties.chat_buffer.push(text);
-			if(node.properties.chat_buffer.length > node.properties.buffer_length) {
-				node.properties.chat_buffer.shift();
-			}
-		}, node);
-		this.eventEmitter.on(node.properties.output_event_key, ()=>{
-			node.setOutputData(0, node.properties.chat_buffer);
-		}, node);
-		this.eventEmitter.on(node.properties.max_length_event_key, (length)=>{
-			node.properties.buffer_length = length;
-			node.buffer_length_widget.value = length;
-		}, node);
-		this.eventEmitter.on(node.properties.reset_event_key, ()=>{
-			node.properties.chat_buffer = [];
-		}, node);
-	}
-	Shared_Chat_Buffer_Node.prototype.onExecute = function() {
-		// reconnect itself in case something happened
-		this.onLoad(this);
-
-		// update properties
-		if(this.input_event_name_widget.value !== "") {
-			this.properties.input_event_key = this.input_event_name_widget.value;
-		}
-		if(this.output_event_name_widget.value !== "") {
-			this.properties.output_event_key = this.output_event_name_widget.value;
-		}
-		if(this.max_len_name_widget.value !== "") {
-			this.properties.max_length_event_key = this.max_len_name_widget.value;
-		}
-		if(this.reset_event_name_widget.value !== "") {
-			this.properties.reset_event_key = this.reset_event_name_widget.value;
-		}
-		if(this.buffer_length_widget.value !== "") {
-			this.properties.buffer_length = this.buffer_length_widget.value;
-		}
-
-		// inputs are [text_in: 0, input_event_name: 2, output_event_name: 4, max_length_event_name: 6, reset_event_name: 8]
-		// input event name in
-		if(this.getInputData(1) !== undefined
-		&& this.getInputData(1) !== this.properties.input_event_key
-		&& this.getInputData(1) !== "") {
-			this.properties.input_event_key = this.getInputData(2);
-			// set widget value
-			this.input_event_name_widget.value = this.getInputData(2);
-		}
-		// output event name in
-		if(this.getInputData(2) !== undefined
-		&& this.getInputData(2) !== this.properties.output_event_key
-		&& this.getInputData(2) !== "") {
-			this.properties.output_event_key = this.getInputData(4);
-			// set widget value
-			this.output_event_name_widget.value = this.getInputData(4);
-		}
-		// max length event name in
-		if(this.getInputData(3) !== undefined
-		&& this.getInputData(3) !== this.properties.max_length_event_key
-		&& this.getInputData(3) !== "") {
-			this.properties.max_length_event_key = this.getInputData(7);
-			// set widget value
-			this.max_len_name_widget.value = this.getInputData(6);
-		}
-		// reset event name in
-		if(this.getInputData(4) !== undefined
-		&& this.getInputData(4) !== this.properties.reset_event_key
-		&& this.getInputData(4) !== "") {
-			this.properties.reset_event_key = this.getInputData(9);
-			// set widget value
-			this.reset_event_name_widget.value = this.getInputData(8);
-		}
-		
-		// text in
-		if(this.getInputData(0) !== undefined
-		&& this.getInputData(0) !== this.properties.chat_buffer[this.properties.chat_buffer.length - 1]
-		&& this.getInputData(0).trim() !== "") {
-			this.properties.chat_buffer.push(this.getInputData(1));
-			if(this.properties.chat_buffer.length > this.properties.buffer_length) {
-				this.properties.chat_buffer.shift();
-			}
-		}
-
-		// set output to chat buffer concatenated with new line
-		this.setOutputData(0, this.properties.chat_buffer.join("\n"));
-
-	}
-	
 	
 	function Global_Variable_Set_Node(){
 		this.addInput("var name", "string");
@@ -2668,33 +2238,25 @@
 			/* takes in a query and a class name and it queries the target weaviate class */
 			Weaviate_Query_Node: Weaviate_Query_Node,
 			
-			Chat_Log_Buffer_Node: Chat_Log_Buffer_Node,
-			Interrupt_Node: Interrupt_Node,
-			Query_Text_Node: Query_Text_Node,
 			Llama_Node: Llama_Node,
 			Random_Selection_Node: Random_Selection_Node,
 			Prompt_Template_Node: Prompt_Template_Node,
-			Llama_Node_With_Memory: Llama_Node_With_Memory,
 			Text_Node: Text_Node,
 			Persona_Template_Node: Persona_Template_Node,
-			Llama_Node_With_Memory: Llama_Node_With_Memory,
 			Audio_Generation_Node: Audio_Generation_Node,
 			Prefix_Text_Node: Prefix_Text_Node,
 			Suffix_Text_Node: Suffix_Text_Node,
 			Concatenate_Text_Node: Concatenate_Text_Node,
 			Start_Node: Start_Node,
 			Counter_Node: Counter_Node,
-			Prompt_Gate_Llama: Prompt_Gate_Llama,
 			Random_Number_Node: Random_Number_Node,
 			Text_Input_Node: Text_Input_Node,
 			Text_Output_Node: Text_Output_Node,
 			Gate:Gate,
 			JSON_API_Node: JSON_API_Node,
-			Shared_Chat_Buffer_Node: Shared_Chat_Buffer_Node,
 			GPT_Node: GPT_Node,
 			Password_Node: Password_Node,
 			Prompt_Gate_GPT: Prompt_Gate_GPT,
-			Wiki_Query_Node: Wiki_Query_Node,
 			Simple_Vector_DB_Read_Node: Simple_Vector_DB_Read_Node,
 			Simple_Vector_DB_Write_Node: Simple_Vector_DB_Write_Node,
 			Brain_Node: Brain_Node,
