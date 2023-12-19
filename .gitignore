@@ -3,6 +3,7 @@ enwiki-20231001-pages-articles-multistream.xml
 
 # Private
 .openai
+.discord_bot_key
 
 # Logs
 logs
