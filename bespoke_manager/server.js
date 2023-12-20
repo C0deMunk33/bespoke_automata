@@ -83,10 +83,10 @@ function set_inputs(graph, input_data){
     textInputs.forEach(input => {
         const node = graph._nodes_by_id[input.id];
         
-        console.log("node: " + node.title)
-        console.log("input_data: ", input_data)
+   
 
         if(node.title === input_data.name){
+            console.log("setting input: ", input_data.name)
             node.properties.text = input_data.value;
         }
         
@@ -161,7 +161,7 @@ async function load_graphs(app){
         app.post('/brains/' + filename, async (req, res) => {
             // get json data from request
             const input_data = req.body;
-
+            // if filename does note contain .brain at the end, add it
             //console.log("loaded_graphs: ", loaded_graphs)
             //console.log("filename: ", filename)
             set_inputs(loaded_graphs[filename], input_data);
@@ -185,6 +185,8 @@ async function load_graphs(app){
     });
 }
 const app = express();
+var cors = require('cors')
+app.use(cors())
 const PORT = 9999;
 
 async function start_server(){
@@ -199,7 +201,7 @@ async function start_server(){
 
     // print all the endpoints
     console.log("endpoints: ", app._router.stack.filter(r => r.route).map(r => r.route.path));
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });
     

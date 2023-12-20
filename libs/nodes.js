@@ -1456,6 +1456,7 @@
 		});
 
 		this.addOutput("out", "string");
+		this.addOutput("buffer", "string");
 	}
 	GPT_Node.title = "GPT";
 	GPT_Node.prototype.onExecute = async function() {
@@ -1516,6 +1517,7 @@
 
 		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
+		this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
 	}
 	GPT_Node.prototype.onAction = function(action, param) {
 		if(action == "clear") {
@@ -1573,6 +1575,7 @@
 		this.addInput("prompt", "string");
 		this.addInput("server url", "string");
 		this.addInput("api key", "string");
+		this.addInput("model", "string")
 
 		this.addOutput("yes", LiteGraph.ACTION);
 		this.addOutput("no", LiteGraph.ACTION);
@@ -1584,7 +1587,8 @@
 			url: gpt_endpoint,
 			api_key: "",
 			reasoning: "",
-			last_input: ""
+			last_input: "",
+			model: "gpt-3.5-turbo"
 		 };
 		this.prompt_widget = this.addWidget("text","Prompt",this.properties.prompt, "prompt");
 
@@ -1600,6 +1604,13 @@
 			this.prompt_widget.value = this.properties.prompt;
 		} else if (this.prompt_widget.value !== this.properties.prompt) {
 			this.properties.prompt = this.prompt_widget.value;
+		}
+
+		// model
+		if(this.getInputData(6) !== undefined && this.getInputData(6) !== "") {
+			this.properties.model = this.getInputData(6);
+		} else {
+			console.log("prompt gate model not set")
 		}
 
 		let input = this.getInputData(0);
@@ -1621,7 +1632,7 @@
 		if (context !== "") {
 			system += " Answer the question below given the following context: " + context 
 		}
-		system += " Answer the question below about this text with yes or no, followed by paragraph on your reasoning: " + input;
+		system += " Please answer the question below about this text with a simple yes or no, followed by a sentence about your reasoning: " + input;
 
 		let server_url = this.getInputData(4) || gpt_endpoint;
 		let api_key = this.getInputData(5);
@@ -1636,7 +1647,7 @@
 		messages.push({"role": "system", "content": system});
 		messages.push({"role": "user", "content": this.properties.prompt});
 
-		let gpt_response = await call_gpt(messages, api_key, server_url);
+		let gpt_response = await call_gpt(messages, api_key, server_url, this.properties.model);
 		console.log(gpt_response);
 		
 		this.properties.reasoning = gpt_response;
