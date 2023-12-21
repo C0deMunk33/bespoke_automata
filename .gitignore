@@ -4,6 +4,7 @@ enwiki-20231001-pages-articles-multistream.xml
 # Private
 .openai
 .discord_bot_key
+.discord_ba_moderator_key
 
 # Logs
 logs

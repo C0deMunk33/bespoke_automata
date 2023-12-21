@@ -1806,7 +1806,7 @@
 	function Counter_Node(){
 		this.addInput("up", "string");
 		this.addInput("down", "string");
-		this.addOutput("out", "number");
+		this.addOutput("out", "string");
 		this.properties = {
 			"count": 0
 		};
@@ -1824,6 +1824,80 @@
 			this.properties.count += this.getInputData(0);
 		}
 	}
+
+	function Triggered_Number_Output_Node(){
+		this.addInput("number", "string");
+		this.addInput("trigger", "string");
+		this.addOutput("out", "string");
+		this.properties = {
+			"number": 0
+		};
+		this.number_widget = this.addWidget("number","Number",this.properties.number, "number", {precision:0, step:10});
+	}
+	Triggered_Number_Output_Node.title = "Triggered Number Output";
+	Triggered_Number_Output_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.number = this.getInputData(0);
+		} else if(this.number_widget.value !== "") {
+			this.properties.number = this.number_widget.value;
+		}
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {			
+			this.setOutputData(0, this.properties.number);
+		} else {
+			this.setOutputData(0, "");
+		}
+	}
+
+	// triggered text output node
+	function Triggered_Text_Output_Node(){
+		this.addInput("text", "string");
+		this.addInput("trigger", "string");
+		this.addOutput("out", "string");
+		this.properties = {
+			"text": ""
+		};
+		this.text_widget = this.addWidget("text","Text",this.properties.text, "text");
+	}
+	Triggered_Text_Output_Node.title = "Triggered Text Output";
+	Triggered_Text_Output_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.text = this.getInputData(0);
+		} else if(this.text_widget.value !== "") {
+			this.properties.text = this.text_widget.value;
+		}
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {			
+			this.setOutputData(0, this.properties.text);
+		} else {
+			this.setOutputData(0, "");
+		}
+	}
+
+	// Add_Node, 2 inputs, 1 output, 1 widget for number
+	function Add_Node(){
+		this.addInput("in_0", "string");
+		this.addInput("in_1", "string");
+		this.addOutput("out", "string");
+		this.properties = {
+			"number": 0
+		};
+		this.number_widget = this.addWidget("number","Number",this.properties.number, "number", {precision:0, step:10});
+	}
+	Add_Node.title = "Add";
+	Add_Node.prototype.onExecute = function() {
+		console.log("Add node executing")
+		let a = 0;
+		let b = 0;
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			a = Number.parseFloat(this.getInputData(0));
+		}
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			b = Number.parseFloat(this.getInputData(1));
+		}
+		this.properties.number = a + b;
+		this.number_widget.value = this.properties.number;
+		this.setOutputData(0, this.properties.number);
+	}
+
 
 
 
@@ -2156,7 +2230,9 @@
 			Global_Variable_Set_Node:Global_Variable_Set_Node,
 			Array_Assembler_Node:Array_Assembler_Node,
 			Array_Item_Forward_Node:Array_Item_Forward_Node,
-			Array_Stepper_Node,Array_Stepper_Node
-
+			Array_Stepper_Node,Array_Stepper_Node,
+			Triggered_Number_Output_Node:Triggered_Number_Output_Node,
+			Triggered_Text_Output_Node:Triggered_Text_Output_Node,
+			Add_Node:Add_Node,
 		};
 	}

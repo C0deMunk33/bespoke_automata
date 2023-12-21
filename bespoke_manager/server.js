@@ -34,6 +34,12 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("Control/Start", Nodes.Start_Node );
     //Counter_Node
     LiteGraph.registerNodeType("Control/Counter", Nodes.Counter_Node );
+    //Triggered_Number_Output_Node
+    LiteGraph.registerNodeType("Control/Number Output", Nodes.Triggered_Number_Output_Node );
+    //Triggered_Text_Output_Node
+    LiteGraph.registerNodeType("Control/Text Output", Nodes.Triggered_Text_Output_Node );
+    //Add_Node
+    LiteGraph.registerNodeType("Math/Add", Nodes.Add_Node );
     //Random_Number_Node
     LiteGraph.registerNodeType("Text/Random Number", Nodes.Random_Number_Node );
     // Gate
