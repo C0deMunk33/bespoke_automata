@@ -47,9 +47,14 @@ class MyClient(discord.Client):
                                 json={
                                     'value': f"user {message.author} said: {message.content}",
                                     'name': "user_in"})
-        
-        await message.reply(reply.json()[0]['value'], mention_author=False)
-        self.close()
+        reply_text = reply.json()[0]['value'].strip()
+        reason = reply.json()[1]['value'].strip()
+
+        print("Reason: ")
+        print(reason)
+        if reply_text != 'None' or reply_text != "":
+            await message.reply(reply_text, mention_author=False)
+            
         #await (self.get_channel(message.channel.id)).send(reply.json()[0]['value'])
         
 

@@ -6,6 +6,8 @@
 	if(typeof module !== 'undefined') {
 		const Weaviate = require("./weaviate.js");
 		LiteGraph = require("./litegraph.js");
+		// dummy window object
+		window = {};
 	}
 
 
@@ -181,10 +183,6 @@
 		
 		// Emit the event, calling all listeners registered for this event.
 		emit(event, ...args) {
-			console.log("emitting event: " + event)
-			console.log(this.events)
-			console.log(args)
-			console.log(this.events[event])
 			if (!this.events[event]) return;
 			this.events[event].forEach(({listener}) => listener.apply(this, args));
 		}
@@ -422,7 +420,6 @@
 
 	//get_similar_documents_by_euclidean
 	async function get_similar_documents_by_euclidean(collection_name, query, top_n, url) {
-		console.log(url)
 		let query_response = await fetch(url + "/get_similar_documents_by_euclidean", {
 			method: 'POST',
 			headers: {
@@ -732,16 +729,13 @@
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "" && this.getInputData(0) !== this.properties.last_input) {
 			this.properties.last_input = this.getInputData(0);
 			console.log("writing to simple vector db");
-			console.log(this.properties.last_input);
-			console.log(this.properties.collection);
-			console.log(this.properties.svdb_url);
 			let collection_exists_response = await collection_exists(this.properties.collection, this.properties.svdb_url);
-			console.log(collection_exists_response);
+			
 			if(!collection_exists_response.exists) {
 				//create collection
 				console.log("creating collection");
 				let create_response = await create_simple_vector_db_collection(this.properties.collection, this.properties.svdb_url);
-				console.log(create_response);
+				
 			}
 
 			let insert_response = await insert_simple_vector_db(this.properties.collection, this.properties.last_input, this.properties.last_input, this.properties.svdb_url);
@@ -787,11 +781,7 @@
 
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			console.log("reading from simple vector db");
-			console.log(this.getInputData(0));
-			console.log(this.properties.collection);
-			console.log(this.properties.svdb_url);
 			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0),1, this.properties.svdb_url);
-			console.log(response);
 			this.setOutputData(0, response);
 		}
 	}
@@ -807,9 +797,6 @@
 	Text_Node.prototype.onExecute = function() {
 		
 		if(this.getInputData(0) !== undefined) {
-			//console.log("-----text node on execute")
-			//console.log(this.getInputData(0))
-			//console.log("-------------")
 			this.text_widget.value = this.getInputData(0);
 			this.properties.value = this.getInputData(0);
 		} else if(this.text_widget.value !== this.properties.value) {
@@ -1104,6 +1091,10 @@
 		this.setOutputData(0, result );
 	}
 
+	//TODO: compare number node, outputs to "yes" output based on the setting: gt, lt, eq, gte, lte
+
+
+
 	// Persona Template Node
 	function Persona_Template_Node(){
 		/*
@@ -1340,8 +1331,6 @@
 			// for each chunk, call await addRecord(className, chunk)
 			for(let i = 0; i < words.length; i += chunk_size) {
 				let chunk = words.slice(i, i + chunk_size).join(" ");
-				//console.log("ingesting chunk: " + chunk);
-				//console.log(this.properties.class_key)
 				await weaviateInstance.addRecord(this.properties.class_key, {"text": chunk, "chunkNumber": i / chunk_size});
 			}
 
@@ -1384,11 +1373,7 @@
 		//if query input is not undefined, query weaviate
 		if(this.getInputData(0) !== undefined) {
 			let query = this.getInputData(0);
-			
-			console.log("querying weaviate with: " + query);
 			let response = await weaviateInstance.advancedQuery(this.properties.class_key, query, this.properties.record_count);
-			
-			console.log(response);
 			let memories = response.data.Get[this.properties.class_key]
 			let result = ""
 			for(let i = 0; i < memories.length; i++) {
@@ -1467,7 +1452,6 @@
 		}
 
 		let user = this.getInputData(1);
-		console.log("user: " + user)
 		if(user === undefined || user === "") {
 			this.setOutputData(0, "");
 			return;
@@ -1477,6 +1461,9 @@
 			this.setOutputData(0, this.properties.last_output);
 			return;
 		}
+
+		console.log("-----GPT node executing-----")
+		console.log("user: " + user)
 
 		if(this.getInputData(2) !== undefined) {
 			this.properties.server_url = this.getInputData(2);
@@ -1506,12 +1493,11 @@
 
 		let messages = this.properties.chat_buffer.map((item) => item);
 
-		console.log(messages)
 		// prepend system message
 		messages.unshift(system_role);
 
 		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model);
-		console.log(gpt_response);
+
 		this.properties.last_user_input = user;
 		this.properties.last_output = gpt_response;
 
@@ -1634,6 +1620,9 @@
 		}
 		system += " Please answer the question below about this text with a simple yes or no, followed by a sentence about your reasoning: " + input;
 
+		console.log("-----Prompt Gate node executing-----")
+		console.log("input: " + input)
+
 		let server_url = this.getInputData(4) || gpt_endpoint;
 		let api_key = this.getInputData(5);
 		if(api_key === undefined) {
@@ -1648,7 +1637,7 @@
 		messages.push({"role": "user", "content": this.properties.prompt});
 
 		let gpt_response = await call_gpt(messages, api_key, server_url, this.properties.model);
-		console.log(gpt_response);
+
 		
 		this.properties.reasoning = gpt_response;
 		this.setOutputData(4, gpt_response);
@@ -1656,7 +1645,6 @@
 		const positive_words = ["yes", "yeah"]
 
 		if(containsWords(positive_words,gpt_response.toLowerCase())) {
-			console.log("yes")
 			this.trigger("yes", this.properties.last_input);
 			this.setOutputData(2, this.properties.last_input);
 			this.setOutputData(3, "");
@@ -1713,7 +1701,7 @@
 	}
 	Concatenate_Text_Node.title = "Concatenate Text";
 	Concatenate_Text_Node.prototype.onExecute = function() {
-		console.log("concatenating")
+
 
 		// update properties
 		if(this.getInputData(0) !== undefined) {
@@ -1732,7 +1720,6 @@
 			this.properties.last = this.text_widget_last.value;
 		}
 		
-		console.log(this.properties.first + " " + this.properties.last)
 		this.setOutputData(0, this.properties.first + " " + this.properties.last );
 
 	}
@@ -1817,7 +1804,8 @@
 
 	// simple counter node
 	function Counter_Node(){
-		this.addInput("in", LiteGraph.ACTION);
+		this.addInput("up", "string");
+		this.addInput("down", "string");
 		this.addOutput("out", "number");
 		this.properties = {
 			"count": 0
@@ -1832,10 +1820,8 @@
 	}
 	Counter_Node.title = "Counter";
 	Counter_Node.prototype.onAction = function(action, param) {
-		if(action == "in") {
-			this.properties.count++;
-			this.setOutputData(0, this.properties.count);
-			this.count_widget.value = this.properties.count;
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.count += this.getInputData(0);
 		}
 	}
 
@@ -1879,9 +1865,6 @@
 	Text_Input_Node.bg_color = "#353"
 	// end green theme
 	Text_Input_Node.prototype.onExecute = function() {
-		console.log("Text input node on execute")
-		console.log(this.text_widget.value)
-		console.log(this.properties.text)
 		// update properties
 		this.text_widget.value = this.properties.text;
 		

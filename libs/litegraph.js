@@ -1359,7 +1359,7 @@
             var Aep = A.execution_priority || 999;
             var Bep = B.execution_priority || 999;
             if(Aep !== Bep){
-                return (A.execution_priority ) - (B.execution_priority );
+                return  (A.execution_priority ) - (B.execution_priority ) ;
             }
 
             var Ap = A.constructor.priority || A.priority || 0;
