@@ -2,12 +2,15 @@
 from sentence_transformers import SentenceTransformer, models, util
 from scipy.spatial.distance import cosine
 from scipy.spatial.distance import euclidean
-
+import uuid
+from datetime import datetime
 
 class SimpleVectorDB:
     def __init__(self):
         self.db = {}
         self.model = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
+        self.indexes = {}
+        self.indexes.timestamp = [] # id, timestamp
 
     def create_collection(self, collection_name):
         print("Creating collection: ", collection_name)
@@ -17,11 +20,31 @@ class SimpleVectorDB:
         print("Removing collection: ", collection_name)
         del self.db[collection_name]
 
-    def insert_into_collection(self, collection_name, title, text, vector, id=None):
+    def insert_into_collection(self, collection_name, title, text, vector, id=None, timestamp=None):
         print("Inserting into collection: ", collection_name)
         if id is None:
-            id = len(self.db[collection_name])
-        self.db[collection_name][id] = {'title': title, 'text': text, 'vector': vector}
+            # random 32 byte string
+            id = uuid.uuid4().hex
+        if timestamp is None:
+            timestamp = datetime.now()
+        self.db[collection_name][id] = {
+            'title': title, 
+            'text': text, 
+            'vector': vector,
+            'id': id,
+            'timestamp': timestamp
+        }
+
+        self.indexes.timestamp.append(id)
+
+    def get_by_time_range(self, collection_name, start, end):
+        results = []
+        # todo implement binary search
+        for id in self.indexes.timestamp:
+            doc = self.db[collection_name].get(id)
+            if doc['timestamp'] > start and doc['timestamp'] < end:
+                results.append(doc)
+        return results
 
     def delete_from_collection(self, collection_name, id):
         print("Deleting from collection: ", collection_name)
@@ -40,10 +63,16 @@ class SimpleVectorDB:
     def get_embedding(self, text):
         return self.model.encode(text)
 
-    def vector_search_cos(self, collection_name, vector, top_n=1):
+    def vector_search_cos(self, collection_name, vector, top_n=1, start=0, end=0):
         print("Searching collection: ", collection_name)
+
+        to_search = []
+        if start != 0 and end != 0 and start < end:
+            to_search = self.get_by_time_range(collection_name, start, end)
+        else:
+            to_search = self.db[collection_name].items()
         results = []
-        for id, doc in self.db[collection_name].items():
+        for id, doc in to_search:
             score = self.get_cos_simmilarity(doc['vector'], vector)
             results.append((score, doc))
 
