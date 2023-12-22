@@ -85,16 +85,19 @@ function set_inputs(graph, input_data){
     // input is an object where the node name is the key and the value is the value
     
     const textInputs = graph._nodes.filter(node => node.type === "IO/Text Input");
-    
+    console.log("textInputs: ", textInputs)
+    console.log("input_data: ", input_data)
     textInputs.forEach(input => {
         const node = graph._nodes_by_id[input.id];
         
-   
-
-        if(node.title === input_data.name){
-            console.log("setting input: ", input_data.name)
-            node.properties.text = input_data.value;
+        if(input_data[input.title] !== undefined){
+            console.log("setting input: ", input.title)
+            node.properties.text = input_data[input.title];
+        } else {
+            console.log("ERROR: bad inputs")
+            return;
         }
+
         
     });
 }
@@ -191,7 +194,8 @@ async function load_graphs(app){
     });
 }
 const app = express();
-var cors = require('cors')
+var cors = require('cors');
+const e = require('express');
 app.use(cors())
 const PORT = 9999;
 
