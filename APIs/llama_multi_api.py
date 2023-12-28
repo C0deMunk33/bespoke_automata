@@ -31,6 +31,12 @@ def get_available_system_ram():
 def load_models(model_path, instances=6, model_ram_size=6):
     global gpu_model_instances, ram_model_instances, gpu_model_cycle, ram_model_cycle
 
+
+    gpu_model_instances = []
+    ram_model_instances = []
+    gpu_model_cycle = None
+    ram_model_cycle = None
+    
     total_vram = get_total_cuda_vram()
     available_ram = get_available_system_ram()
 
@@ -85,7 +91,7 @@ def load_model():
 
     if instances is None:
         instances = 6
-        
+
     if model_path is None:
         return jsonify({'error': 'No model_path provided'}), 400
     load_models(model_path, instances)
