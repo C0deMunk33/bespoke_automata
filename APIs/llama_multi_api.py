@@ -28,12 +28,19 @@ def get_total_cuda_vram():
 def get_available_system_ram():
     return psutil.virtual_memory().available / (1024 ** 3)  # Convert to GB
 
-def load_models(model_path, model_ram_size=6):
+def load_models(model_path, instances=6, model_ram_size=6):
     global gpu_model_instances, ram_model_instances, gpu_model_cycle, ram_model_cycle
 
     total_vram = get_total_cuda_vram()
     available_ram = get_available_system_ram()
 
+    print("##########################################")
+    print("Loading models...")
+    print("model_path: ", model_path)
+    print("Total VRAM: ", total_vram)
+    print("Available RAM: ", available_ram)
+    print("##########################################")
+    return
     gpu_models_count = int(total_vram // model_ram_size)
     ram_models_count = int(available_ram // model_ram_size)
 
