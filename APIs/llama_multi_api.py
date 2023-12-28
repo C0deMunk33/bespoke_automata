@@ -11,11 +11,6 @@ app = Flask(__name__)
 from flask_cors import CORS
 CORS(app)
 
-# Model Initialization
-MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
-sentence_model = SentenceTransformer(MODEL)
-
-
 # Global variables
 gpu_model_instances = []
 ram_model_instances = []
