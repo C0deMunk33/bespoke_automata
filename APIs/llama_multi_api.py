@@ -23,8 +23,10 @@ model_cycle = None
 def load_models(model_path, n_instances=4):
     global model_instances
     global model_cycle
+    print(f"Loading model {model_path}" )
     model_instances = [Llama(model_path=model_path, n_ctx=512, n_gpu_layers=25, chat_format="chatml") for _ in range(n_instances)]
     model_cycle = cycle(model_instances)
+    print(f"Loaded {len(model_instances)} instances of {model_path}")
 
 # Round-robin model serving
 def get_round_robin_model():
@@ -44,6 +46,7 @@ def load_model():
 # Chat Completions Endpoint
 @app.route("/v1/chat/completions", methods=["POST"])
 def chat_completions():
+    print("chat_completions")
     data = request.json
     messages = data.get('messages')
     n_ctx = data.get('max_tokens')
