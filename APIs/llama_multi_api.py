@@ -50,6 +50,14 @@ def load_models(model_path, model_ram_size=6):
 
     gpu_model_cycle = cycle(gpu_model_instances) if gpu_model_instances else None
     ram_model_cycle = cycle(ram_model_instances)
+    print("##########################################")
+    print("Loaded models:")
+    print("model_path: ", model_path)
+    print("Total VRAM: ", total_vram)
+    print("Available RAM: ", available_ram)
+    print("GPU models: ", gpu_models_count)
+    print("RAM models: ", ram_models_count)
+    print("##########################################")
 
 def get_next_model():
     try:
