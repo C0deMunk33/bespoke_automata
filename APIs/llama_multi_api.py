@@ -81,9 +81,14 @@ def get_next_model():
 def load_model():
     data = request.json
     model_path = data.get('model_path')
+    instances = data.get('instances')
+
+    if instances is None:
+        instances = 6
+        
     if model_path is None:
         return jsonify({'error': 'No model_path provided'}), 400
-    load_models(model_path)
+    load_models(model_path, instances)
     return jsonify({'message': 'Models loaded successfully'}), 200
 
 # Chat Completions Endpoint
