@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, render_template_string
-import json
-import re
-from sentence_transformers import SentenceTransformer
-from llama_cpp import Llama
-from itertools import cycle
+import torch
 import os
 import glob
+from llama_cpp import Llama
+from itertools import cycle
+import psutil
 
 # Initialize Flask and CORS
 app = Flask(__name__)
@@ -16,22 +15,53 @@ CORS(app)
 MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
 sentence_model = SentenceTransformer(MODEL)
 
-# Load Model Instances
-model_instances = []
-model_cycle = None
 
-def load_models(model_path, n_instances=4):
-    global model_instances
-    global model_cycle
-    print(f"Loading model {model_path}" )
-    model_instances = [Llama(model_path=model_path, n_ctx=512, n_gpu_layers=25, chat_format="chatml") for _ in range(n_instances)]
-    model_cycle = cycle(model_instances)
-    print(f"Loaded {len(model_instances)} instances of {model_path}")
+# Global variables
+gpu_model_instances = []
+ram_model_instances = []
+gpu_model_cycle = None
+ram_model_cycle = None
 
-# Round-robin model serving
-def get_round_robin_model():
-    global model_cycle
-    return next(model_cycle)
+
+def get_total_cuda_vram():
+    total_vram = 0
+    if torch.cuda.is_available():
+        for i in range(torch.cuda.device_count()):
+            total_vram += torch.cuda.get_device_properties(i).total_memory / (1024 ** 3)  # Convert to GB
+    return total_vram
+
+def get_available_system_ram():
+    return psutil.virtual_memory().available / (1024 ** 3)  # Convert to GB
+
+def load_models(model_path, model_ram_size=6):
+    global gpu_model_instances, ram_model_instances, gpu_model_cycle, ram_model_cycle
+
+    total_vram = get_total_cuda_vram()
+    available_ram = get_available_system_ram()
+
+    gpu_models_count = int(total_vram // model_ram_size)
+    ram_models_count = int(available_ram // model_ram_size)
+
+    for _ in range(gpu_models_count):
+        gpu_model_instances.append(Llama(model_path=model_path, n_ctx=512, n_gpu_layers=100, chat_format="chatml"))
+
+    for _ in range(ram_models_count):
+        ram_model_instances.append(Llama(model_path=model_path, n_ctx=512, n_gpu_layers=0, chat_format="chatml"))
+
+    gpu_model_cycle = cycle(gpu_model_instances) if gpu_model_instances else None
+    ram_model_cycle = cycle(ram_model_instances)
+
+def get_next_model():
+    try:
+        # Try to get next GPU model
+        return next(gpu_model_cycle)
+    except (StopIteration, TypeError):
+        # If no GPU model is available, fallback to RAM model
+        return next(ram_model_cycle)
+
+
+
+##################### ENDPOINTS #####################
 
 # Load Model Endpoint
 @app.route("/load_model", methods=["POST"])
@@ -54,7 +84,7 @@ def chat_completions():
     if messages is None or n_ctx is None:
         return jsonify({'error': 'Required parameters are missing'}), 400
 
-    model = get_round_robin_model()
+    model = get_next_model()
     out_text = model.create_chat_completion(messages=messages)
     return jsonify({'chat': out_text})
 
