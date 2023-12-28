@@ -42,7 +42,7 @@ def load_model():
     return jsonify({'message': 'Models loaded successfully'}), 200
 
 # Chat Completions Endpoint
-@app.route("/v1/chat/completions", methods["POST"])
+@app.route("/v1/chat/completions", methods=["POST"])
 def chat_completions():
     data = request.json
     messages = data.get('messages')
