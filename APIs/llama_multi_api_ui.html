@@ -12,6 +12,11 @@
         .form-section {
             margin-bottom: 20px;
         }
+        .model-button {
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -47,24 +52,50 @@
     </div>
 
     <script>
-        // JavaScript to handle form submissions and model listing
-
         document.getElementById('loadModelForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const modelPath = document.getElementById('modelPath').value;
-            // Add AJAX request to POST model path to your Flask endpoint
+            fetch('http://localhost:5000/load_model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ model_path: modelPath })
+            })
+            .then(response => response.json())
+            .then(data => alert(JSON.stringify(data)))
+            .catch(error => console.error('Error:', error));
         });
 
         document.getElementById('chatCompletionsForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const messages = document.getElementById('messages').value;
             const maxTokens = document.getElementById('maxTokens').value;
-            // Add AJAX request to POST chat data to your Flask endpoint
+            fetch('http://localhost:5000/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ messages: JSON.parse(messages), max_tokens: maxTokens })
+            })
+            .then(response => response.json())
+            .then(data => alert(JSON.stringify(data)))
+            .catch(error => console.error('Error:', error));
         });
 
         document.getElementById('listModelsBtn').addEventListener('click', function() {
-            // Add AJAX request to GET models from your Flask endpoint
+            fetch('http://localhost:5000/models')
+            .then(response => response.json())
+            .then(data => {
+                const modelsList = document.getElementById('modelsList');
+                modelsList.innerHTML = data.models.map(model => `<button class="model-button" onclick="setModelPath('${model}')">${model}</button>`).join('');
+            })
+            .catch(error => console.error('Error:', error));
         });
+
+        function setModelPath(modelPath) {
+            document.getElementById('modelPath').value = modelPath;
+        }
     </script>
 </body>
 </html>
