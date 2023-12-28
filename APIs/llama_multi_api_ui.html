@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Interaction Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Model Interaction Page</h1>
+
+    <!-- Load Model Form -->
+    <div class="form-section">
+        <h2>Load Model</h2>
+        <form id="loadModelForm">
+            <label for="modelPath">Model Path:</label><br>
+            <input type="text" id="modelPath" name="modelPath" required><br>
+            <input type="submit" value="Load Model">
+        </form>
+    </div>
+
+    <!-- Chat Completions Form -->
+    <div class="form-section">
+        <h2>Chat Completions</h2>
+        <form id="chatCompletionsForm">
+            <label for="messages">Messages (JSON format):</label><br>
+            <textarea id="messages" name="messages" required rows="4" cols="50"></textarea><br>
+            <label for="maxTokens">Max Tokens:</label><br>
+            <input type="number" id="maxTokens" name="maxTokens" required><br>
+            <input type="submit" value="Get Chat Completion">
+        </form>
+    </div>
+
+    <!-- Models Listing -->
+    <div class="form-section">
+        <h2>List Models</h2>
+        <button id="listModelsBtn">List Models</button>
+        <div id="modelsList"></div>
+    </div>
+
+    <script>
+        // JavaScript to handle form submissions and model listing
+
+        document.getElementById('loadModelForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const modelPath = document.getElementById('modelPath').value;
+            // Add AJAX request to POST model path to your Flask endpoint
+        });
+
+        document.getElementById('chatCompletionsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const messages = document.getElementById('messages').value;
+            const maxTokens = document.getElementById('maxTokens').value;
+            // Add AJAX request to POST chat data to your Flask endpoint
+        });
+
+        document.getElementById('listModelsBtn').addEventListener('click', function() {
+            // Add AJAX request to GET models from your Flask endpoint
+        });
+    </script>
+</body>
+</html>
