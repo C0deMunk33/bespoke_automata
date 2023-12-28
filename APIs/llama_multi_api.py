@@ -60,8 +60,8 @@ def load_models(model_path, instances=6, model_ram_size=6):
     print("model_path: ", model_path)
     print("Total VRAM: ", total_vram)
     print("Available RAM: ", available_ram)
-    print("GPU models: ", gpu_models_count)
-    print("RAM models: ", ram_models_count)
+    print("GPU models: ", to_load_gpu)
+    print("RAM models: ", to_load_ram)
     print("##########################################")
 
 def get_next_model():
