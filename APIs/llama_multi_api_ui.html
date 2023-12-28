@@ -28,6 +28,8 @@
         <form id="loadModelForm">
             <label for="modelPath">Model Path:</label><br>
             <input type="text" id="modelPath" name="modelPath" required><br>
+            <label for="modelInstances">Instances:</label><br>
+            <input type="number" id="modelInstances" name="modelInstances" value="6" required><br>
             <input type="submit" value="Load Model">
         </form>
     </div>
@@ -55,12 +57,15 @@
         document.getElementById('loadModelForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const modelPath = document.getElementById('modelPath').value;
+            const modelInstances = document.getElementById('modelInstances').value;
             fetch('http://localhost:5000/load_model', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ model_path: modelPath })
+                body: JSON.stringify({ 
+                    model_path: modelPath,
+                    instances: modelInstances })
             })
             .then(response => response.json())
             .then(data => alert(JSON.stringify(data)))
