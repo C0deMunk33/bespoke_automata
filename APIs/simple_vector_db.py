@@ -10,7 +10,7 @@ class SimpleVectorDB:
         self.db = {}
         self.model = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
         self.indexes = {}
-        self.indexes.timestamp = [] # id, timestamp
+        self.indexes["timestamp"] = [] # id, timestamp
 
     def create_collection(self, collection_name):
         print("Creating collection: ", collection_name)

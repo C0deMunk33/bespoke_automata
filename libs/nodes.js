@@ -591,11 +591,15 @@
 	function Array_Assembler_Node(){
 		this.addInput("in array", "string");
 		this.addInput("var value", "string");
+		this.addInput("buffer length", "string");
 		this.addOutput("out array", "string");
 		this.properties = {
 			variable_value: "",
-			array: []
+			array: [],
+			buffer_length: 10
 		};
+		// buffer length widget
+		this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length,"buffer_length", {precision:0, step:10});
 	}
 	Array_Assembler_Node.title = "Array Assembler";
 	Array_Assembler_Node.prototype.onExecute = function() {
@@ -606,19 +610,26 @@
 		} else {
 			return;
 		}
-
-
+		let input_array = [];
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
-			let input_array = JSON.parse(this.getInputData(0));
-			input_array.push(this.properties.variable_value);
-			this.setOutputData(0, JSON.stringify(input_array));
-			this.properties.array = input_array;
-		} else {
-			let input_array = [];
-			input_array.push(this.properties.variable_value);
-			this.setOutputData(0, JSON.stringify(input_array));
-			this.properties.array = input_array;
+			input_array = JSON.parse(this.getInputData(0));
+		} 
+		
+		input_array.push(this.properties.variable_value);
+
+		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
+			this.properties.buffer_length = parseInt(this.getInputData(2));
+			this.buffer_length_widget.value = this.properties.buffer_length;
+		} else if (this.buffer_length_widget.value !== this.properties.buffer_length) {
+			this.properties.buffer_length = parseInt(this.buffer_length_widget.value);
 		}
+
+		if(input_array.length > this.properties.buffer_length) {
+			input_array.shift();
+		}
+
+		this.setOutputData(0, JSON.stringify(input_array));
+		this.properties.array = input_array;
 	}
 
 	function Array_Item_Forward_Node(){
@@ -1898,8 +1909,22 @@
 		this.setOutputData(0, this.properties.number);
 	}
 
+	// Compare number node
+	function Compare_Number_Node(){
+		this.addInput("in_0", "string");
+		this.addInput("in_1", "string");
+		this.addOutput("out", "string");
+		this.properties = {
+			"compare_type": "greater than",
+			"compare_types": ["greater than", 
+							  "less than", 
+							  "equal to", 
+							  "not equal to", 
+							  "greater than or equal to", 
+							  "less than or equal to"],	
+		};
 
-
+	}
 
 	// random number node, 0 inputs, 1 number output, 2 widgets for min and max
 	function Random_Number_Node(){
