@@ -40,14 +40,17 @@ def load_models(model_path, instances=6, model_ram_size=6):
     print("Total VRAM: ", total_vram)
     print("Available RAM: ", available_ram)
     print("##########################################")
-    return
+    
     gpu_models_count = int(total_vram // model_ram_size)
     ram_models_count = int(available_ram // model_ram_size)
 
-    for _ in range(gpu_models_count):
+    to_load_gpu = min(gpu_models_count, instances)
+    to_load_ram = min(ram_models_count, instances - to_load_gpu)
+
+    for _ in range(to_load_gpu):
         gpu_model_instances.append(Llama(model_path=model_path, n_ctx=512, n_gpu_layers=100, chat_format="chatml"))
 
-    for _ in range(ram_models_count):
+    for _ in range(to_load_ram):
         ram_model_instances.append(Llama(model_path=model_path, n_ctx=512, n_gpu_layers=0, chat_format="chatml"))
 
     gpu_model_cycle = cycle(gpu_model_instances) if gpu_model_instances else None
