@@ -28,7 +28,7 @@ def get_total_cuda_vram():
 def get_available_system_ram():
     return psutil.virtual_memory().available / (1024 ** 3)  # Convert to GB
 
-def load_models(model_path, instances=6, model_ram_size=6):
+def load_models(model_path, instances=6, model_ram_size=6, loras=None, grammars=None):
     global gpu_model_instances, ram_model_instances, gpu_model_cycle, ram_model_cycle
 
 
@@ -54,10 +54,10 @@ def load_models(model_path, instances=6, model_ram_size=6):
     to_load_ram = min(ram_models_count, instances - to_load_gpu)
 
     for _ in range(to_load_gpu):
-        gpu_model_instances.append(Llama(model_path=model_path, n_ctx=512, n_gpu_layers=100, chat_format="chatml"))
+        gpu_model_instances.append(Llama(model_path=model_path, n_ctx=10000, n_gpu_layers=100, chat_format="chatml"))
 
     for _ in range(to_load_ram):
-        ram_model_instances.append(Llama(model_path=model_path, n_ctx=512, n_gpu_layers=0, chat_format="chatml"))
+        ram_model_instances.append(Llama(model_path=model_path, n_ctx=10000, n_gpu_layers=0, chat_format="chatml"))
 
     gpu_model_cycle = cycle(gpu_model_instances) if gpu_model_instances else None
     ram_model_cycle = cycle(ram_model_instances)
