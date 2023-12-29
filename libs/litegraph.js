@@ -3727,7 +3727,9 @@
         var input_width = 0;
         var output_width = 0;
 
+        var total_io = 0;
         if (this.inputs) {
+            total_io += this.inputs.length;
             for (var i = 0, l = this.inputs.length; i < l; ++i) {
                 var input = this.inputs[i];
                 var text = input.label || input.name || "";
@@ -3739,6 +3741,7 @@
         }
 
         if (this.outputs) {
+            total_io += this.outputs.length;
             for (var i = 0, l = this.outputs.length; i < l; ++i) {
                 var output = this.outputs[i];
                 var text = output.label || output.name || "";
@@ -3756,26 +3759,35 @@
         }
 
         size[1] = (this.constructor.slot_start_y || 0) + rows * LiteGraph.NODE_SLOT_HEIGHT;
-
+        if(total_io === 0){
+            size[1] = 0;
+        }
         var widgets_height = 0;
+
         if (this.widgets && this.widgets.length) {
             for (var i = 0, l = this.widgets.length; i < l; ++i) {
+                let lines = 1;
+                
+                if(this.widgets[i].options && this.widgets[i].options.lines){
+                    lines = this.widgets[i].options.lines;
+                }
+
                 if (this.widgets[i].computeSize)
-                    widgets_height += this.widgets[i].computeSize(size[0])[1] + 4;
+                    widgets_height += (this.widgets[i].computeSize(size[0])[1] * lines) + 4;
                 else
-                    widgets_height += LiteGraph.NODE_WIDGET_HEIGHT + 4;
+                    widgets_height += (LiteGraph.NODE_WIDGET_HEIGHT* lines) + 4;
             }
             widgets_height += 8;
         }
 
         //compute height using widgets height
-        if( this.widgets_up )
+        if( this.widgets_up ){
             size[1] = Math.max( size[1], widgets_height );
-        else if( this.widgets_start_y != null )
+        } else if( this.widgets_start_y != null ){
             size[1] = Math.max( size[1], widgets_height + this.widgets_start_y );
-        else
+        }else{
             size[1] += widgets_height;
-
+        }
         function compute_text_size(text) {
             if (!text) {
                 return 0;
@@ -8657,8 +8669,12 @@ LGraphNode.prototype.executeAction = function(action)
 
         //render inputs and outputs
         if (!node.flags.collapsed) {
+
+            
+            var total_io = 0;
             //input connection slots
             if (node.inputs) {
+                total_io += node.inputs.length;
                 for (var i = 0; i < node.inputs.length; i++) {
                     var slot = node.inputs[i];
                     
@@ -8759,6 +8775,7 @@ LGraphNode.prototype.executeAction = function(action)
             ctx.textAlign = horizontal ? "center" : "right";
             ctx.strokeStyle = "black";
             if (node.outputs) {
+                total_io += node.outputs.length;
                 for (var i = 0; i < node.outputs.length; i++) {
                     var slot = node.outputs[i];
                     
@@ -8863,6 +8880,10 @@ LGraphNode.prototype.executeAction = function(action)
 
             ctx.textAlign = "left";
             ctx.globalAlpha = 1;
+
+            if(total_io === 0){
+                max_y = 5;
+            }
 
             if (node.widgets) {
 				var widgets_y = max_y;
@@ -9888,6 +9909,7 @@ LGraphNode.prototype.executeAction = function(action)
         var width = node.size[0];
         var widgets = node.widgets;
         posY += 2;
+        var lines = 1;
         var H = LiteGraph.NODE_WIDGET_HEIGHT;
         var show_text = this.ds.scale > 0.5;
         ctx.save();
@@ -10055,8 +10077,14 @@ LGraphNode.prototype.executeAction = function(action)
                     ctx.strokeStyle = outline_color;
                     ctx.fillStyle = background_color;
                     ctx.beginPath();
+
+                    let old_h = H;
+                    if(w.options.multiline){
+                        H *= w.options.lines || 1;
+                        lines = w.options.lines || 1;
+                    }
                     if (show_text)
-	                    ctx.roundRect(margin, y, widget_width - margin * 2, H, [H * 0.5]);
+	                    ctx.roundRect(margin, y, widget_width - margin * 2, H, [old_h * 0.5]);
 					else
 	                    ctx.rect( margin, y, widget_width - margin * 2, H );
                     ctx.fill();
@@ -10072,7 +10100,7 @@ LGraphNode.prototype.executeAction = function(action)
                         ctx.fillStyle = secondary_text_color;
                         let nameWidth = 0;
                         if (w.name != null) {
-                            ctx.fillText(w.name, margin * 2, y + H * 0.7);
+                            ctx.fillText(w.name, margin * 2, y + old_h * 0.7);
                             nameWidth = ctx.measureText(w.name).width;
                         }
                     
@@ -10082,65 +10110,38 @@ LGraphNode.prototype.executeAction = function(action)
                         ctx.fillStyle = text_color;
                         ctx.textAlign = "right";
                         const charsToDisplay = charsToFit(ctx, String(w.value), maxWidthForValue);
-                        ctx.fillText(String(w.value).substr(0, charsToDisplay), widget_width - margin * 2, y + H * 0.7);
-                    
+                        if(!w.options.multiline){
+                            ctx.fillText(String(w.value).substr(0, charsToDisplay), widget_width - margin * 2, y + old_h * 0.7);
+                        }else{
+                            // split into lines of length charsToDisplay, split by spaces
+                            let lines = [];
+                            let line = "";
+                            let words = String(w.value).split(" ");
+                            for(let i = 0; i < words.length; i++){
+                                if(line.length + words[i].length > charsToDisplay){
+                                    lines.push(line);
+                                    line = "";
+
+                                }
+                                line += words[i] + " ";
+
+                            }
+
+                            lines.push(line);
+                            // get minimum of w.options.lines and lines.length
+                            let numLines = Math.min(w.options.lines || 3, lines.length);
+
+                            for(let i = 0; i < numLines; i++){
+                                ctx.fillText(lines[i], widget_width - margin * 2, y + old_h * 0.7 + i * old_h);
+                            }
+                        }
                     
 						ctx.restore();
                     }
+                    
+                    H = old_h;
                     break;
                 case "multiline_text":
-                    ctx.textAlign = "left";
-                    ctx.strokeStyle = outline_color;
-                    ctx.fillStyle = background_color;
-                    ctx.beginPath();
-
-                    const textAreaHeight = H * 4; // Make it 4 lines tall
-                    
-                    if (show_text)
-                        ctx.roundRect(margin, y, widget_width - margin * 2, textAreaHeight, [textAreaHeight * 0.5]);
-                    else
-                        ctx.rect(margin, y, widget_width - margin * 2, textAreaHeight);
-
-                    ctx.fill();
-
-                    if (show_text) {
-                        if (!w.disabled)
-                            ctx.stroke();
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.rect(margin, y, widget_width - margin * 2, textAreaHeight);
-                        ctx.clip();
-
-                        ctx.fillStyle = secondary_text_color;
-                        if (w.name != null) {
-                            ctx.fillText(w.name, margin * 2, y + H * 0.7);
-                        }
-
-                        ctx.fillStyle = text_color;
-                        ctx.textAlign = "right";
-
-                        const words = String(w.value).split(' ');
-                        const lines = [];
-                        let currentLine = words[0];
-
-                        for (let i = 1; i < words.length; i++) {
-                            const word = words[i];
-                            const width = ctx.measureText(currentLine + " " + word).width;
-                            if (width < widget_width - margin * 4) {
-                                currentLine += ' ' + word;
-                            } else {
-                                lines.push(currentLine);
-                                currentLine = word;
-                            }
-                        }
-                        lines.push(currentLine);
-
-                        // Only draw the first 4 lines for this example
-                        for (let i = 0; i < Math.min(4, lines.length); i++) {
-                            ctx.fillText(lines[i].substr(0, 30), widget_width - margin * 2, y + H * 0.7 + i * H);
-                        }
-                        ctx.restore();
-                    }
 
                     break;
                 default:
@@ -10149,7 +10150,7 @@ LGraphNode.prototype.executeAction = function(action)
                     }
                     break;
             }
-            posY += (w.computeSize ? w.computeSize(widget_width)[1] : H) + 4;
+            posY += ((w.computeSize ? w.computeSize(widget_width)[1] : H) * lines) + 4;
 			ctx.globalAlpha = this.editor_alpha;
 
         }
@@ -10181,7 +10182,12 @@ LGraphNode.prototype.executeAction = function(action)
             var w = node.widgets[i];
 			if(!w || w.disabled)
 				continue;
-			var widget_height = w.computeSize ? w.computeSize(width)[1] : LiteGraph.NODE_WIDGET_HEIGHT;
+
+            var widget_lines = 1;
+            if(w.options && w.options.lines){
+                widget_lines = w.options.lines;
+            }
+			var widget_height = (w.computeSize ? w.computeSize(width)[1] : LiteGraph.NODE_WIDGET_HEIGHT) * widget_lines;
 			var widget_width = w.width || width;
 			//outside
 			if ( w != active_widget && 
@@ -10326,12 +10332,13 @@ LGraphNode.prototype.executeAction = function(action)
 								inner_value_change(this, v);
 							}.bind(w),
 							event,w.options ? w.options.multiline : false );
-					}
+					} 
 					break;
 				default:
 					if (w.mouse) {
 						this.dirty_canvas = w.mouse(event, [x, y], node);
 					}
+                    
 					break;
 			} //end switch
 
@@ -11370,7 +11377,7 @@ LGraphNode.prototype.executeAction = function(action)
         };
 
         // setup recordButton
-        var recordButton = dialog.querySelector("#recordButton");
+       /* var recordButton = dialog.querySelector("#recordButton");
         recordButton.addEventListener("click", function(e) {
             // triggers speech recognition via recordAndTranscribe that on complete fills in the input.value
             // on click the emoji text should turn red and on complete it should turn back to black
@@ -11388,7 +11395,7 @@ LGraphNode.prototype.executeAction = function(action)
             } else {
                 recordButton.style.color = "black";    
             }
-        });
+        });*/
 
 
         var graphcanvas = LGraphCanvas.active_canvas;

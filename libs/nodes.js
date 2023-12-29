@@ -449,6 +449,72 @@
 
 	/////////////////////NODES START HERE/////////////////////////
 
+	// Random Dictionary Item Node
+	function Random_Dictionary_Item_Node(){
+		// takes in dictionary and outputs a random item from it
+		this.addInput("in dict", "string");
+		this.addOutput("out item", "string");
+		this.properties = {
+			dictionary: {}
+		};
+		this.dictionary_widget = this.addWidget("text","Dictionary",JSON.stringify(this.properties.dictionary),"dictionary");
+	}
+	Random_Dictionary_Item_Node.title = "Random Dictionary Item";
+	Random_Dictionary_Item_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.dictionary = JSON.parse(this.getInputData(0));
+			this.dictionary_widget.value = JSON.stringify(this.properties.dictionary);
+		} else if (this.dictionary_widget.value !== JSON.stringify(this.properties.dictionary)) {
+			this.properties.dictionary = JSON.parse(this.dictionary_widget.value);
+		}
+
+		let keys = Object.keys(this.properties.dictionary);
+		let random_key = keys[Math.floor(Math.random() * keys.length)];
+		this.setOutputData(0, this.properties.dictionary[random_key]);
+	}
+		
+	// random array item node
+	function Random_Array_Item_Node(){
+		// takes in array and outputs a random item from it
+		this.addInput("in array", "string");
+		this.addOutput("out item", "string");
+		this.properties = {
+			array: []
+		};
+		this.array_widget = this.addWidget("text","Array",JSON.stringify(this.properties.array),"array");
+	}
+	Random_Array_Item_Node.title = "Random Array Item";
+	Random_Array_Item_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.array = JSON.parse(this.getInputData(0));
+			this.array_widget.value = JSON.stringify(this.properties.array);
+		} else if (this.array_widget.value !== JSON.stringify(this.properties.array)) {
+			this.properties.array = JSON.parse(this.array_widget.value);
+		}
+
+		let random_index = Math.floor(Math.random() * this.properties.array.length);
+		this.setOutputData(0, this.properties.array[random_index]);
+	}
+
+	// Note_Node
+	function Note_Node(){
+		this.properties = { value: "" };
+		this.text_widget = this.addWidget("text", "", this.properties.value, "value", {
+			multiline: true, 
+			lines: 6
+		});
+		
+	}
+	
+	Note_Node.title = "~~~Note~~~";
+	// faint yellow like sticky notes
+	Note_Node.title_color = "#FF0";
+	Note_Node.title_text_color = "#F03";
+	Note_Node.bg_color = "#FFF";
+	Note_Node.prototype.onExecute = function() {
+		this.properties.value = this.text_widget.value;
+	}
+
 	// brain node
 	// handles a single pass of a brain
 	// properties:
@@ -2259,5 +2325,8 @@
 			Triggered_Number_Output_Node:Triggered_Number_Output_Node,
 			Triggered_Text_Output_Node:Triggered_Text_Output_Node,
 			Add_Node:Add_Node,
+			Random_Array_Item_Node:Random_Array_Item_Node,
+			Random_Dictionary_Item_Node:Random_Dictionary_Item_Node,
+			Note_Node,Note_Node
 		};
 	}

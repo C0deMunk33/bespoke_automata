@@ -72,6 +72,12 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("Text/Array Item Forward", Nodes.Array_Item_Forward_Node );
     //Array_Stepper_Node
     LiteGraph.registerNodeType("Control/Array Stepper", Nodes.Array_Stepper_Node );
+    //Random_Dictionary_Item_Node
+    LiteGraph.registerNodeType("Control/Random Dictionary Item", Nodes.Random_Dictionary_Item_Node );
+    //Random_Array_Item_Node
+    LiteGraph.registerNodeType("Control/Random Array Item", Nodes.Random_Array_Item_Node );
+    //Note_Node
+    LiteGraph.registerNodeType("System/Note", Nodes.Note_Node );
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);
