@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Interaction Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .model-button {
+            margin: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Model Interaction Page</h1>
+
+    <!-- Load Model Form -->
+    <div class="form-section">
+        <h2>Load Model</h2>
+        <form id="loadModelForm">
+            <label for="modelPath">Model Path:</label><br>
+            <input type="text" id="modelPath" name="modelPath" required><br>
+            <label for="modelInstances">Instances:</label><br>
+            <input type="number" id="modelInstances" name="modelInstances" value="6" required><br>
+            <input type="submit" value="Load Model">
+        </form>
+    </div>
+
+    <!-- Chat Completions Form -->
+    <div class="form-section">
+        <h2>Chat Completions</h2>
+        <form id="chatCompletionsForm">
+            <label for="messages">Messages (JSON format):</label><br>
+            <textarea id="messages" name="messages" required rows="4" cols="50"></textarea><br>
+            <label for="maxTokens">Max Tokens:</label><br>
+            <input type="number" id="maxTokens" name="maxTokens" required><br>
+            <input type="submit" value="Get Chat Completion">
+        </form>
+    </div>
+
+    <!-- Models Listing -->
+    <div class="form-section">
+        <h2>List Models</h2>
+        <button id="listModelsBtn">List Models</button>
+        <div id="modelsList"></div>
+    </div>
+
+    <script>
+        document.getElementById('loadModelForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const modelPath = document.getElementById('modelPath').value;
+            const modelInstances = document.getElementById('modelInstances').value;
+            fetch('http://localhost:5000/load_model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    model_path: modelPath,
+                    instances: modelInstances })
+            })
+            .then(response => response.json())
+            .then(data => alert(JSON.stringify(data)))
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('chatCompletionsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const messages = document.getElementById('messages').value;
+            const maxTokens = document.getElementById('maxTokens').value;
+            fetch('http://localhost:5000/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ messages: JSON.parse(messages), max_tokens: maxTokens })
+            })
+            .then(response => response.json())
+            .then(data => alert(JSON.stringify(data)))
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('listModelsBtn').addEventListener('click', function() {
+            fetch('http://localhost:5000/models')
+            .then(response => response.json())
+            .then(data => {
+                const modelsList = document.getElementById('modelsList');
+                modelsList.innerHTML = data.models.map(model => `<button class="model-button" onclick="setModelPath('${model}')">${model}</button>`).join('');
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function setModelPath(modelPath) {
+            document.getElementById('modelPath').value = modelPath;
+        }
+    </script>
+</body>
+</html>
