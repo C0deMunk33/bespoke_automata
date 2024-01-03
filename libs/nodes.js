@@ -449,6 +449,15 @@
 
 	/////////////////////NODES START HERE/////////////////////////
 
+	// Time Node
+	function Time_Node(){
+		this.addOutput("out", "number");
+	}
+	Time_Node.title = "Time";
+	Time_Node.prototype.onExecute = function() {
+		this.setOutputData(0, Date.now());
+	}
+
 	// Random Dictionary Item Node
 	function Random_Dictionary_Item_Node(){
 		// takes in dictionary and outputs a random item from it
@@ -2327,6 +2336,7 @@
 			Add_Node:Add_Node,
 			Random_Array_Item_Node:Random_Array_Item_Node,
 			Random_Dictionary_Item_Node:Random_Dictionary_Item_Node,
-			Note_Node,Note_Node
+			Note_Node:Note_Node,
+			Time_Node:Time_Node,
 		};
 	}

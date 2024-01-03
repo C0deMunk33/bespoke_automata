@@ -78,6 +78,9 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("Control/Random Array Item", Nodes.Random_Array_Item_Node );
     //Note_Node
     LiteGraph.registerNodeType("System/Note", Nodes.Note_Node );
+    // Time_Node
+    LiteGraph.registerNodeType("System/Time", Nodes.Time_Node );
+
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);
