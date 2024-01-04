@@ -11,7 +11,7 @@ flask_cors.CORS(app)
 
 class WhisperAPI:
     def __init__(self):
-        self.model = whisper.load_model("base")
+        self.model = whisper.load_model("medium.en", "cuda", "../../models/whisper/", True)
 
     def transcribe(self, audio):
         result = self.model.transcribe(audio)
