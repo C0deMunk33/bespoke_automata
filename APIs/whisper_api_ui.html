@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Whisper Audio Transcription</title>
+</head>
+<body>
+    <h1>Audio Transcription using Whisper</h1>
+    <button id="startRecord">Start Recording</button>
+    <button id="stopRecord" disabled>Stop Recording</button>
+    <p id="transcription"></p>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        document.getElementById("startRecord").addEventListener("click", function(){
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+
+                    mediaRecorder.addEventListener("dataavailable", event => {
+                        audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener("stop", () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        sendAudioToServer(audioBlob);
+                        audioChunks = [];
+                    });
+
+                    this.disabled = true;
+                    document.getElementById("stopRecord").disabled = false;
+                });
+        });
+
+        document.getElementById("stopRecord").addEventListener("click", function(){
+            mediaRecorder.stop();
+            this.disabled = true;
+            document.getElementById("startRecord").disabled = false;
+        });
+
+        function sendAudioToServer(audioBlob) {
+            const formData = new FormData();
+            formData.append("audio", audioBlob);
+
+            fetch("http://localhost:5000/whisper", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("transcription").innerText = "Transcription: " + data.text;
+            })
+            .catch(error => console.error("Error in sending audio:", error));
+        }
+    </script>
+</body>
+</html>
