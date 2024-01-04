@@ -44,7 +44,7 @@
             const formData = new FormData();
             formData.append("audio", audioBlob);
 
-            fetch("http://localhost:5000/whisper", {
+            fetch("http://192.168.0.8:5000/whisper", {
                 method: "POST",
                 body: formData
             })

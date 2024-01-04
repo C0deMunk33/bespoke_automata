@@ -24,3 +24,11 @@ def whisper():
     audio = request.files["audio"]
     text = whisper_api.transcribe(audio)
     return jsonify({"text": text})
+
+# serve ./whisper_api_ui.html
+@app.route("/")
+def index():
+    return app.send_static_file("whisper_api_ui.html")
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=6000)
