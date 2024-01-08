@@ -7,7 +7,6 @@ from flask import Flask, request, jsonify
 import flask_cors
 
 
-ASSETS_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 flask_cors.CORS(app)
 
