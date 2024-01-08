@@ -10,8 +10,6 @@
 		window = {};
 	}
 
-
-
 	const gpt_endpoint = '/v1/chat/completions';
 	const gpt_url = 'https://api.openai.com'
 	const default_gpt_model = "gpt-3.5-turbo";
@@ -544,7 +542,7 @@
 		this.addInput("brain_name", "string");
 		this.addOutput("output dict", "string");
 		this.properties = {
-			local: true,
+			local: false,
 			url: "",
 			brain_name: "",
 			input_variables: {},
@@ -554,6 +552,22 @@
 		this.local_widget = this.addWidget("toggle","Local",this.properties.local,"local");
 		// brain name widget
 		this.brain_name_widget = this.addWidget("text","Brain Name",this.properties.brain_name,"brain_name");
+		this.call_brain = async function(brain, input_variables) { 
+			let final_url = this.properties.url + "/brains/" + this.properties.brain_name;
+
+			const headers = {
+				'Content-Type': 'application/json'
+			};
+			const data =  this.properties.input_variables;
+			const response = await fetch(final_url, {
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(data)
+			});
+
+			const responseData = await response.json();
+			return responseData;
+		}
 	}
 	Brain_Node.title = "Brain";
 	Brain_Node.prototype.onExecute = async function() {
@@ -571,6 +585,7 @@
 		}
 
 		if(this.properties.local) {
+			// TODO
 			// load brain from local file
 			let brain = await load_brain(this.properties.brain_name);
 			// run brain
@@ -579,7 +594,7 @@
 			this.setOutputData(0, JSON.stringify(output));
 		} else {
 			// call brain api
-			let output = await call_brain(this.properties.url, this.properties.input_variables);
+			let output = this.call_brain();
 			// set output
 			this.setOutputData(0, JSON.stringify(output));
 		}

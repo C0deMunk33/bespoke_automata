@@ -78,8 +78,6 @@ def get_next_model():
         # If no GPU model is available, fallback to RAM model
         return next(ram_model_cycle)
 
-
-
 ##################### ENDPOINTS #####################
 
 # Load Model Endpoint
