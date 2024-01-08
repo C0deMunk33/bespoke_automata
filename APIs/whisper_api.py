@@ -3,7 +3,8 @@ import soundfile as sf
 from io import BytesIO
 import os
 from pydub import AudioSegment
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, abort
+
 import flask_cors
 import whisper
 
@@ -12,7 +13,7 @@ flask_cors.CORS(app)
 
 class WhisperAPI:
     def __init__(self):
-        self.model = whisper.load_model("medium.en", "cuda", "../../models/whisper/", True)
+        self.model = whisper.load_model("large", "cuda", "../../models/whisper/", True, language="en")
 
     def transcribe(self, audio):
         result = self.model.transcribe(audio)
@@ -27,6 +28,24 @@ def save_audio_as_mp3(audio_file, filename):
     sound = AudioSegment.from_file(audio_bytes)
     mp3_filename = f"./saved_audio_files/{filename}.mp3"
     sound.export(mp3_filename, format="mp3")
+
+@app.route("/audio/<filename>", methods=["GET"])
+def serve_audio(filename):
+    directory = "./saved_audio_files"
+    file_path = os.path.join(directory, filename + ".mp3")
+
+    # Check if file exists
+    if not os.path.isfile(file_path):
+        abort(404)  # File not found
+
+    return send_from_directory(directory, filename + ".mp3")
+
+@app.route("/list_audio", methods=["GET"])
+def list_files():
+    directory = "./saved_audio_files"
+    files = [filename for filename in os.listdir(directory) if filename.endswith(".mp3")]
+    return jsonify(files)
+
 
 @app.route("/whisper", methods=["POST"])
 def whisper_route():
