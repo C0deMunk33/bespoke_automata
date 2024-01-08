@@ -49,7 +49,7 @@
             });
 
             stopRecord.addEventListener("click", function() {
-                if (mediaRecorder && mediaRecorder.state === "recording") {
+                if (mediaRecorder !== undefined && mediaRecorder.state === "recording") {
                     mediaRecorder.stop();
                 }
                 startRecord.disabled = false;
