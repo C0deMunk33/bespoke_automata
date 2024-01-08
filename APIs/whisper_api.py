@@ -6,6 +6,8 @@ import whisper
 from flask import Flask, request, jsonify
 import flask_cors
 
+
+ASSETS_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 flask_cors.CORS(app)
 
@@ -31,4 +33,4 @@ def index():
     return app.send_static_file("whisper_api_ui.html")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5123)
+    app.run(host="0.0.0.0", port=5123, ssl_context='adhoc')
