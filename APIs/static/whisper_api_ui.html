@@ -14,11 +14,10 @@
             const startRecord = document.getElementById("startRecord");
             const stopRecord = document.getElementById("stopRecord");
             const transcription = document.getElementById("transcription");
-            let mediaRecorder;
-            let audioChunks = [];
 
+            // Check if getUserMedia is supported
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                transcription.innerText = "Your browser does not support audio recording.";
+                transcription.innerText = "Audio recording is not supported in your browser.";
                 startRecord.disabled = true;
                 return;
             }
@@ -26,31 +25,35 @@
             startRecord.addEventListener("click", function() {
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(stream => {
-                        mediaRecorder = new MediaRecorder(stream);
-                        mediaRecorder.start();
+                        const mediaRecorder = new MediaRecorder(stream);
+                        let audioChunks = [];
 
-                        mediaRecorder.addEventListener("dataavailable", event => {
+                        mediaRecorder.ondataavailable = event => {
                             audioChunks.push(event.data);
-                        });
+                        };
 
-                        mediaRecorder.addEventListener("stop", () => {
+                        mediaRecorder.onstop = () => {
                             const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                             sendAudioToServer(audioBlob);
-                            audioChunks = [];
-                        });
+                        };
 
-                        this.disabled = true;
+                        mediaRecorder.start();
+                        startRecord.disabled = true;
                         stopRecord.disabled = false;
                     })
                     .catch(error => {
-                        transcription.innerText = "Error accessing the microphone: " + error.message;
+                        transcription.innerText = "Error accessing the microphone: " + error;
+                        startRecord.disabled = false;
+                        stopRecord.disabled = true;
                     });
             });
 
             stopRecord.addEventListener("click", function() {
-                mediaRecorder.stop();
-                this.disabled = true;
+                if (mediaRecorder && mediaRecorder.state === "recording") {
+                    mediaRecorder.stop();
+                }
                 startRecord.disabled = false;
+                stopRecord.disabled = true;
             });
 
             function sendAudioToServer(audioBlob) {
