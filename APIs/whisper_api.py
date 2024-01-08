@@ -38,6 +38,9 @@ def whisper_route():
     # Load the audio file as a NumPy array
     data, samplerate = sf.read(audio_bytes)
 
+    # Ensure the data is of the correct dtype (e.g., float32)
+    data = data.astype(np.float32)
+
     # Transcribe the audio
     text = whisper_api.transcribe(data)
 
