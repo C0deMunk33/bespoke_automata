@@ -10,50 +10,67 @@
     <p id="transcription"></p>
 
     <script>
-        let mediaRecorder;
-        let audioChunks = [];
+        document.addEventListener('DOMContentLoaded', function() {
+            const startRecord = document.getElementById("startRecord");
+            const stopRecord = document.getElementById("stopRecord");
+            const transcription = document.getElementById("transcription");
+            let mediaRecorder;
+            let audioChunks = [];
 
-        document.getElementById("startRecord").addEventListener("click", function(){
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.start();
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                transcription.innerText = "Your browser does not support audio recording.";
+                startRecord.disabled = true;
+                return;
+            }
 
-                    mediaRecorder.addEventListener("dataavailable", event => {
-                        audioChunks.push(event.data);
+            startRecord.addEventListener("click", function() {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        mediaRecorder = new MediaRecorder(stream);
+                        mediaRecorder.start();
+
+                        mediaRecorder.addEventListener("dataavailable", event => {
+                            audioChunks.push(event.data);
+                        });
+
+                        mediaRecorder.addEventListener("stop", () => {
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                            sendAudioToServer(audioBlob);
+                            audioChunks = [];
+                        });
+
+                        this.disabled = true;
+                        stopRecord.disabled = false;
+                    })
+                    .catch(error => {
+                        transcription.innerText = "Error accessing the microphone: " + error.message;
                     });
+            });
 
-                    mediaRecorder.addEventListener("stop", () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                        sendAudioToServer(audioBlob);
-                        audioChunks = [];
-                    });
+            stopRecord.addEventListener("click", function() {
+                mediaRecorder.stop();
+                this.disabled = true;
+                startRecord.disabled = false;
+            });
 
-                    this.disabled = true;
-                    document.getElementById("stopRecord").disabled = false;
+            function sendAudioToServer(audioBlob) {
+                const formData = new FormData();
+                formData.append("audio", audioBlob);
+
+                fetch("http://192.168.0.8:5000/whisper", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    transcription.innerText = "Transcription: " + data.text;
+                })
+                .catch(error => {
+                    console.error("Error in sending audio:", error);
+                    transcription.innerText = "Error in sending audio: " + error.message;
                 });
+            }
         });
-
-        document.getElementById("stopRecord").addEventListener("click", function(){
-            mediaRecorder.stop();
-            this.disabled = true;
-            document.getElementById("startRecord").disabled = false;
-        });
-
-        function sendAudioToServer(audioBlob) {
-            const formData = new FormData();
-            formData.append("audio", audioBlob);
-
-            fetch("http://192.168.0.8:5000/whisper", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("transcription").innerText = "Transcription: " + data.text;
-            })
-            .catch(error => console.error("Error in sending audio:", error));
-        }
     </script>
 </body>
 </html>
