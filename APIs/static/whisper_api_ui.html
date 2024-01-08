@@ -22,10 +22,11 @@
                 return;
             }
 
+            let mediaRecorder;
             startRecord.addEventListener("click", function() {
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(stream => {
-                        const mediaRecorder = new MediaRecorder(stream);
+                        mediaRecorder = new MediaRecorder(stream);
                         let audioChunks = [];
 
                         mediaRecorder.ondataavailable = event => {
