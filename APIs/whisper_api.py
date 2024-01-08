@@ -6,6 +6,11 @@ import whisper
 from flask import Flask, request, jsonify
 import flask_cors
 
+import numpy as np
+import soundfile as sf
+from io import BytesIO
+
+
 
 app = Flask(__name__)
 flask_cors.CORS(app)
@@ -21,9 +26,22 @@ class WhisperAPI:
 whisper_api = WhisperAPI()
 
 @app.route("/whisper", methods=["POST"])
-def whisper():
-    audio = request.files["audio"]
-    text = whisper_api.transcribe(audio)
+def whisper_route():
+    # Retrieve the file from the request
+    audio_file = request.files["audio"]
+
+    # Convert the file to a BytesIO object
+    audio_bytes = BytesIO()
+    audio_file.save(audio_bytes)
+    audio_bytes.seek(0)
+
+    # Load the audio file as a NumPy array
+    data, samplerate = sf.read(audio_bytes)
+
+    # Transcribe the audio
+    text = whisper_api.transcribe(data)
+
+    # Return the transcription
     return jsonify({"text": text})
 
 # serve ./whisper_api_ui.html
