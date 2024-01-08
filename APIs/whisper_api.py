@@ -73,6 +73,11 @@ def whisper_route():
     # Return the transcription
     return jsonify({"text": text})
 
+# serve whisper_api_ui.html
+@app.route("/", methods=["GET"])
+def serve_static():
+    return app.send_static_file("whisper_api_ui.html")
+
 if __name__ == "__main__":
     if not os.path.exists('./saved_audio_files'):
         os.makedirs('./saved_audio_files')
