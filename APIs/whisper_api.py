@@ -55,18 +55,10 @@ def whisper_route():
     # Save the audio file as an MP3
     filename = audio_file.filename.rsplit('.', 1)[0]
     save_audio_as_mp3(audio_bytes, filename)
-    audio_bytes.seek(0)
-    # Convert the file to a BytesIO object for transcription
+
     
-
-    # Load the audio file as a NumPy array
-    data, samplerate = sf.read(audio_bytes)
-
-    # Ensure the data is of the correct dtype (e.g., float32)
-    data = data.astype(np.float32)
-
     # Transcribe the audio
-    text = whisper_api.transcribe(data)
+    text = whisper_api.transcribe(filename)
 
     # Return the transcription
     return jsonify({"text": text})
