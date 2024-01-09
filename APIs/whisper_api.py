@@ -55,7 +55,7 @@ def whisper_route():
     # Save the audio file as an MP3
     filename = audio_file.filename.rsplit('.', 1)[0]
     save_audio_as_mp3(audio_bytes, filename)
-
+    audio_bytes.seek(0)
     # Convert the file to a BytesIO object for transcription
     
 
