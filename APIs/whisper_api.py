@@ -7,6 +7,7 @@ from flask import Flask, request, jsonify, send_from_directory, abort
 
 import flask_cors
 import whisper
+import time
 
 app = Flask(__name__)
 flask_cors.CORS(app)
@@ -24,8 +25,9 @@ whisper_api = WhisperAPI()
 def save_audio_as_mp3(audio_bytes, filename):
     audio_bytes.seek(0)
     sound = AudioSegment.from_file(audio_bytes)
-    mp3_filename = f"./saved_audio_files/{filename}.mp3"
+    mp3_filename = f"./saved_audio_files/{filename}-{int(time.time())}.mp3"
     sound.export(mp3_filename, format="mp3")
+    return mp3_filename
 
 @app.route("/audio/<filename>", methods=["GET"])
 def serve_audio(filename):
@@ -54,8 +56,7 @@ def whisper_route():
     audio_bytes.seek(0)
     # Save the audio file as an MP3
     filename = audio_file.filename.rsplit('.', 1)[0]
-    save_audio_as_mp3(audio_bytes, filename)
-
+    filename = save_audio_as_mp3(audio_bytes, filename)
     
     # Transcribe the audio
     text = whisper_api.transcribe(filename)
