@@ -522,20 +522,7 @@
 		this.properties.value = this.text_widget.value;
 	}
 
-	// brain node
-	// handles a single pass of a brain
-	// properties:
-	// local: true or false, this will load a brain into memory as a subgraph. if local, creates a unique instance of the brain
-	// url: url of brain, if local is true, this will be ignored
-	// brain_name: name of brain, if local is true, this will be the filename of the brain in the brains folder
-	// input variables: json dictionary of input variables
-	// output variables: json dictionary of output variables
-	// inputs:
-	// input variables: json dictionary of input variables
-	// url: url of brain, if local is true, this will be ignored
-	// brain_name: name of brain, if local is true, this will be the filename of the brain in the brains folder
-	// outputs:
-	// output variables: json dictionary of output variables
+	
 	function Brain_Node(){
 		this.addInput("input dict", "string");
 		this.addInput("url", "string");
@@ -590,13 +577,22 @@
 			let brain = await load_brain(this.properties.brain_name);
 			// run brain
 			let output = await run_brain(brain, this.properties.input_variables);
+			
 			// set output
 			this.setOutputData(0, JSON.stringify(output));
 		} else {
 			// call brain api
-			let output = this.call_brain();
+			let output = await this.call_brain();
+			console.log(output)
+			// output is an array of dictionaries with "name" and "value" fields
+			// map output to dictionary where name is key and value is value
+			let output_dict = {};
+			for(let i = 0; i < output.length; i++) {
+				output_dict[output[i].name] = output[i].value;
+			}
+
 			// set output
-			this.setOutputData(0, JSON.stringify(output));
+			this.setOutputData(0, JSON.stringify(output_dict));
 		}
 
 	}
