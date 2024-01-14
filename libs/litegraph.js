@@ -8428,7 +8428,7 @@ LGraphNode.prototype.executeAction = function(action)
             this.ds.toCanvasContext(ctx);
 
             //render BG
-            if ( this.ds.scale < 1.5 && !bg_already_painted && this.clear_background_color )
+            /*if ( this.ds.scale < 1.5 && !bg_already_painted && this.clear_background_color )
             {
                 ctx.fillStyle = this.clear_background_color;
                 ctx.fillRect(
@@ -8437,7 +8437,7 @@ LGraphNode.prototype.executeAction = function(action)
                     this.visible_area[2],
                     this.visible_area[3]
                 );
-            }
+            }*/
 
             if (
                 this.background_image &&
@@ -8451,7 +8451,7 @@ LGraphNode.prototype.executeAction = function(action)
                 } else {
                     ctx.globalAlpha = this.editor_alpha;
                 }*/
-                ctx.imageSmoothingEnabled = ctx.imageSmoothingEnabled = false; // ctx.mozImageSmoothingEnabled = 
+                /*ctx.imageSmoothingEnabled = ctx.imageSmoothingEnabled = false; // ctx.mozImageSmoothingEnabled = 
                 if (
                     !this._bg_img ||
                     this._bg_img.name != this.background_image
@@ -8485,7 +8485,7 @@ LGraphNode.prototype.executeAction = function(action)
                 }
 
                 ctx.globalAlpha = 1.0;
-                ctx.imageSmoothingEnabled = ctx.imageSmoothingEnabled = true; //= ctx.mozImageSmoothingEnabled
+                ctx.imageSmoothingEnabled = ctx.imageSmoothingEnabled = true; //= ctx.mozImageSmoothingEnabled*/
             }
 
             //groups
