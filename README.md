@@ -1,5 +1,8 @@
 # bespoke_automata
 
+!!!READ CAREFULLY, INSTALLATION IS NOT STREAMLINED !!!
+
+
 ## how to install/run BA and it's stack:
 * have CUDA stack running, drivers updated, NVCC working etc
 * clone repo https://github.com/C0deMunk33/bespoke_automata
@@ -30,3 +33,6 @@
 * `your_ip:9999/brains` will list brains
 * `your_ip:9999/brains/[brain filename sans extension]` is brain endpoint
 * `your_ip:9999/brains/[brain filename sans extension]/schema` shows IO params for that brain
+
+### DEMO Brains:
+* `./bespoke_manager/graphs`
