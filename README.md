@@ -9,10 +9,16 @@ Up until this point, this has been in internal tool to allow me to build super c
 
 ## how to install/run BA and it's stack:
 
+### Requirements
+* NPM
+* Python
+* Cuda/Blas/etc setup if you want GPU acceleration
+* Cuda Toolkit
+* NVCC
+
 ### GUI
 The bespoke automata GUI is a node graph UI using a modified litegraph, so it should be familiar to ComfyUI users
 
-* have CUDA stack running, drivers updated, NVCC working etc
 * clone repo https://github.com/C0deMunk33/bespoke_automata
 * npm run start
 * work through installing the modules until it works
