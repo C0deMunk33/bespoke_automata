@@ -1,7 +1,0 @@
-e init --help
-
-//sudo apt-get install libxapp-dev
-//npm run start
-//npm run make
-
-xapps-common
