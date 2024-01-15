@@ -1,5 +1,9 @@
 # Bespoke Automata
 
+![image](https://github.com/C0deMunk33/bespoke_automata/assets/13264637/d0ec34ae-b52d-4da5-b56e-049d0388a7a1)
+
+
+
 ## ⚠️ READ CAREFULLY, INSTALLATION IS NOT STREAMLINED ⚠️ ##
 Up until this point, this has been in internal tool to allow me to build super complex agents. The code is not clean, nor optomized, and there's a lot of scripts and whatnot to call to get the stack running. I am working to address all of these, please submit issues you find.
 
