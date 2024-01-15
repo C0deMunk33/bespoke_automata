@@ -8427,23 +8427,13 @@ LGraphNode.prototype.executeAction = function(action)
             ctx.save();
             this.ds.toCanvasContext(ctx);
 
-            //render BG
-            /*if ( this.ds.scale < 1.5 && !bg_already_painted && this.clear_background_color )
-            {
-                ctx.fillStyle = this.clear_background_color;
-                ctx.fillRect(
-                    this.visible_area[0],
-                    this.visible_area[1],
-                    this.visible_area[2],
-                    this.visible_area[3]
-                );
-            }*/
-
             if (
                 this.background_image &&
                 /*this.ds.scale > 0.3 &&*/
                 !bg_already_painted
             ) {
+
+                // TODO: find a cool transparent pattern for the background and uncomment this:
                 /*
                 if (this.zoom_modify_alpha) {
                     ctx.globalAlpha =
