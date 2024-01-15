@@ -34,7 +34,7 @@ The bespoke automata GUI is a node graph UI using a modified litegraph, so it sh
 The LLM API uses llama-cpp-python https://github.com/abetlen/llama-cpp-python
 
 * place models in the folder `../models/text`
-* **NOTE THIS IS AT THE SAME LEVEL AS THIS REPO**, GGUF work best IMO, get then from Hugging Face.* **NOTE:** if you are running non-cuda (Apple silicon, AMD, Intel,CPU etc) you will need to follow the instructions on https://github.com/abetlen/llama-cpp-python to compile for your hardware **NOTE:** llama-cpp-python binaries on Apple M* hardware has been tested to be grand.
+* **NOTE THIS IS AT THE SAME LEVEL AS THIS REPO**, GGUF work best IMO, get then from Hugging Face.* **NOTE:** if you are running non-cuda (Apple silicon, AMD, Intel,CPU etc) you will need to follow the instructions on https://github.com/abetlen/llama-cpp-python to compile for your hardware **NOTE:** llama-cpp-python binaries on Apple M* hardware have been tested to be grand.
 * **METAL OSX**: `CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python`
 * **CUDA LINUX**: `CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python`
 * **CUDA WINDOWS**: `$env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"` then `pip install llama-cpp-python`
