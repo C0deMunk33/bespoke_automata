@@ -11,12 +11,17 @@ Up until this point, this has been in internal tool to allow me to build super c
 
 ### Requirements
 * NPM
+  * Electron-forge
+  * Yarn
 * Python
-* Cuda/Blas/etc setup if you want GPU acceleration
+  * flask
+  * sentence_transformers
+
+#### Optional GPU support
+* Cuda/Blas/etc setup
 * Cuda Toolkit
 * NVCC
-* Electron-forge
-
+* For metal support in MAC OSX, llama-cpp-python should work out of the box
 
 ### GUI
 The bespoke automata GUI is a node graph UI using a modified litegraph, so it should be familiar to ComfyUI users
@@ -29,7 +34,8 @@ The bespoke automata GUI is a node graph UI using a modified litegraph, so it sh
 The LLM API uses llama-cpp-python https://github.com/abetlen/llama-cpp-python
 
 * place models in the folder `../models/text`
-* **NOTE THIS IS AT THE SAME LEVEL AS THIS REPO**, GGUF work best IMO, get then from Hugging Face.* **NOTE:** if you are running non-cuda (Apple silicon, AMD, Intel,CPU etc) you will need to follow the instructions on https://github.com/abetlen/llama-cpp-python to compile for your hardware
+* **NOTE THIS IS AT THE SAME LEVEL AS THIS REPO**, GGUF work best IMO, get then from Hugging Face.* **NOTE:** if you are running non-cuda (Apple silicon, AMD, Intel,CPU etc) you will need to follow the instructions on https://github.com/abetlen/llama-cpp-python to compile for your hardware **NOTE:** llama-cpp-python binaries on Apple M* hardware have been tested to be grand.
+* **METAL OSX**: `CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python`
 * **CUDA LINUX**: `CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python`
 * **CUDA WINDOWS**: `$env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"` then `pip install llama-cpp-python`
 * `cd bespoke_automata/APIs/`
@@ -37,6 +43,8 @@ The LLM API uses llama-cpp-python https://github.com/abetlen/llama-cpp-python
 * **work through pip installs until it works**
 * the server will be `your_ip:5000`
 * endpoint acts like GPT (and defaults to GPT, but that may be broken)
+
+  **NOTE:** On OSX, port 5000 collides with Airplay Receiver. You can either turn it off in Settings > General > Airdrop & Handoff or switch the port in the config.
 
 ### Simple Vector DB:
 For simple vector DB nodes, you will need to have this running
