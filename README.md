@@ -15,6 +15,8 @@ Up until this point, this has been in internal tool to allow me to build super c
 * Cuda/Blas/etc setup if you want GPU acceleration
 * Cuda Toolkit
 * NVCC
+* Electron-forge
+
 
 ### GUI
 The bespoke automata GUI is a node graph UI using a modified litegraph, so it should be familiar to ComfyUI users
