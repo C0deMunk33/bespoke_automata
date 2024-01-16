@@ -7,9 +7,9 @@
 <summary>Bespoke Automata, An Introduction</summary>
  
 ## About Bespoke Automata
-Create and deploy sophisticated Agent AI's to a single API with Bespoke Automata. With Bespoke Automata, you can combine large language models running locally or remotely with instruments for database IO, dictionaries, arrays, APIs and more into powerful Brains capable of pursuing goals set by their users. 
+Create and deploy sophisticated Agent AI's to a single API with Bespoke Automata. With Bespoke Automata, you can combine large  language models running locally or remotely with instruments for database IO, dictionaries, arrays, logic, APIs and more into powerful Brains capable of pursuing goals set by their designers.
 
-With Bespoke Automata, you can design and test brains via a Directed Acyclical Graph (powered by litegraph), and deploy them behind a single user friendly API. 
+With Bespoke Automata, you can design and test brains via a Directed Graph GUI (powered by litegraph), and deploy them behind a single user friendly API, each brain a different endpoint.
 </details>
 
 ## ⚠️ READ CAREFULLY, INSTALLATION IS NOT STREAMLINED ⚠️ ##
