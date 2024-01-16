@@ -3,7 +3,9 @@
 ![image](https://github.com/C0deMunk33/bespoke_automata/assets/13264637/d0ec34ae-b52d-4da5-b56e-049d0388a7a1)
 
 <details>
+ 
 <summary>Bespoke Automata, An Introduction</summary>
+ 
 ## About Bespoke Automata
 Create and deploy sophisticated Agent AI's to a single API with Bespoke Automata. With Bespoke Automata, you can combine large language models running locally or remotely with instruments for database IO, dictionaries, arrays, APIs and more into powerful Brains capable of pursuing goals set by their users. 
 
