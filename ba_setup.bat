@@ -36,8 +36,10 @@ if %errorlevel% neq 0 (
     git clone https://github.com/C0deMunk33/bespoke_automata
 )
 
-echo Starting the app...
-npm run start
+echo Restarting command prompt...
+timeout /t 5 /nobreak >nul
+start cmd /k npm run start
+
 
 REM alternate start method
 REM start cmd /k "electron-forge init my-electron-app && cd my-electron-app && yarn install && yarn start"
