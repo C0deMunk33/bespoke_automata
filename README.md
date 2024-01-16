@@ -12,6 +12,9 @@ Create and deploy sophisticated Agent AI's to a single API with Bespoke Automata
 With Bespoke Automata, you can design and test brains via a Directed Graph GUI (powered by litegraph), and deploy them behind a single user friendly API, each brain a different endpoint.
 </details>
 
+#### Demo Video
+[![Demo Video](https://img.youtube.com/vi/w_saaTFEuSM/0.jpg)](https://www.youtube.com/watch?v=w_saaTFEuSM)
+
 ## ⚠️ READ CAREFULLY, INSTALLATION IS NOT STREAMLINED ⚠️ ##
 This is a development release and while the software is maturing, I would recommend you approach the installation process as you would any software under development. If you encounter any problems or would like to propose an improvement, please raise an issue. Join us on Discord, we would love to hear about what you're building with Bespoke Automata. 
 
