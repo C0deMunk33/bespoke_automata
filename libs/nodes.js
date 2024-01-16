@@ -1157,21 +1157,6 @@
 				"Wine/Spirits",
 				"Wireless",
 				"Writing/Editing"
-			],
-			"Political Parties": [
-				"Democratic",
-				"Republican",
-				"Democratic",
-				"Republican",
-				"Democratic",
-				"Republican",
-				"Democratic",
-				"Republican",
-				"Democratic",
-				"Republican",
-				"Democratic",
-				"Republican",
-				"Independent",
 			]
 		}
 
