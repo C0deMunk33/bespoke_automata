@@ -19,8 +19,24 @@ echo Installing Python packages...
 pip install towhee pymilvus==2.2.11 pandas numpy transformers torch
 
 echo Installation completed successfully.
-echo Starting the app...
 
+REM Check if Git is installed
+where git > nul 2>&1
+if %errorlevel% neq 0 (
+    echo Git is not installed. Installing Git...
+    REM Download and install Git
+    msiexec /i https://github.com/git-for-windows/git/releases/download/v2.37.0.windows.1/Git-2.37.0-64-bit.exe /quiet /qn /norestart
+
+    echo Git installed successfully.
+    
+    echo Cloning repository...
+    git clone https://github.com/C0deMunk33/bespoke_automata
+) else (
+    echo Git is installed. Cloning repository...
+    git clone https://github.com/C0deMunk33/bespoke_automata
+)
+
+echo Starting the app...
 npm run start
 
 REM alternate start method
