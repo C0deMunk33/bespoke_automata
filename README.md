@@ -37,9 +37,20 @@ This is a development release and while the software is maturing, I would recomm
 ### GUI
 The bespoke automata GUI is a node graph UI using a modified litegraph, so it should be familiar to ComfyUI users
 
-* clone repo https://github.com/C0deMunk33/bespoke_automata
-* npm run start
-* work through installing the modules until it works
+## Installation
+
+Clone the repository and open the directory
+```
+$ git clone https://github.com/C0deMunk33/bespoke_automata
+$ cd bespoke_automata
+```
+Use yarn to install and run
+```
+$ yarn install
+$ yarn run start
+```
+
+work through installing the modules until it works
 
 ### Llama:
 The LLM API uses llama-cpp-python https://github.com/abetlen/llama-cpp-python
