@@ -46,6 +46,11 @@ def vision():
         print(result)
         return jsonify(result)                   
     
+# serve vision_ui.html as static file
+@app.route('/')
+def index():
+    return app.send_static_file('vision_ui.html')
+
 # main
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6969, debug=True)

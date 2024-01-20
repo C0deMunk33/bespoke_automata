@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload Form</title>
+</head>
+<body>
+
+<!-- Form for file upload -->
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput" />
+    <input type="button" value="Upload" onclick="uploadFile()" />
+</form>
+
+<script type="text/javascript">
+    function uploadFile() {
+        var fileInput = document.getElementById('fileInput');
+        var file = fileInput.files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://localhost:6969/api/vision', true);
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('File uploaded successfully');
+            } else {
+                console.error('Error uploading file');
+            }
+        };
+
+        xhr.send(formData);
+    }
+</script>
+
+</body>
+</html>
