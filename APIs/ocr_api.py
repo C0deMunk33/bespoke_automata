@@ -3,7 +3,7 @@
 from PIL import Image
 from surya.detection import batch_inference
 from surya.model.segformer import load_model, load_processor
-
+import pytesseract
 
 IMAGE_PATH = "./image_test.png"
 image = Image.open(IMAGE_PATH)
@@ -34,8 +34,8 @@ print(predictions[0])
 '''
 
 def ocr(image):
-    # do OCR here using tessaract
-                                                              
+    # do OCR here using pytesseract
+    pytesseract.image_to_string(image)                                         
     return "text"
 
 
@@ -49,3 +49,4 @@ for polygon in predictions[0]["polygons"]:
     cropped_image = image.crop((x_min, y_min, x_max, y_max))
     # send to OCR
     text = ocr(cropped_image)
+    print(text)
