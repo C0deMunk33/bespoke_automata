@@ -28,24 +28,21 @@ flask_cors.CORS(app)
 @app.route('/api/vision', methods=['POST'])
 def vision():
     if request.method == 'POST':
-        # get image from request
-        image = request.files['file']
-        
-        in_memory_file = io.BytesIO()
-        image.save(in_memory_file)
-        data = base64.b64encode(in_memory_file.getvalue()).decode('utf-8')
-        image_url = f"data:image/jpeg;base64,{data}"
-        
-        
+        print("request received")
+        #print request keys
+        print(request.json.keys())
+        image_url = request.json['img_base64']
+        system_prompt = request.json['system_prompt']
+        user_prompt = request.json['user_prompt']        
         
         result = llm.create_chat_completion(
             messages = [
-                {"role": "system", "content": "You are an assistant who perfectly describes images."},
+                {"role": "system", "content": system_prompt},
                 {
                     "role": "user",
                     "content": [
                         {"type": "image_url", "image_url": {"url": image_url}},
-                        {"type" : "text", "text": "Describe this image in detail please."}
+                        {"type" : "text", "text": user_prompt}
                     ]
                 }
             ]
