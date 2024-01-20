@@ -6,7 +6,8 @@ import glob
 from llama_cpp import Llama
 from itertools import cycle
 import psutil
-
+import io
+import base64
 
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Llava15ChatHandler
@@ -21,23 +22,29 @@ llm = Llama(
 # flask app
 app = Flask(__name__)
 #use cors
-CORS(app)
+flask_cors.CORS(app)
 
 
 @app.route('/api/vision', methods=['POST'])
 def vision():
     if request.method == 'POST':
         # get image from request
-        image = request.files['image']
-        # save image to disk
-        image.save('image.png')
+        image = request.files['file']
+        
+        in_memory_file = io.BytesIO()
+        image.save(in_memory_file)
+        data = base64.b64encode(in_memory_file.getvalue()).decode('utf-8')
+        image_url = f"data:image/jpeg;base64,{data}"
+        
+        
+        
         result = llm.create_chat_completion(
             messages = [
                 {"role": "system", "content": "You are an assistant who perfectly describes images."},
                 {
                     "role": "user",
                     "content": [
-                        {"type": "image_url", "image_url": {"url": "image.png"}},
+                        {"type": "image_url", "image_url": {"url": image_url}},
                         {"type" : "text", "text": "Describe this image in detail please."}
                     ]
                 }
