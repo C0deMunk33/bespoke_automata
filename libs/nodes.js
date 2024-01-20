@@ -2241,7 +2241,91 @@
 			console.error('Error:', error);
 		}
 	}
-	
+
+	// TODO:
+	// OCR_Node
+	// Vision_Gate_Node
+	// Segment_Anything_Node
+
+	// Vision_Gate_Node
+	function Vision_Gate_Node() {
+		this.addInput("base64 img", "string");
+		this.addInput("system prompt", "string");
+		this.addInput("gate prompt", "string");
+		this.addInput("server url", "string");
+		this.addOutput("yes", LiteGraph.ACTION);
+		this.addOutput("no", LiteGraph.ACTION);
+		this.addOutput("yes", "string");
+		this.addOutput("no", "string");
+		this.addOutput("reasoning", "string");
+		this.properties = {
+			url: ""			
+		};
+		this.url_widget = this.addWidget("text","Server Url",this.properties.url, "url");
+	}
+	Vision_Gate_Node.title = "Vision Gate";
+	Vision_Gate_Node.prototype.onExecute = async function() {
+		let img_base64 = this.getInputData(0);
+		if(img_base64 === undefined || img_base64 === "") {
+			this.setOutputData(2, "");
+			this.setOutputData(3, "");
+			return;
+		}
+
+		let system_prompt = this.getInputData(1);
+		if(system_prompt === undefined || system_prompt === "") {
+			this.setOutputData(2, "");
+			this.setOutputData(3, "");
+			return;
+		}
+
+		let gate_prompt = this.getInputData(2);
+		if(gate_prompt === undefined || gate_prompt === "") {
+			this.setOutputData(2, "");
+			this.setOutputData(3, "");
+			return;
+		}
+
+		if(this.getInputData(3) !== undefined && this.getInputData(3) !== this.properties.url && this.getInputData(3) !== "") {
+			this.properties.url = this.getInputData(3);
+			// set widget value
+			this.url_widget.value = this.getInputData(3);
+		} else {
+			this.properties.url = this.url_widget.value;
+		}
+
+		let server_url = this.properties.url;
+		console.log("server_url: " + server_url)
+
+		let response = await fetch(server_url + "/api/vision", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				"img_base64": img_base64,
+				"system_prompt": system_prompt + " Answer the question below about this image with a simple yes or no, followed by a sentence about your reasoning: ",
+				"user_prompt": gate_prompt  
+			})
+		});
+		let json = await response.json();
+		console.log(json);
+		msg = json["choices"][0]["message"]["content"]
+
+		const positive_words = ["yes", "yeah"]
+
+		if(containsWords(positive_words,msg.toLowerCase())) {
+			this.trigger("yes", msg);
+			this.setOutputData(2, msg);
+			this.setOutputData(3, "");
+		}
+		else {
+			this.trigger("no", msg);
+			this.setOutputData(2, "");
+			this.setOutputData(3, msg);
+		}
+		this.setOutputData(4, json["choices"][0]["prompt"])
+	}
 
 	// Vision_Node
 	function Vision_Node() {
