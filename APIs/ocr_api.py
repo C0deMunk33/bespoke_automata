@@ -1,4 +1,6 @@
 # pip install surya-ocr
+# sudo apt install tesseract-ocr
+#sudo apt install libtesseract-dev
 
 from PIL import Image
 from surya.detection import batch_inference
@@ -35,8 +37,8 @@ print(predictions[0])
 
 def ocr(image):
     # do OCR here using pytesseract
-    pytesseract.image_to_string(image)                                         
-    return "text"
+    text = pytesseract.image_to_string(image)                                         
+    return text
 
 
 # for each polygon, cut the image and save it
@@ -46,7 +48,15 @@ for polygon in predictions[0]["polygons"]:
     x_max = max([point[0] for point in polygon])
     y_min = min([point[1] for point in polygon])
     y_max = max([point[1] for point in polygon])
+    # expand the box a bit
+    x_min -= 10
+    x_max += 10
+    y_min -= 10
+    y_max += 10
+    # crop image
     cropped_image = image.crop((x_min, y_min, x_max, y_max))
+    # display image in console
+    # cropped_image.show()
     # send to OCR
     text = ocr(cropped_image)
     print(text)
