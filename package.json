@@ -16,7 +16,7 @@
     "name": "C0deMunk33",
     "email": "hollandcodeandgraphics@gmail.com"
   },
-  "license": "MIT",
+  "license": "GPL3",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
   },
