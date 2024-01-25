@@ -94,6 +94,6 @@ Once completed, a brain can be deployed as API endpoints.
 * Example: https://youtu.be/w_saaTFEuSM
 * Issues: Create an issue here or ping me at: https://twitter.com/icodeagents
 * Contact: https://twitter.com/icodeagents
-* Discord: https://discord.gg/hAd6WuYf
+* Discord: [https://discord.gg/hAd6WuYf](https://discord.gg/RdK3uESV)
 
 ## THANKS AND GOOD LUCK!! ##
