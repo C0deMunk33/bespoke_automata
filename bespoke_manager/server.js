@@ -12,78 +12,43 @@ async function load_graph(graph_file){
     const graph = new LGraph();
     console.log("graphData: ", graphData)
     LiteGraph.clearRegisteredTypes()
-    LiteGraph.registerNodeType("Text/Text", Nodes.Text_Node );
-    LiteGraph.registerNodeType("Text/Random Text", Nodes.Random_Selection_Node );
-    LiteGraph.registerNodeType("Templates/Persona Template", Nodes.Persona_Template_Node );
-    LiteGraph.registerNodeType("Templates/Prompt Template", Nodes.Prompt_Template_Node );
-
-    
-    LiteGraph.registerNodeType("Text/Prefix Text", Nodes.Prefix_Text_Node );
-    LiteGraph.registerNodeType("Text/Suffix Text", Nodes.Suffix_Text_Node );
-    LiteGraph.registerNodeType("Text/Concatenate Text", Nodes.Concatenate_Text_Node );
-
-    LiteGraph.registerNodeType("Storage/Weaviate Store", Nodes.Weaviate_Ingest_Node );
-    LiteGraph.registerNodeType("Storage/Weaviate Query", Nodes.Weaviate_Query_Node );
-
-    LiteGraph.registerNodeType("IO/Text Input", Nodes.Text_Input_Node );
-    LiteGraph.registerNodeType("IO/Text Output", Nodes.Text_Output_Node );
-
-    //Audio_Generation_Node
-    LiteGraph.registerNodeType("Audio/Audio Generation", Nodes.Audio_Generation_Node );
-    //Start_Node 
-    LiteGraph.registerNodeType("Control/Start", Nodes.Start_Node );
-    //Counter_Node
-    LiteGraph.registerNodeType("Control/Counter", Nodes.Counter_Node );
-    //Triggered_Number_Output_Node
-    LiteGraph.registerNodeType("Control/Number Output", Nodes.Triggered_Number_Output_Node );
-    //Triggered_Text_Output_Node
-    LiteGraph.registerNodeType("Control/Text Output", Nodes.Triggered_Text_Output_Node );
-    //Add_Node
-    LiteGraph.registerNodeType("Math/Add", Nodes.Add_Node );
-    //Random_Number_Node
-    LiteGraph.registerNodeType("Text/Random Number", Nodes.Random_Number_Node );
-    // Gate
-    LiteGraph.registerNodeType("Control/Gate", Nodes.Gate );
-    // JSON_API_Node
-    LiteGraph.registerNodeType("API/JSON API", Nodes.JSON_API_Node );
-    // GPT_Node
-    LiteGraph.registerNodeType("LLM/GPT", Nodes.GPT_Node );
-    // Password_Node
-    LiteGraph.registerNodeType("Text/Password", Nodes.Password_Node );
-    //Prompt_Gate_GPT
-    LiteGraph.registerNodeType("Control/Prompt Gate (GPT)", Nodes.Prompt_Gate_GPT );
-    //Simple_Vector_DB_Read_Node
-    LiteGraph.registerNodeType("Storage/Simple Vector DB Read", Nodes.Simple_Vector_DB_Read_Node );
-    //Simple_Vector_DB_Write_Node
-    LiteGraph.registerNodeType("Storage/Simple Vector DB Write", Nodes.Simple_Vector_DB_Write_Node );
-    // Brain_Node
-    LiteGraph.registerNodeType("Brains/Brain",Nodes.Brain_Node );
-    // Variable_Forward_Node
-    LiteGraph.registerNodeType("Text/Variable Forward", Nodes.Variable_Forward_Node );
-    //Dictionary_Assembler_Node
-    LiteGraph.registerNodeType("Text/Dictionary Assembler", Nodes.Dictionary_Assembler_Node );
-    //Global_Variable_Get_Node
-    LiteGraph.registerNodeType("Control/Global Variable Get", Nodes.Global_Variable_Get_Node );
-    //Global_Variable_Set_Node
-    LiteGraph.registerNodeType("Control/Global Variable Set", Nodes.Global_Variable_Set_Node );
-    //Array_Assembler_Node
-    LiteGraph.registerNodeType("Text/Array Assembler", Nodes.Array_Assembler_Node );
-    //Array_Item_Forward_Node
-    LiteGraph.registerNodeType("Text/Array Item Forward", Nodes.Array_Item_Forward_Node );
-    //Array_Stepper_Node
-    LiteGraph.registerNodeType("Control/Array Stepper", Nodes.Array_Stepper_Node );
-    //Random_Dictionary_Item_Node
-    LiteGraph.registerNodeType("Control/Random Dictionary Item", Nodes.Random_Dictionary_Item_Node );
-    //Random_Array_Item_Node
-    LiteGraph.registerNodeType("Control/Random Array Item", Nodes.Random_Array_Item_Node );
-    //Note_Node
-    LiteGraph.registerNodeType("System/Note", Nodes.Note_Node );
-    // Time_Node
-    LiteGraph.registerNodeType("System/Time", Nodes.Time_Node );
-    // Img_URL_To_Base64_Node
-    LiteGraph.registerNodeType("Image/URL to Base64", Nodes.Img_URL_To_Base64_Node );
-    // LLM/Vision_Node
-    LiteGraph.registerNodeType("LLM/Vision", Nodes.Vision_Node );
+    LiteGraph.registerNodeType("Action/Adder", Nodes.Add_Node);
+    LiteGraph.registerNodeType("Action/Array Assembler", Nodes.Array_Assembler_Node);
+    LiteGraph.registerNodeType("Action/Array Item Get	", Nodes.Array_Item_Forward_Node);
+    LiteGraph.registerNodeType("Action/Array Item Get Random", Nodes.Random_Array_Item_Node);
+    LiteGraph.registerNodeType("Action/Array Stepper", Nodes.Array_Stepper_Node);
+    LiteGraph.registerNodeType("Action/Counter", Nodes.Counter_Node);
+    LiteGraph.registerNodeType("Action/Dictionary Assembler", Nodes.Dictionary_Assembler_Node);
+    LiteGraph.registerNodeType("Action/Dictionary Entry Get", Nodes.Variable_Forward_Node);
+    LiteGraph.registerNodeType("Action/Dictionary Entry Get Random", Nodes.Random_Dictionary_Item_Node);
+    LiteGraph.registerNodeType("Action/Global Variable Get", Nodes.Global_Variable_Get_Node);
+    LiteGraph.registerNodeType("Action/Global Variable Set", Nodes.Global_Variable_Set_Node);
+    LiteGraph.registerNodeType("Action/Logic Gate", Nodes.Gate);
+    LiteGraph.registerNodeType("Action/Number On Trigger", Nodes.Triggered_Number_Output_Node);
+    LiteGraph.registerNodeType("Action/Prompt Gate", Nodes.Prompt_Gate_GPT);
+    LiteGraph.registerNodeType("Action/Start Trigger", Nodes.Start_Node);
+    LiteGraph.registerNodeType("Action/Text On Trigger", Nodes.Triggered_Text_Output_Node);
+    LiteGraph.registerNodeType("Generation/Audio Generate", Nodes.Audio_Generation_Node);
+    LiteGraph.registerNodeType("Generation/Embedded Brain", Nodes.Brain_Node);
+    LiteGraph.registerNodeType("Generation/GPT", Nodes.GPT_Node);
+    LiteGraph.registerNodeType("Generation/Vision", Nodes.Vision_Node);
+    LiteGraph.registerNodeType("Instruction/Number Random", Nodes.Random_Number_Node);
+    LiteGraph.registerNodeType("Instruction/Text", Nodes.Text_Node);
+    LiteGraph.registerNodeType("Instruction/Text Concatenate", Nodes.Concatenate_Text_Node);
+    LiteGraph.registerNodeType("Instruction/Text Prefix", Nodes.Prefix_Text_Node);
+    LiteGraph.registerNodeType("Instruction/Text Random", Nodes.Random_Selection_Node);
+    LiteGraph.registerNodeType("Instruction/Text Suffix", Nodes.Suffix_Text_Node);
+    LiteGraph.registerNodeType("IO/Image URL Base64", Nodes.Img_URL_To_Base64_Node);
+    LiteGraph.registerNodeType("IO/JSON API	", Nodes.JSON_API_Node);
+    LiteGraph.registerNodeType("IO/Simple Vector DB Read", Nodes.Simple_Vector_DB_Read_Node);
+    LiteGraph.registerNodeType("IO/Simple Vector DB Update", Nodes.Simple_Vector_DB_Write_Node);
+    LiteGraph.registerNodeType("IO/Text Brain API Output", Nodes.Text_Output_Node);
+    LiteGraph.registerNodeType("IO/Text BrainAPI Input", Nodes.Text_Input_Node);
+    LiteGraph.registerNodeType("IO/Weaviate Read", Nodes.Weaviate_Query_Node);
+    LiteGraph.registerNodeType("IO/Weaviate Update", Nodes.Weaviate_Ingest_Node);
+    LiteGraph.registerNodeType("Utility/API Password", Nodes.Password_Node);
+    LiteGraph.registerNodeType("Utility/Note", Nodes.Note_Node);
+    LiteGraph.registerNodeType("Utility/Time", Nodes.Time_Node);
 
     let e = graph.configure(graphData);
     if(e) {
