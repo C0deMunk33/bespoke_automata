@@ -451,7 +451,7 @@
 	function Time_Node(){
 		this.addOutput("out", "number");
 	}
-	Time_Node.title = "Time";
+	Time_Node.title = "Time Emitter";
 	Time_Node.prototype.onExecute = function() {
 		this.setOutputData(0, Date.now());
 	}
@@ -490,7 +490,7 @@
 		};
 		this.array_widget = this.addWidget("text","Array",JSON.stringify(this.properties.array),"array");
 	}
-	Random_Array_Item_Node.title = "Random Array Item";
+	Random_Array_Item_Node.title = "Array Item Random Getter";
 	Random_Array_Item_Node.prototype.onExecute = function() {
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			this.properties.array = JSON.parse(this.getInputData(0));
@@ -556,7 +556,7 @@
 			return responseData;
 		}
 	}
-	Brain_Node.title = "Brain";
+	Brain_Node.title = "Embedded Brain";
 	Brain_Node.prototype.onExecute = async function() {
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			this.properties.input_variables = JSON.parse(this.getInputData(0));
@@ -615,7 +615,7 @@
 		};
 		this.text_widget = this.addWidget("text","Variable Name",this.properties.variable_name,"variable_name");
 	}
-	Variable_Forward_Node.title = "Variable Forward";
+	Variable_Forward_Node.title = "Dictionary Entry Getter";
 	Variable_Forward_Node.prototype.onExecute = function() {
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.variable_name = this.getInputData(1);
@@ -727,7 +727,7 @@
 		};
 		this.index_widget = this.addWidget("number","Index",this.properties.index,"index", {precision:0, step:10});
 	}
-	Array_Item_Forward_Node.title = "Array Item Forward";
+	Array_Item_Forward_Node.title = "Array Item Getter";
 	Array_Item_Forward_Node.prototype.onExecute = function() {
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			let index_int = parseInt(this.getInputData(1));
@@ -804,7 +804,7 @@
 		};
 		this.text_widget = this.addWidget("text","Collection",this.properties.collection, "collection");
 	}
-	Simple_Vector_DB_Write_Node.title = "Vector DB Write";
+	Simple_Vector_DB_Write_Node.title = "Simple Vector DB Updater";
 	Simple_Vector_DB_Write_Node.prototype.onExecute = async function() {
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.collection = this.getInputData(1);
@@ -851,7 +851,7 @@
 		};
 		this.text_widget = this.addWidget("text","Collection",this.properties.collection, "collection");
 	}
-	Simple_Vector_DB_Read_Node.title = "Vector DB Read";
+	Simple_Vector_DB_Read_Node.title = "Simple Vector DB Reader";
 	Simple_Vector_DB_Read_Node.prototype.onExecute = async function() {
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.collection = this.getInputData(1);
@@ -890,7 +890,7 @@
 		this.addProperty("value", "");
 		this.text_widget = this.addWidget("text","Text",this.properties.value,"value", {rows:10});
 	}
-	Text_Node.title = "Text";
+	Text_Node.title = "Text Emitter";
 	Text_Node.prototype.onExecute = function() {
 		
 		if(this.getInputData(0) !== undefined) {
@@ -1166,7 +1166,7 @@
 			that.properties.value = v;
 		}, { property: "value", values: this._values } );
 	}
-	Random_Selection_Node.title = "Random Text";
+	Random_Selection_Node.title = "Random Text Emitter";
 	Random_Selection_Node.prototype.onExecute = function() {
 		
 		let result = this.selection_options[this.properties.value][Math.floor(Math.random() * this.selection_options[this.properties.value].length)];
@@ -1398,7 +1398,7 @@
 		this.properties = { class_key: "" };
 		this.text_widget = this.addWidget("text","Class Key",this.properties.class_key, "class_key");
 	}
-	Weaviate_Ingest_Node.title = "Weaviate Storage";
+	Weaviate_Ingest_Node.title = "Weaviate Updater";
 	Weaviate_Ingest_Node.prototype.onExecute = async function() {
 		const weaviateInstance = new Weaviate();
 		if(this.getInputData(0) !== undefined) {
@@ -1434,7 +1434,7 @@
 		// record count widget
 		this.record_count_widget = this.addWidget("text","Record Count",this.properties.record_count, "record_count");
 	}
-	Weaviate_Query_Node.title = "Weaviate Query";
+	Weaviate_Query_Node.title = "Weaviate Reader";
 	Weaviate_Query_Node.prototype.onExecute = async function() {
 		const weaviateInstance = new Weaviate();
 		// set record count property
@@ -1604,7 +1604,7 @@
 		};
 		this.text_widget = this.addWidget("text","Password",this.properties.password, "password");
 	}
-	Password_Node.title = "Password";
+	Password_Node.title = "Configure Password";
 	Password_Node.prototype.onExecute = function() {
 		this.setOutputData(0, this.text_widget.value);
 	}
@@ -1616,7 +1616,7 @@
 		this.addInput("text", "string");
 	
 	}
-	Audio_Generation_Node.title = "Audio Generation";
+	Audio_Generation_Node.title = "Audio Generator";
 	Audio_Generation_Node.prototype.onExecute = async function() {
 		// POST to 192.168.0.7:2702/text-to-wav
 		let text = this.getInputData(0);
@@ -1748,7 +1748,7 @@
 		 };
 		this.text_widget = this.addWidget("text","Prefix",this.properties.prefix, "prefix");
 	}
-	Prefix_Text_Node.title = "Prefix Text";
+	Prefix_Text_Node.title = "Text Prefixer";
 	Prefix_Text_Node.prototype.onExecute = function() {
 		this.setOutputData(0, this.properties.prefix + " " + this.getInputData(0) );
 	}
@@ -1762,7 +1762,7 @@
 		};
 		this.text_widget = this.addWidget("text","Suffix",this.properties.suffix, "suffix");
 	}
-	Suffix_Text_Node.title = "Suffix Text";
+	Suffix_Text_Node.title = "Text Suffixer";
 	Suffix_Text_Node.prototype.onExecute = function() {
 		this.setOutputData(0, this.getInputData(0) + " " + this.properties.suffix );
 	}
@@ -1781,7 +1781,7 @@
 		this.text_widget_last = this.addWidget("text","Last",this.properties.last, "last");
 
 	}
-	Concatenate_Text_Node.title = "Concatenate Text";
+	Concatenate_Text_Node.title = "Text Concatenator";
 	Concatenate_Text_Node.prototype.onExecute = function() {
 
 
@@ -1814,7 +1814,7 @@
 			graph.runStepAsync()
 		});
 	}
-	Start_Node.title = "Start";
+	Start_Node.title = "Start / Trigger";
 	Start_Node.prototype.onAction = function(action, param) {
 		if(action == "start") {
 			console.log("-----------------Start triggered---------------------")
@@ -1916,7 +1916,7 @@
 		};
 		this.number_widget = this.addWidget("number","Number",this.properties.number, "number", {precision:0, step:10});
 	}
-	Triggered_Number_Output_Node.title = "Triggered Number Output";
+	Triggered_Number_Output_Node.title = "Number Emitter on Trigger";
 	Triggered_Number_Output_Node.prototype.onExecute = function() {
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			this.properties.number = this.getInputData(0);
@@ -1940,7 +1940,7 @@
 		};
 		this.text_widget = this.addWidget("text","Text",this.properties.text, "text");
 	}
-	Triggered_Text_Output_Node.title = "Triggered Text Output";
+	Triggered_Text_Output_Node.title = "Text Emitter on Trigger";
 	Triggered_Text_Output_Node.prototype.onExecute = function() {
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			this.properties.text = this.getInputData(0);
@@ -1964,7 +1964,7 @@
 		};
 		this.number_widget = this.addWidget("number","Number",this.properties.number, "number", {precision:0, step:10});
 	}
-	Add_Node.title = "Add";
+	Add_Node.title = "Adder";
 	Add_Node.prototype.onExecute = function() {
 		console.log("Add node executing")
 		let a = 0;
@@ -2007,7 +2007,7 @@
 		this.min_widget = this.addWidget("number","Min",this.properties.min, "min", {precision:0, step:10});
 		this.max_widget = this.addWidget("number","Max",this.properties.max, "max", {precision:0, step:10});
 	}
-	Random_Number_Node.title = "Random Number";
+	Random_Number_Node.title = "Random Number Generator";
 	Random_Number_Node.prototype.onExecute = function() {
 		// update properties
 		if(this.min_widget.value !== "") {
@@ -2028,7 +2028,7 @@
 		};
 		this.text_widget = this.addWidget("text","Text",this.properties.text, "text");
 	}
-	Text_Input_Node.title = "Text Input";
+	Text_Input_Node.title = "This Brain Text Input";
 	// green theme
 	Text_Input_Node.title_color = "#232"
 	Text_Input_Node.fg_color = "#FFF"
@@ -2068,7 +2068,7 @@
 				}, node);
 			});
 	}
-	Text_Output_Node.title = "Text Output";
+	Text_Output_Node.title = "This Brain Text Output";
 	// red theme
 	Text_Output_Node.title_color = "#322"
 	Text_Output_Node.fg_color = "#FFF"
@@ -2142,7 +2142,7 @@
 
 	}
 
-	Gate.title = "Gate";
+	Gate.title = "Logic Gate";
 
 	Gate.prototype.onExecute = function() {
 		// update properties
@@ -2339,7 +2339,7 @@
 		};
 		this.var_name_widget = this.addWidget("text","Variable Name",this.properties.var_name, "var_name");
 	}
-	Global_Variable_Set_Node.title = "Set Global Var";
+	Global_Variable_Set_Node.title = "Global Variable Setter";
 	Global_Variable_Set_Node.prototype.onExecute = function() {
 		// update properties
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.var_name && this.getInputData(0) !== "") {
@@ -2370,7 +2370,7 @@
 		};
 		this.var_name_widget = this.addWidget("text","Variable Name",this.properties.var_name, "var_name");
 	}
-	Global_Variable_Get_Node.title = "Get Global Var";
+	Global_Variable_Get_Node.title = "Global Variable Getter";
 	Global_Variable_Get_Node.prototype.onExecute = function() {
 		// update properties
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.var_name && this.getInputData(0) !== "") {
