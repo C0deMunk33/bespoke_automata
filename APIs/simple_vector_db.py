@@ -90,7 +90,10 @@ class SimpleVectorDB:
         # for each in results: print text
         for each in sorted(results, key=lambda x: x[0], reverse=False):
             print(each[1]['text'])
-            each[1]['vector'] = each[1]['vector'].tolist() 
+            try:
+                each[1]['vector'] = each[1]['vector'].tolist() 
+            except:
+                pass
         return sorted(results, key=lambda x: x[0], reverse=False)[:top_n]
     
     def get_cos_simmilarity(self, v1, v2):
