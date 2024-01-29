@@ -2242,6 +2242,61 @@
 		}
 	}
 	
+	// Keyphrase_Extraction_Node
+	function Keyphrase_Extraction_Node() {
+		this.addInput("text", "string");
+		this.addInput("server url", "string");
+		this.addOutput("array out", "string");
+		this.properties = {
+			"last_text": "",
+			"last_output": "",
+			"server_url": ""
+		};
+		this.server_url_widget = this.addWidget("text","Server Url",this.properties.server_url, "server_url");
+	}
+	Keyphrase_Extraction_Node.title = "Keyphrase Extraction";
+	Keyphrase_Extraction_Node.prototype.onExecute = async function() {
+		let text = this.getInputData(0);
+		if(text === undefined || text === "") {
+			this.setOutputData(0, "");
+			return;
+		} else if(text === this.properties.last_text) {
+			this.setOutputData(0, this.properties.last_output);
+			return;
+		} else {
+			this.properties.last_text = text;
+		}
+
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== this.properties.server_url && this.getInputData(1) !== "") {
+			this.properties.server_url = this.getInputData(1);
+			// set widget value
+			this.server_url_widget.value = this.getInputData(1);
+		} else {
+			this.properties.server_url = this.server_url_widget.value;
+		}
+
+		console.log("-----Keyphrase Extraction node executing-----")
+		console.log("text: " + text)
+
+		let server_url = this.properties.server_url;
+		console.log("server_url: " + server_url)
+
+		let response = await fetch(server_url + "/api/keyphrase_extraction", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				"text": text
+			})
+		});
+		let json = await response.json();
+		
+		console.log(json);
+		this.properties.last_output = json;
+		this.setOutputData(0, json);
+		
+	}
 
 	// Vision_Node
 	function Vision_Node() {
