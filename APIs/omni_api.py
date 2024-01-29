@@ -47,6 +47,7 @@ class OmniApi:
             chat_handler=self.chat_handler,
             n_ctx=4096, # n_ctx should be increased to accomodate the image embedding
             logits_all=True,# needed to make llava work
+            n_gpu_layers=-1
             )
 
     def load_chat_model(self, model_path, n_ctx, n_gpu_layers, chat_format):
@@ -259,8 +260,10 @@ def svdb_get_similar_documents_by_cos():
 @app.route(Routes["svdb_get_similar_documents_by_euclidean"], methods=['POST'])
 def svdb_get_similar_documents_by_euclidean():
     collection_name = request.json['collection_name']
-    id = request.json['id']
-    return jsonify(omni_api.svdb.get_similar_documents_by_euclidean(collection_name, id))
+    input_text = request.json['input_text']
+    text_embedding = omni_api.svdb.get_embedding(input_text)
+    top_n = request.json['top_n']
+    return jsonify(omni_api.svdb.vector_search_euclidean(collection_name, text_embedding, top_n))
 
 @app.route(Routes["svdb_collection_exists"], methods=['POST'])
 def svdb_collection_exists():
