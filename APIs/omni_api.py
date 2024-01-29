@@ -35,6 +35,7 @@ class OmniApi:
         self.chat_llm_path = ""
         self.svdb = SimpleVectorDB()
         self.whisper_model_path = None
+        self.keyword_extractor_model = None
         
     def load_vision(self, clip_path, model_path):
         if self.clip_model_path != clip_path or self.vision_model_path != model_path:
@@ -136,10 +137,10 @@ class OmniApi:
         return audio_data
 
     def extract_keywords(self, text):
-        if self.keyphrase_extractor_model is None:
-            self.keyphrase_extractor_model = KeyBERT()
+        if self.keyword_extractor_model is None:
+            self.keyword_extractor_model = KeyBERT()
         
-        keywords = self.keyphrase_extractor_model.extract_keywords(text)
+        keywords = self.keyword_extractor_model.extract_keywords(text)
         return keywords
         
 
