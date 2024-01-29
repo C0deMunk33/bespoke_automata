@@ -2295,7 +2295,7 @@
 		console.log(json);
 		this.properties.last_output = json;
 		this.setOutputData(0, json);
-		
+
 	}
 
 	// Vision_Node
@@ -2305,22 +2305,22 @@
 		this.addInput("system prompt", "string");
 		this.addInput("user prompt", "string");
 		this.addInput("server url", "string");
+		this.addInput("clip path", "string");
+		this.addInput("model path", "string");
 
 		this.addOutput("out", "string");
 		this.properties = {
 			"server_url": ""
 		};
-		this.server_url_widget = this.addWidget("text","Server Url",this.properties.server_url, "server_url");
 	}
 	Vision_Node.title = "Vision";
 	Vision_Node.prototype.onExecute = async function() {
 		// update properties
 		if(this.getInputData(3) !== undefined && this.getInputData(3) !== this.properties.server_url && this.getInputData(3) !== "") {
 			this.properties.server_url = this.getInputData(3);
-			// set widget value
-			this.server_url_widget.value = this.getInputData(3);
 		} else {
-			this.properties.server_url = this.server_url_widget.value;
+			console.log("vision server url not set")
+			return;
 		}
 
 		let server_url = this.properties.server_url;
@@ -2335,7 +2335,13 @@
 		let user_prompt = this.getInputData(2);
 		console.log("user_prompt: " + user_prompt)
 
-		let response = await fetch(server_url + "/api/vision", {
+		let clip_path = this.getInputData(4);
+		console.log("clip_path: " + clip_path)
+
+		let model_path = this.getInputData(5);
+		console.log("model_path: " + model_path)
+
+		let response = await fetch(server_url + "/vision", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -2343,7 +2349,9 @@
 			body: JSON.stringify({
 				"img_base64": img_base64,
 				"system_prompt": system_prompt,
-				"user_prompt": user_prompt
+				"user_prompt": user_prompt,
+				"clip_path": clip_path,
+				"model_path": model_path
 			})
 		});
 		let json = await response.json();

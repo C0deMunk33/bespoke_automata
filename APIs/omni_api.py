@@ -164,7 +164,7 @@ def vision():
     image_url = request.json['img_base64']
     system_prompt = request.json['system_prompt']
     user_prompt = request.json['user_prompt']        
-    model_path = request.json['vision_model_path']
+    model_path = request.json['model_path']
     clip_path = request.json['clip_path']
     omni_api.load_vision(clip_path, model_path)
     result = omni_api.vision(system_prompt, user_prompt, image_url)
