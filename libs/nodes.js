@@ -806,9 +806,12 @@
 	}
 	Simple_Vector_DB_Write_Node.title = "Vector DB Write";
 	Simple_Vector_DB_Write_Node.prototype.onExecute = async function() {
+		console.log("writing to simple vector db");
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.collection = this.getInputData(1);
 			this.text_widget.value = this.getInputData(1);
+		} else if (this.text_widget.value !== this.properties.collection) {
+			this.properties.collection = this.text_widget.value;
 		}
 
 		if(this.properties.collection === "") {
@@ -853,6 +856,7 @@
 	}
 	Simple_Vector_DB_Read_Node.title = "Vector DB Read";
 	Simple_Vector_DB_Read_Node.prototype.onExecute = async function() {
+		console.log("reading from simple vector db");
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.collection = this.getInputData(1);
 			this.text_widget.value = this.getInputData(1);
