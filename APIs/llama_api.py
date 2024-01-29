@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 import json
 import re
 app = Flask(__name__)
-from sentence_transformers import SentenceTransformer
-MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
-model = SentenceTransformer(MODEL)#.to('cuda:0')
+# from sentence_transformers import SentenceTransformer
+# MODEL = 'sentence-transformers/all-MiniLM-L12-v2'
+# model = SentenceTransformer(MODEL)#.to('cuda:0')
 # CORS
 from flask_cors import CORS
 CORS(app)

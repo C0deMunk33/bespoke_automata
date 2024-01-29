@@ -25,7 +25,7 @@ app = Flask(__name__)
 flask_cors.CORS(app)
 
 
-@app.route('/api/vision', methods=['POST'])
+@app.route('/vision', methods=['POST'])
 def vision():
     if request.method == 'POST':
         print("request received")
