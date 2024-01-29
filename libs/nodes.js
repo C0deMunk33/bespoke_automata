@@ -429,7 +429,9 @@
 				top_n: top_n
 			 })
 		});
-		return (await query_response.json()).text;
+		let response_json = await query_response.json();
+
+		return response_json;
 	}
 
 	//collection_exists
@@ -882,8 +884,8 @@
 
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			console.log("reading from simple vector db");
-			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0), 1, this.properties.svdb_url);
-			console.log(response);
+			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0), 2, this.properties.svdb_url);
+			console.log(response[0]);
 			this.setOutputData(0, response);
 		}
 	}

@@ -78,7 +78,7 @@ class SimpleVectorDB:
 
         return sorted(results, key=lambda x: x[0], reverse=True)[:top_n]
 
-    def vector_search_euclidean(self, collection_name, vector, top_n=1):
+    def vector_search_euclidean(self, collection_name, vector, top_n):
         print("Searching collection: ", collection_name)
         results = []
         for id, doc in self.db[collection_name].items():
