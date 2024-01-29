@@ -17,6 +17,7 @@ from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5Hif
 import uuid
 import threading
 from datasets import load_dataset
+from keybert import KeyBERT
 
 from simple_vector_db import SimpleVectorDB
 
@@ -134,6 +135,14 @@ class OmniApi:
         audio_data = buffer.getvalue()
         return audio_data
 
+    def extract_keywords(self, text):
+        if self.keyphrase_extractor_model is None:
+            self.keyphrase_extractor_model = KeyBERT()
+        
+        keywords = self.keyphrase_extractor_model.extract_keywords(text)
+        return keywords
+        
+
 Routes = {
     "vision": "/vision",
     "chat": "/v1/chat/completions",
@@ -152,7 +161,8 @@ Routes = {
     "list_audio_files": "/list_audio",
     "whisper": "/whisper",
     "tts_stream": "/tts_stream",
-    "tts": "/tts"
+    "tts": "/tts",
+    "keyword_extraction": "/keyword_extraction"
 
 }
 
@@ -365,7 +375,12 @@ def tts_route():
 
     return jsonify({"audio": omni_api.generate_audio_for_text(text)}), 200
 
-
+@app.route(Routes["keyword_extraction"], methods=['POST'])
+def keyword_extraction():
+    data = request.json
+    text = data.get('text')
+    keywords = omni_api.extract_keywords(text)
+    return jsonify({"keywords": keywords}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

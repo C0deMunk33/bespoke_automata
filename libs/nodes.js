@@ -518,7 +518,6 @@
 		});
 		
 	}
-	
 	Note_Node.title = "~~~Note~~~";
 	// faint yellow like sticky notes
 	Note_Node.title_color = "#FF0";
@@ -2271,8 +2270,8 @@
 		}
 	}
 	
-	// Keyphrase_Extraction_Node
-	function Keyphrase_Extraction_Node() {
+	// Keyword_Extraction_Node
+	function Keyword_Extraction_Node() {
 		this.addInput("text", "string");
 		this.addInput("server url", "string");
 		this.addOutput("array out", "string");
@@ -2283,8 +2282,8 @@
 		};
 		this.server_url_widget = this.addWidget("text","Server Url",this.properties.server_url, "server_url");
 	}
-	Keyphrase_Extraction_Node.title = "Keyphrase Extraction";
-	Keyphrase_Extraction_Node.prototype.onExecute = async function() {
+	Keyword_Extraction_Node.title = "Keyword Extraction";
+	Keyword_Extraction_Node.prototype.onExecute = async function() {
 		let text = this.getInputData(0);
 		if(text === undefined || text === "") {
 			this.setOutputData(0, "");
@@ -2304,13 +2303,12 @@
 			this.properties.server_url = this.server_url_widget.value;
 		}
 
-		console.log("-----Keyphrase Extraction node executing-----")
+		console.log("-----Keyword Extraction node executing-----")
 		console.log("text: " + text)
 
 		let server_url = this.properties.server_url;
-		console.log("server_url: " + server_url)
 
-		let response = await fetch(server_url + "/api/keyphrase_extraction", {
+		let response = await fetch(server_url + "/keyword_extraction", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -2528,6 +2526,7 @@
 			Note_Node:Note_Node,
 			Time_Node:Time_Node,
 			Img_URL_To_Base64_Node:Img_URL_To_Base64_Node,
-			Vision_Node:Vision_Node
+			Vision_Node:Vision_Node,
+			Keyword_Extraction_Node:Keyword_Extraction_Node,
 		};
 	}

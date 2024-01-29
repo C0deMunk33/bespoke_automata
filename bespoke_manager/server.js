@@ -84,6 +84,8 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("Image/URL to Base64", Nodes.Img_URL_To_Base64_Node );
     // LLM/Vision_Node
     LiteGraph.registerNodeType("LLM/Vision", Nodes.Vision_Node );
+    //Keyword_Extraction_Node
+    LiteGraph.registerNodeType("Text/Keyword Extraction", Nodes.Keyword_Extraction_Node );
 
     let e = graph.configure(graphData);
     if(e) {
