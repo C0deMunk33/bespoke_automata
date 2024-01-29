@@ -52,30 +52,23 @@ $ yarn run start
 
 work through installing the modules until it works
 
-### Llama:
-The LLM API uses llama-cpp-python https://github.com/abetlen/llama-cpp-python
+### BA API:
+The BA API uses [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) for text inference and vision
 
-* place models in the folder `../models/text`
+* place text models in the folder `../models/text`
+* place vision models in the folder `../models/vision`
 * **NOTE THIS IS AT THE SAME LEVEL AS THIS REPO**, GGUF work best IMO, get then from Hugging Face.* **NOTE:** if you are running non-cuda (Apple silicon, AMD, Intel,CPU etc) you will need to follow the instructions on https://github.com/abetlen/llama-cpp-python to compile for your hardware **NOTE:** llama-cpp-python binaries on Apple M* hardware have been tested to be grand.
-* **Metal OSX**: CMAKE_ARGS="-DLLAMA_METAL=on" pip install llama-cpp-python
+* **Metal OSX**: `CMAKE_ARGS="-DLLAMA_METAL=on" pip install llama-cpp-python`
 * **CUDA LINUX**: `CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python`
 * **CUDA WINDOWS**: `$env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"` then `pip install llama-cpp-python`
 * **CPU**: `pip install llama-cpp-python`
 * `cd bespoke_automata/APIs/`
-* `python llama_api.py`
+* `python omni_api.py`
 * **work through pip installs until it works**
 * the server will be `your_ip:5000`
-* endpoint acts like GPT (and defaults to GPT, but that may be broken)
+* endpoint for text acts like GPT (and defaults to GPT, but that may be broken)
 
   **NOTE:** On OSX, port 5000 collides with Airplay Receiver. You can either turn it off in Settings > General > Airdrop & Handoff or switch the port in the config.
-
-### Simple Vector DB:
-For simple vector DB nodes, you will need to have this running
-
-* `cd bespoke_automata/APIs/`
-* `python simple_vector_db_api.py`
-* **work through any pip installs**
-* endpoint will be `your_ip:4999`
 
 ### Back end:
 Once completed, a brain can be deployed as API endpoints.

@@ -5,27 +5,43 @@
 import requests
 from bs4 import BeautifulSoup
 
+def find_main_content(soup):
+    # List of potential tags or classes that might contain the main content
+    content_tags = ['article', 'main']
+    content_classes = ['content', 'main', 'article-body', 'post-body']
+
+    # 1. Attempt to find the main content by tags
+    for tag in content_tags:
+        content = soup.find(tag)
+        if content:
+            return content.get_text()
+
+    # 2. Attempt to find by classes
+    for class_ in content_classes:
+        content = soup.find(class_=class_)
+        if content:
+            return content.get_text()
+
+    # 3. Fallback: Extract text from all paragraphs if specific content area is not found
+    return ' '.join([p.get_text() for p in soup.find_all('p')])
 
 def scrape_text_from_webpage(url):
+    headers = {'User-Agent': 'Mozilla/5.0'}
     try:
         # Send a GET request to the URL
-        response = requests.get(url)
+        response = requests.get(url, headers=headers, timeout=10)
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
-            # Parse the HTML content of the page using BeautifulSoup
-            soup = BeautifulSoup(response.text, 'html.parser')
-
-            # Extract text from all paragraphs (you can adjust this based on your needs)
-            paragraphs = soup.find_all('p')
-
-            # Concatenate the text from all paragraphs
-            extracted_text = ' '.join([paragraph.get_text() for paragraph in paragraphs])
-
-            return extracted_text
-
+            # Check if the response is HTML before proceeding
+            if 'text/html' in response.headers['Content-Type']:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                return find_main_content(soup).strip()
+            else:
+                print(f"Error: Non-HTML content at {url}")
+                return None
         else:
-            print(f"Error: Unable to fetch the webpage. Status code: {response.status_code}")
+            print(f"Error: Unable to fetch the webpage {url}. Status code: {response.status_code}")
             return None
 
     except Exception as e:

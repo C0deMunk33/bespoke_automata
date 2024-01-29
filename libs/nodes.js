@@ -429,20 +429,26 @@
 				top_n: top_n
 			 })
 		});
-		return (await query_response.json()).text;
+		let response_json = await query_response.json();
+
+		return response_json;
 	}
 
 	//collection_exists
 	async function collection_exists(collection_name, url) {
-		let insert_response = await fetch(url + "/collection_exists", {
+		console.log("checking if collection exists " + collection_name)
+		let exists_response = await fetch(url + "/collection_exists", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ collection_name: collection_name })
 		});
-		return insert_response.json();
+		
+		let response_json = await exists_response.json()
+		return response_json;
 	}
+
 
 
 	/////////////////////NODES START HERE/////////////////////////
@@ -806,9 +812,12 @@
 	}
 	Simple_Vector_DB_Write_Node.title = "Vector DB Write";
 	Simple_Vector_DB_Write_Node.prototype.onExecute = async function() {
+		console.log("writing to simple vector db");
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.collection = this.getInputData(1);
 			this.text_widget.value = this.getInputData(1);
+		} else if (this.text_widget.value !== this.properties.collection) {
+			this.properties.collection = this.text_widget.value;
 		}
 
 		if(this.properties.collection === "") {
@@ -828,7 +837,7 @@
 			console.log("writing to simple vector db");
 			let collection_exists_response = await collection_exists(this.properties.collection, this.properties.svdb_url);
 			
-			if(!collection_exists_response.exists) {
+			if(!collection_exists_response) {
 				//create collection
 				console.log("creating collection");
 				let create_response = await create_simple_vector_db_collection(this.properties.collection, this.properties.svdb_url);
@@ -844,15 +853,19 @@
 		this.addInput("query", "string");
 		this.addInput("collection", "string");
 		this.addInput("svdb_url", "string");
-		this.addOutput("out", "string");
+		this.addInput("top_n", "string");
+		this.addOutput("array out", "string");
 		this.properties = {
 			collection: "",
-			svdb_url: ""		
+			svdb_url: "",
+			top_n: 2		
 		};
 		this.text_widget = this.addWidget("text","Collection",this.properties.collection, "collection");
+		this.top_n_widget = this.addWidget("number","Top N",this.properties.top_n,"top_n", {precision:0, step:10});
 	}
 	Simple_Vector_DB_Read_Node.title = "Vector DB Read";
 	Simple_Vector_DB_Read_Node.prototype.onExecute = async function() {
+		console.log("reading from simple vector db");
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.collection = this.getInputData(1);
 			this.text_widget.value = this.getInputData(1);
@@ -870,6 +883,13 @@
 			return;
 		}
 
+		if(this.getInputData(3) !== undefined && this.getInputData(3) !== "") {
+			this.properties.top_n = this.getInputData(3);
+			this.top_n_widget.value = this.getInputData(3);
+		} else if (this.top_n_widget.value !== this.properties.top_n) {
+			this.properties.top_n = this.top_n_widget.value;
+		}
+
 		// check if collection exists
 		if(!(await collection_exists(this.properties.collection, this.properties.svdb_url))) {
 			console.log("collection does not exist");
@@ -878,8 +898,17 @@
 
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			console.log("reading from simple vector db");
-			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0),1, this.properties.svdb_url);
-			this.setOutputData(0, response);
+			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0), this.properties.top_n, this.properties.svdb_url);
+			// map the second item of each array in the response array
+			let output = response.map(x => { return {
+				"id": x[1]['id'],
+				"text": x[1]['text'],
+				"timestamp": x[1]['timestamp'],
+				"distance": x[0],
+				//"vector": x[1]['vector']
+			}});
+
+			this.setOutputData(0, JSON.stringify(output));
 		}
 	}
 
@@ -2199,10 +2228,170 @@
 		}
 	}
 
+	// img url to base64 node, 1 input, 1 output, 1 widget for url
+	function Img_URL_To_Base64_Node() {
+		this.addInput("url", "string");
+		this.addOutput("out", "string");
+		this.properties = {
+			"url": ""
+		};
+		this.url_widget = this.addWidget("text","Url",this.properties.url, "url");
+	}
+	Img_URL_To_Base64_Node.title = "Img URL To Base64";
+	Img_URL_To_Base64_Node.prototype.onExecute = async function() {
+		// update properties
+		if (this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.url && this.getInputData(0) !== "") {
+			this.properties.url = this.getInputData(0);
+			// set widget value
+			this.url_widget.value = this.getInputData(0);
+		} else {
+			this.properties.url = this.url_widget.value;
+		}
+	
+		let url = this.properties.url;
+		console.log("url: " + url);
+	
+		try {
+			let response = await fetch(url);
+			let blob = await response.blob();
+	
+			let base64data = await new Promise((resolve, reject) => {
+				let reader = new FileReader();
+				reader.onloadend = function() {
+					resolve(reader.result);
+				};
+				reader.onerror = reject;
+				reader.readAsDataURL(blob);
+			});
+	
+			console.log(base64data);
+			this.setOutputData(0, base64data);
+		} catch (error) {
+			console.error('Error:', error);
+		}
+	}
+	
+	// Keyphrase_Extraction_Node
+	function Keyphrase_Extraction_Node() {
+		this.addInput("text", "string");
+		this.addInput("server url", "string");
+		this.addOutput("array out", "string");
+		this.properties = {
+			"last_text": "",
+			"last_output": "",
+			"server_url": ""
+		};
+		this.server_url_widget = this.addWidget("text","Server Url",this.properties.server_url, "server_url");
+	}
+	Keyphrase_Extraction_Node.title = "Keyphrase Extraction";
+	Keyphrase_Extraction_Node.prototype.onExecute = async function() {
+		let text = this.getInputData(0);
+		if(text === undefined || text === "") {
+			this.setOutputData(0, "");
+			return;
+		} else if(text === this.properties.last_text) {
+			this.setOutputData(0, this.properties.last_output);
+			return;
+		} else {
+			this.properties.last_text = text;
+		}
+
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== this.properties.server_url && this.getInputData(1) !== "") {
+			this.properties.server_url = this.getInputData(1);
+			// set widget value
+			this.server_url_widget.value = this.getInputData(1);
+		} else {
+			this.properties.server_url = this.server_url_widget.value;
+		}
+
+		console.log("-----Keyphrase Extraction node executing-----")
+		console.log("text: " + text)
+
+		let server_url = this.properties.server_url;
+		console.log("server_url: " + server_url)
+
+		let response = await fetch(server_url + "/api/keyphrase_extraction", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				"text": text
+			})
+		});
+		let json = await response.json();
+		
+		console.log(json);
+		this.properties.last_output = json;
+		this.setOutputData(0, json);
+
+	}
+
+	// Vision_Node
+	function Vision_Node() {
+		// NOTE: USE BASE64 ENCODING FOR IMAGES
+		this.addInput("img base64", "string");
+		this.addInput("system prompt", "string");
+		this.addInput("user prompt", "string");
+		this.addInput("server url", "string");
+		this.addInput("clip path", "string");
+		this.addInput("model path", "string");
+
+		this.addOutput("out", "string");
+		this.properties = {
+			"server_url": ""
+		};
+	}
+	Vision_Node.title = "Vision";
+	Vision_Node.prototype.onExecute = async function() {
+		// update properties
+
+		this.properties.server_url = this.getInputData(3);
+
+
+		let server_url = this.properties.server_url;
+		console.log("server_url: " + server_url)
+
+		let img_base64 = this.getInputData(0);
+		console.log("img_base64: " + img_base64)
+
+		let system_prompt = this.getInputData(1);
+		console.log("system_prompt: " + system_prompt)
+
+		let user_prompt = this.getInputData(2);
+		console.log("user_prompt: " + user_prompt)
+
+		let clip_path = this.getInputData(4);
+		console.log("clip_path: " + clip_path)
+
+		let model_path = this.getInputData(5);
+		console.log("model_path: " + model_path)
+
+		let response = await fetch(server_url + "/vision", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				"img_base64": img_base64,
+				"system_prompt": system_prompt,
+				"user_prompt": user_prompt,
+				"clip_path": clip_path,
+				"model_path": model_path
+			})
+		});
+		let json = await response.json();
+		console.log(json);
+		msg = json["choices"][0]["message"]["content"]
+		this.setOutputData(0, msg);
+	}
+
+
 	// JSON_API_Node url input, url widget, 1 output which is a json string
 	function JSON_API_Node() {
 		this.addInput("url", "string");
-		this.addOutput("out", "string");
+		this.addInput("in dict", "string")
+		this.addOutput("out dict", "string");
 		this.properties = {
 			"url": ""
 		};
@@ -2211,16 +2400,20 @@
 	JSON_API_Node.title = "JSON API";
 	JSON_API_Node.prototype.onExecute = async function() {
 		// update properties
-		//see if input is not undefined
-		if(this.getInputData(0) !== undefined) {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.url && this.getInputData(0) !== "") {
 			this.properties.url = this.getInputData(0);
 			// set widget value
 			this.url_widget.value = this.getInputData(0);
 		} else {
 			this.properties.url = this.url_widget.value;
 		}
-		// set output to json string
-		this.setOutputData(0, await getJSON(this.properties.url));
+
+		let url = this.properties.url;
+		console.log("url: " + url)
+		let response = await fetch(url);
+		let json = await response.json();
+		console.log(json);
+		this.setOutputData(0, json);
 	}
 
 
@@ -2334,5 +2527,7 @@
 			Random_Dictionary_Item_Node:Random_Dictionary_Item_Node,
 			Note_Node:Note_Node,
 			Time_Node:Time_Node,
+			Img_URL_To_Base64_Node:Img_URL_To_Base64_Node,
+			Vision_Node:Vision_Node
 		};
 	}
