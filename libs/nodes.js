@@ -2316,12 +2316,9 @@
 	Vision_Node.title = "Vision";
 	Vision_Node.prototype.onExecute = async function() {
 		// update properties
-		if(this.getInputData(3) !== undefined && this.getInputData(3) !== this.properties.server_url && this.getInputData(3) !== "") {
-			this.properties.server_url = this.getInputData(3);
-		} else {
-			console.log("vision server url not set")
-			return;
-		}
+
+		this.properties.server_url = this.getInputData(3);
+
 
 		let server_url = this.properties.server_url;
 		console.log("server_url: " + server_url)
