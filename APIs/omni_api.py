@@ -227,6 +227,7 @@ def svdb_delete_collection():
 
 @app.route(Routes["svdb_add_document"], methods=['POST'])
 def svdb_add_document():
+    print("Adding document")
     collection_name = request.json['collection_name']
     title = request.json['title']
     text = request.json['text']
