@@ -882,7 +882,8 @@
 
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			console.log("reading from simple vector db");
-			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0),1, this.properties.svdb_url);
+			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0), 1, this.properties.svdb_url);
+			console.log(response);
 			this.setOutputData(0, response);
 		}
 	}

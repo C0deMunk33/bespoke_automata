@@ -266,7 +266,8 @@ def svdb_get_similar_documents_by_euclidean():
     text_embedding = omni_api.svdb.get_embedding(input_text)
     top_n = request.json['top_n']
     search = omni_api.svdb.vector_search_euclidean(collection_name, text_embedding, top_n)
-    
+    print("found")
+    print(search)
     return jsonify(search)
 
 @app.route(Routes["svdb_collection_exists"], methods=['POST'])
