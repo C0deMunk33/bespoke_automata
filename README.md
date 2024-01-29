@@ -37,9 +37,20 @@ This is a development release and while the software is maturing, I would recomm
 ### GUI
 The bespoke automata GUI is a node graph UI using a modified litegraph, so it should be familiar to ComfyUI users
 
-* clone repo https://github.com/C0deMunk33/bespoke_automata
-* npm run start
-* work through installing the modules until it works
+## Installation
+
+Clone the repository and open the directory
+```
+$ git clone https://github.com/C0deMunk33/bespoke_automata
+$ cd bespoke_automata
+```
+Use yarn to install and run
+```
+$ yarn install
+$ yarn run start
+```
+
+work through installing the modules until it works
 
 ### BA API:
 The BA API uses [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) for text inference and vision
@@ -50,6 +61,7 @@ The BA API uses [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) 
 * **Metal OSX**: `CMAKE_ARGS="-DLLAMA_METAL=on" pip install llama-cpp-python`
 * **CUDA LINUX**: `CMAKE_ARGS="-DLLAMA_CUBLAS=on" pip install llama-cpp-python`
 * **CUDA WINDOWS**: `$env:CMAKE_ARGS = "-DLLAMA_CUBLAS=on"` then `pip install llama-cpp-python`
+* **CPU**: `pip install llama-cpp-python`
 * `cd bespoke_automata/APIs/`
 * `python omni_api.py`
 * **work through pip installs until it works**
@@ -75,6 +87,6 @@ Once completed, a brain can be deployed as API endpoints.
 * Example: https://youtu.be/w_saaTFEuSM
 * Issues: Create an issue here or ping me at: https://twitter.com/icodeagents
 * Contact: https://twitter.com/icodeagents
-* Discord: https://discord.gg/hAd6WuYf
+* Discord: [https://discord.gg/hAd6WuYf](https://discord.gg/RdK3uESV)
 
 ## THANKS AND GOOD LUCK!! ##
