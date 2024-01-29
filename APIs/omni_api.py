@@ -37,17 +37,19 @@ class OmniApi:
         
     def load_vision(self, clip_path, model_path):
         if self.clip_model_path != clip_path or self.vision_model_path != model_path:
+            self.vision_model_path = model_path
+            self.clip_model_path = clip_path
             # load model
             # "../../models/vision/bakllava/mmproj-model-f16.gguf"
             self.chat_handler = Llava15ChatHandler(clip_model_path=clip_path)
             
             self.vision_llm = Llama(
-                # "../../models/vision/bakllava/ggml-model-q5_k.gguf"
-            model_path= model_path,
-            chat_handler=self.chat_handler,
-            n_ctx=4096, # n_ctx should be increased to accomodate the image embedding
-            logits_all=True,# needed to make llava work
-            n_gpu_layers=-1
+                    # "../../models/vision/bakllava/ggml-model-q5_k.gguf"
+                model_path= model_path,
+                chat_handler=self.chat_handler,
+                n_ctx=4096, # n_ctx should be increased to accomodate the image embedding
+                logits_all=True,# needed to make llava work
+                n_gpu_layers=-1
             )
 
     def load_chat_model(self, model_path, n_ctx, n_gpu_layers, chat_format):
