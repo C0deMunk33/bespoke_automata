@@ -274,7 +274,9 @@ def svdb_get_similar_documents_by_euclidean():
 @app.route(Routes["svdb_collection_exists"], methods=['POST'])
 def svdb_collection_exists():
     collection_name = request.json['collection_name']
-    return jsonify(omni_api.svdb.collection_exists(collection_name))
+    collection_exists = omni_api.svdb.collection_exists(collection_name)
+    print(f"collection_exists ({collection_name}) {collection_exists}")
+    return jsonify(collection_exists)
 
 @app.route(Routes["get_audio_file"], methods=['GET'])
 def serve_audio(filename):

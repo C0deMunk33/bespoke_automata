@@ -436,6 +436,7 @@
 
 	//collection_exists
 	async function collection_exists(collection_name, url) {
+		console.log("checking if collection exists " + collection_name)
 		let insert_response = await fetch(url + "/collection_exists", {
 			method: 'POST',
 			headers: {
@@ -832,7 +833,7 @@
 			this.properties.last_input = this.getInputData(0);
 			console.log("writing to simple vector db");
 			let collection_exists_response = await collection_exists(this.properties.collection, this.properties.svdb_url);
-			
+			console.log("collection exists: " + collection_exists_response.exists)
 			if(!collection_exists_response.exists) {
 				//create collection
 				console.log("creating collection");
