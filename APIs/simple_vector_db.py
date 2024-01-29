@@ -82,7 +82,7 @@ class SimpleVectorDB:
         print("Searching collection: ", collection_name)
         results = []
         #print length of collection
-        print(f"collection length: {len(self.db[collection_name])}")
+        print(f"collection length: {len(self.db[collection_name].items())}")
         
         for id, doc in self.db[collection_name].items():
             score = self.get_euclidean_distance(doc['vector'], vector)
