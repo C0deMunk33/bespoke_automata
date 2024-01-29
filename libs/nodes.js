@@ -853,12 +853,15 @@
 		this.addInput("query", "string");
 		this.addInput("collection", "string");
 		this.addInput("svdb_url", "string");
+		this.addInput("top_n", "string");
 		this.addOutput("out", "string");
 		this.properties = {
 			collection: "",
-			svdb_url: ""		
+			svdb_url: "",
+			top_n: 2		
 		};
 		this.text_widget = this.addWidget("text","Collection",this.properties.collection, "collection");
+		this.top_n_widget = this.addWidget("number","Top N",this.properties.top_n,"top_n", {precision:0, step:10});
 	}
 	Simple_Vector_DB_Read_Node.title = "Vector DB Read";
 	Simple_Vector_DB_Read_Node.prototype.onExecute = async function() {
@@ -880,6 +883,13 @@
 			return;
 		}
 
+		if(this.getInputData(3) !== undefined && this.getInputData(3) !== "") {
+			this.properties.top_n = this.getInputData(3);
+			this.top_n_widget.value = this.getInputData(3);
+		} else if (this.top_n_widget.value !== this.properties.top_n) {
+			this.properties.top_n = this.top_n_widget.value;
+		}
+
 		// check if collection exists
 		if(!(await collection_exists(this.properties.collection, this.properties.svdb_url))) {
 			console.log("collection does not exist");
@@ -888,9 +898,17 @@
 
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			console.log("reading from simple vector db");
-			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0), 2, this.properties.svdb_url);
-			console.log(response[0]);
-			this.setOutputData(0, response);
+			let response = await get_similar_documents_by_euclidean(this.properties.collection, this.getInputData(0), this.properties.top_n, this.properties.svdb_url);
+			// map the second item of each array in the response array
+			let output = response.map(x => { return {
+				"id": x[1]['id'],
+				"text": x[1]['text'],
+				"timestamp": x[1]['timestamp'],
+				"distance": x[0],
+				//"vector": x[1]['vector']
+			}});
+
+			this.setOutputData(0, JSON.stringify(output));
 		}
 	}
 

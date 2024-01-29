@@ -94,7 +94,7 @@ class SimpleVectorDB:
                 each[1]['vector'] = each[1]['vector'].tolist() 
             except:
                 pass
-        return sorted(results, key=lambda x: x[0], reverse=False)[:top_n]
+        return sorted(results, key=lambda x: x[0], reverse=False)[:int(top_n)]
     
     def get_cos_simmilarity(self, v1, v2):
         return 1 - cosine(v1, v2)
