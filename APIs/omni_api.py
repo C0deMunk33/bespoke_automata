@@ -7,14 +7,13 @@ from itertools import cycle
 import psutil
 import io
 import base64
-import jsonify
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Llava15ChatHandler
 import whisper
 import time
 import soundfile as sf
 from pydub import AudioSegment
-from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan, SpeechT5ForConditionalGeneration
+from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan
 import uuid
 import threading
 from datasets import load_dataset
