@@ -742,14 +742,17 @@
 			this.properties.index = parseInt(this.index_widget.value);
 		}
 
+		
+
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			let input_array = JSON.parse(this.getInputData(0));
+			
 			// check that index is in bounds
 			if(this.properties.index < 0 || this.properties.index >= input_array.length) {
 				console.log("index out of bounds");
 				return;
 			}
-			this.setOutputData(0, input_array[this.properties.index]);
+			this.setOutputData(0, JSON.stringify(input_array[this.properties.index]));
 		}
 	}
 	
@@ -2320,8 +2323,8 @@
 		let json = await response.json();
 		
 		console.log(json);
-		this.properties.last_output = json;
-		this.setOutputData(0, json);
+		this.properties.last_output = JSON.stringify(json["keywords"]);
+		this.setOutputData(0, this.properties.last_output);
 
 	}
 
