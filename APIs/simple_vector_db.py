@@ -87,7 +87,7 @@ class SimpleVectorDB:
         # for each in results: print text
         for each in sorted(results, key=lambda x: x[0], reverse=False):
             print(each[1]['text'])
-        return sorted(results, key=lambda x: x[0], reverse=False)[:top_n]
+        return sorted(results, key=lambda x: x[0], reverse=False)[:top_n].tolist()
     
     def get_cos_simmilarity(self, v1, v2):
         return 1 - cosine(v1, v2)
