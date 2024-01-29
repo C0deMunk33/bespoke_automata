@@ -138,7 +138,7 @@ class OmniApi:
 
     def extract_keywords(self, text):
         if self.keyword_extractor_model is None:
-            self.keyword_extractor_model = KeyBERT()
+            self.keyword_extractor_model = KeyBERT().to("cuda")
         
         keywords = self.keyword_extractor_model.extract_keywords(text)
         return keywords
