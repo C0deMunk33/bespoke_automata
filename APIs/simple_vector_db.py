@@ -35,7 +35,7 @@ class SimpleVectorDB:
             'timestamp': timestamp
         }
 
-        self.indexes.timestamp.append(id)
+        self.indexes["timestamp"].append(id)
 
     def get_by_time_range(self, collection_name, start, end):
         results = []
