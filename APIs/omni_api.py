@@ -265,6 +265,8 @@ def svdb_get_similar_documents_by_euclidean():
     input_text = request.json['text']
     text_embedding = omni_api.svdb.get_embedding(input_text)
     top_n = request.json['top_n']
+    print("text_embedding")
+    print(f"top_n: {top_n}")
     search = omni_api.svdb.vector_search_euclidean(collection_name, text_embedding, top_n)
     return jsonify(search)
 
