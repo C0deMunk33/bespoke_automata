@@ -262,7 +262,7 @@ def svdb_get_similar_documents_by_cos():
 @app.route(Routes["svdb_get_similar_documents_by_euclidean"], methods=['POST'])
 def svdb_get_similar_documents_by_euclidean():
     collection_name = request.json['collection_name']
-    input_text = request.json['input_text']
+    input_text = request.json['text']
     text_embedding = omni_api.svdb.get_embedding(input_text)
     top_n = request.json['top_n']
     return jsonify(omni_api.svdb.vector_search_euclidean(collection_name, text_embedding, top_n))
