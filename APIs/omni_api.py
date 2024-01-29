@@ -29,7 +29,6 @@ class OmniApi:
     def __init__(self):
         self.vision_llm = None
         self.chat_handler = None
-        self.load_models()
         self.clip_model_path = ""
         self.vision_model_path = ""
         self.chat_llm_path = ""
