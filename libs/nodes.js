@@ -854,7 +854,7 @@
 		this.addInput("collection", "string");
 		this.addInput("svdb_url", "string");
 		this.addInput("top_n", "string");
-		this.addOutput("out", "string");
+		this.addOutput("array out", "string");
 		this.properties = {
 			collection: "",
 			svdb_url: "",
