@@ -701,12 +701,12 @@
 		} else {
 			return;
 		}
-		let input_array = [];
+		
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
-			input_array = JSON.parse(this.getInputData(0));
+			this.properties.array = JSON.parse(this.getInputData(0));
 		} 
 		
-		input_array.push(this.properties.variable_value);
+		this.properties.array.push(this.properties.variable_value);
 
 		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
 			this.properties.buffer_length = parseInt(this.getInputData(2));
@@ -715,12 +715,12 @@
 			this.properties.buffer_length = parseInt(this.buffer_length_widget.value);
 		}
 
-		if(input_array.length > this.properties.buffer_length) {
-			input_array.shift();
+		if(this.properties.array.length > this.properties.buffer_length) {
+			this.properties.array.shift();
 		}
 
-		this.setOutputData(0, JSON.stringify(input_array));
-		this.properties.array = input_array;
+		this.setOutputData(0, JSON.stringify(this.properties.array));
+		
 	}
 
 	function Array_Item_Forward_Node(){
@@ -741,8 +741,6 @@
 		} else if (this.index_widget.value !== this.properties.index) {
 			this.properties.index = parseInt(this.index_widget.value);
 		}
-
-		
 
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			let input_array = JSON.parse(this.getInputData(0));
