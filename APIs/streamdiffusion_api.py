@@ -1,5 +1,6 @@
 # pip install git+https://github.com/cumulo-autumn/StreamDiffusion.git@main#egg=streamdiffusion[tensorrt]
 # pip install diffusers
+# pip3 install torch==2.1.0 torchvision==0.16.0 xformers --index-url https://download.pytorch.org/whl/cu122
 import torch
 from diffusers import AutoencoderTiny, StableDiffusionPipeline
 
