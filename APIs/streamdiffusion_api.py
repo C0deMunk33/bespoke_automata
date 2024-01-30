@@ -1,3 +1,5 @@
+# pip install git+https://github.com/cumulo-autumn/StreamDiffusion.git@main#egg=streamdiffusion[tensorrt]
+# pip install diffusers
 import torch
 from diffusers import AutoencoderTiny, StableDiffusionPipeline
 
