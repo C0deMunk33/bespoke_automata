@@ -85,13 +85,13 @@ async function load_graph(graph_file){
     //Keyword_Extraction_Node
     LiteGraph.registerNodeType("Text/Keyword Extraction", Nodes.Keyword_Extraction_Node );
     // IO/Dictionary_Bus_Input_Node
-    LiteGraph.registerNodeType("IO/Dictionary Bus Input", Dictionary_Bus_Input_Node );
+    LiteGraph.registerNodeType("IO/Dictionary Bus Input", Nodes.Dictionary_Bus_Input_Node );
     // IO/Dictionary_Bus_Output_Node
-    LiteGraph.registerNodeType("IO/Dictionary Bus Output", Dictionary_Bus_Output_Node );
+    LiteGraph.registerNodeType("IO/Dictionary Bus Output", Nodes.Dictionary_Bus_Output_Node );
     // IO/Dictionary_Bus_Get_Node
-    LiteGraph.registerNodeType("IO/Dictionary Bus Get", Dictionary_Bus_Get_Node );
+    LiteGraph.registerNodeType("IO/Dictionary Bus Get", Nodes.Dictionary_Bus_Get_Node );
     // IO/Dictionary_Bus_Set_Node
-    LiteGraph.registerNodeType("IO/Dictionary Bus Set", Dictionary_Bus_Set_Node );
+    LiteGraph.registerNodeType("IO/Dictionary Bus Set", Nodes.Dictionary_Bus_Set_Node );
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);
