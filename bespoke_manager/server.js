@@ -14,8 +14,6 @@ async function load_graph(graph_file){
     LiteGraph.clearRegisteredTypes()
     LiteGraph.registerNodeType("Text/Text", Nodes.Text_Node );
     LiteGraph.registerNodeType("Text/Random Text", Nodes.Random_Selection_Node );
-    LiteGraph.registerNodeType("Templates/Persona Template", Nodes.Persona_Template_Node );
-    LiteGraph.registerNodeType("Templates/Prompt Template", Nodes.Prompt_Template_Node );
 
     
     LiteGraph.registerNodeType("Text/Prefix Text", Nodes.Prefix_Text_Node );
@@ -86,7 +84,14 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("LLM/Vision", Nodes.Vision_Node );
     //Keyword_Extraction_Node
     LiteGraph.registerNodeType("Text/Keyword Extraction", Nodes.Keyword_Extraction_Node );
-
+    // IO/Dictionary_Bus_Input_Node
+    LiteGraph.registerNodeType("IO/Dictionary Bus Input", Dictionary_Bus_Input_Node );
+    // IO/Dictionary_Bus_Output_Node
+    LiteGraph.registerNodeType("IO/Dictionary Bus Output", Dictionary_Bus_Output_Node );
+    // IO/Dictionary_Bus_Get_Node
+    LiteGraph.registerNodeType("IO/Dictionary Bus Get", Dictionary_Bus_Get_Node );
+    // IO/Dictionary_Bus_Set_Node
+    LiteGraph.registerNodeType("IO/Dictionary Bus Set", Dictionary_Bus_Set_Node );
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);
