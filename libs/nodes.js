@@ -1529,14 +1529,22 @@
 		let system_role = {"role": "system", "content": system};
 
 		this.properties.api_key = api_key;
+
+		if(this.properties.buffer_length <= 0) {
+			this.properties.buffer_length = 0;
+			this.properties.chat_buffer = [];
+		}
+
 		this.properties.chat_buffer.push({"role": "user", "content": user});
 
 		// check for buffer overflow
-		if(this.properties.chat_buffer.length > this.properties.buffer_length) {
+
+		if(this.properties.chat_buffer.length > this.properties.buffer_length && this.properties.buffer_length > 0) {
 			this.properties.chat_buffer.shift();
 		}
 
 		let messages = this.properties.chat_buffer.map((item) => item);
+		console.log("messages: " + JSON.stringify(messages));
 
 		// prepend system message
 		messages.unshift(system_role);
