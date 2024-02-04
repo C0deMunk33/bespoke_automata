@@ -518,7 +518,6 @@
 		});
 		
 	}
-	
 	Note_Node.title = "~~~Note~~~";
 	// faint yellow like sticky notes
 	Note_Node.title_color = "#FF0";
@@ -680,6 +679,155 @@
 		}
 	}
 
+	// global bus dictionary
+	let global_bus_dictionaries = {};
+
+	function set_global_bus_dictionary(bus_id, input_dict) {
+		global_bus_dictionaries[bus_id] = input_dict;
+	}
+
+	// Dictionary_Bus_Input_Node
+	function Dictionary_Bus_Input_Node(){
+		this.addInput("bus id", "string");
+		this.addOutput("out dict", "string");
+		this.properties = {
+			bus_id: ""
+		};
+		this.text_widget = this.addWidget("text","Bus ID",this.properties.bus_id,"bus_id");
+	}
+	Dictionary_Bus_Input_Node.title = "Dictionary Bus Input";
+	// green theme
+	Dictionary_Bus_Input_Node.title_color = "#232"
+	Dictionary_Bus_Input_Node.fg_color = "#FFF"
+	Dictionary_Bus_Input_Node.bg_color = "#353"
+	// end green theme
+	Dictionary_Bus_Input_Node.prototype.set_bus_data = function(bus_id, input_dict) {
+		set_global_bus_dictionary(bus_id, input_dict);
+	}
+
+	Dictionary_Bus_Input_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.bus_id = this.getInputData(0);
+			this.text_widget.value = this.getInputData(0);
+		} else if (this.text_widget.value !== this.properties.bus_id) {
+			this.properties.bus_id = this.text_widget.value;
+		}
+
+		this.setOutputData(0, JSON.stringify(global_bus_dictionaries[this.properties.bus_id]));
+	}
+
+	// Dictionary_Bus_Output_Node saves incoming dictionary to global bus
+	function Dictionary_Bus_Output_Node(){
+		this.addInput("in dict", "string");
+		this.addInput("bus id", "string");
+		this.properties = {
+			bus_id: ""
+		};
+		this.text_widget = this.addWidget("text","Bus ID",this.properties.bus_id,"bus_id");
+	}
+	Dictionary_Bus_Output_Node.title = "Dictionary Bus Output";
+	// red theme
+	Dictionary_Bus_Output_Node.title_color = "#322"
+	Dictionary_Bus_Output_Node.fg_color = "#FFF"
+	Dictionary_Bus_Output_Node.bg_color = "#533"
+	// end red theme
+	Dictionary_Bus_Output_Node.prototype.onExecute = function() {
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.bus_id = this.getInputData(1);
+			this.text_widget.value = this.getInputData(1);
+		} else if (this.text_widget.value !== this.properties.bus_id) {
+			this.properties.bus_id = this.text_widget.value;
+		}
+
+		set_global_bus_dictionary(this.properties.bus_id, JSON.parse(this.getInputData(0)));
+	}
+
+	// Dictionary_Bus_Get_Node
+	function Dictionary_Bus_Get_Node(){
+		this.addInput("bus id", "string");
+		this.addInput("var name", "string");
+		this.addOutput("text out", "string");
+		this.properties = {
+			bus_id: "",
+			variable_name: ""
+		};
+		this.text_widget = this.addWidget("text","Bus ID",this.properties.bus_id,"bus_id");
+		this.variable_widget = this.addWidget("text","Variable Name",this.properties.variable_name,"variable_name");
+	}
+	Dictionary_Bus_Get_Node.title = "Dictionary Bus Get";
+	// green theme
+	Dictionary_Bus_Get_Node.title_color = "#232"
+	Dictionary_Bus_Get_Node.fg_color = "#FFF"
+	Dictionary_Bus_Get_Node.bg_color = "#353"
+	// end green theme
+	Dictionary_Bus_Get_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.bus_id = this.getInputData(0);
+			this.text_widget.value = this.getInputData(0);
+		} else if (this.text_widget.value !== this.properties.bus_id) {
+			this.properties.bus_id = this.text_widget.value;
+		}
+
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.variable_name = this.getInputData(1);
+			this.variable_widget.value = this.getInputData(1);
+		} else if (this.variable_widget.value !== this.properties.variable_name) {
+			this.properties.variable_name = this.variable_widget.value;
+		}
+
+		let bus_dict = global_bus_dictionaries[this.properties.bus_id];
+		this.setOutputData(0, bus_dict[this.properties.variable_name]);
+	}
+
+	// Dictionary_Bus_Set_Node
+	function Dictionary_Bus_Set_Node(){
+		this.addInput("bus id", "string");
+		this.addInput("var name", "string");
+		this.addInput("var value", "string");
+		this.properties = {
+			bus_id: "",
+			variable_name: "",
+			variable_value: ""
+		};
+		this.text_widget = this.addWidget("text","Bus ID",this.properties.bus_id,"bus_id");
+		this.variable_widget = this.addWidget("text","Variable Name",this.properties.variable_name,"variable_name");
+	}
+	Dictionary_Bus_Set_Node.title = "Dictionary Bus Set";
+
+	// red theme
+	Dictionary_Bus_Set_Node.title_color = "#322"
+	Dictionary_Bus_Set_Node.fg_color = "#FFF"
+	Dictionary_Bus_Set_Node.bg_color = "#533"
+	// end red theme
+	Dictionary_Bus_Set_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			this.properties.bus_id = this.getInputData(0);
+			this.text_widget.value = this.getInputData(0);
+		} else if (this.text_widget.value !== this.properties.bus_id) {
+			this.properties.bus_id = this.text_widget.value;
+		}
+
+		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+			this.properties.variable_name = this.getInputData(1);
+			this.variable_widget.value = this.getInputData(1);
+		} else if (this.variable_widget.value !== this.properties.variable_name) {
+			this.properties.variable_name = this.variable_widget.value;
+		}
+
+		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
+			this.properties.variable_value = this.getInputData(2);
+		}
+
+		let bus_dict = global_bus_dictionaries[this.properties.bus_id];
+		bus_dict[this.properties.variable_name] = this.properties.variable_value;
+	}
+
+	// Function_Call_Node
+	// script execution node
+
+
+
+
 	function Array_Assembler_Node(){
 		this.addInput("in array", "string");
 		this.addInput("var value", "string");
@@ -702,12 +850,12 @@
 		} else {
 			return;
 		}
-		let input_array = [];
+		
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
-			input_array = JSON.parse(this.getInputData(0));
+			this.properties.array = JSON.parse(this.getInputData(0));
 		} 
 		
-		input_array.push(this.properties.variable_value);
+		this.properties.array.push(this.properties.variable_value);
 
 		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
 			this.properties.buffer_length = parseInt(this.getInputData(2));
@@ -716,12 +864,12 @@
 			this.properties.buffer_length = parseInt(this.buffer_length_widget.value);
 		}
 
-		if(input_array.length > this.properties.buffer_length) {
-			input_array.shift();
+		if(this.properties.array.length > this.properties.buffer_length) {
+			this.properties.array.shift();
 		}
 
-		this.setOutputData(0, JSON.stringify(input_array));
-		this.properties.array = input_array;
+		this.setOutputData(0, JSON.stringify(this.properties.array));
+		
 	}
 
 	function Array_Item_Forward_Node(){
@@ -745,12 +893,13 @@
 
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			let input_array = JSON.parse(this.getInputData(0));
+			
 			// check that index is in bounds
 			if(this.properties.index < 0 || this.properties.index >= input_array.length) {
 				console.log("index out of bounds");
 				return;
 			}
-			this.setOutputData(0, input_array[this.properties.index]);
+			this.setOutputData(0, JSON.stringify(input_array[this.properties.index]));
 		}
 	}
 	
@@ -1206,219 +1355,7 @@
 
 
 
-	// Persona Template Node
-	function Persona_Template_Node(){
-		/*
-		// each one has an input, output, property, and widget
-		first_name
-		last_name
-		version
-		description
-		backstory
-		constitution
-		goal		
-		*/
-		this.addInput("first_name", "string");
-		this.addInput("last_name", "string");
-		this.addInput("version", "string");
-		this.addInput("description", "string");
-		this.addInput("backstory", "string");
-		this.addInput("constitution", "string");
-		this.addInput("goal", "string");
-
-		this.addOutput("first_name", "string");
-		this.addOutput("last_name", "string");
-		this.addOutput("version", "string");
-		this.addOutput("description", "string");
-		this.addOutput("backstory", "string");
-		this.addOutput("constitution", "string");
-		this.addOutput("goal", "string");
-		
-		this.properties = { 
-			first_name: "",
-			last_name: "",
-			version: "",
-			description: "",
-			backstory: "",
-			constitution: "",
-			goal: ""
-		};
-
-		this.first_name_widget = this.addWidget("text","First Name",this.properties.first_name,"first_name");
-		this.last_name_widget = this.addWidget("text","Last Name",this.properties.last_name,"last_name");
-		this.version_widget = this.addWidget("text","Version",this.properties.version,"version");
-		this.description_widget = this.addWidget("text","Description",this.properties.description,"description");
-		this.backstory_widget = this.addWidget("text","Backstory",this.properties.backstory,"backstory");
-		this.constitution_widget = this.addWidget("text","Constitution",this.properties.constitution,"constitution");
-		this.goal_widget = this.addWidget("text","Goal",this.properties.goal,"goal");
-	}
-	Persona_Template_Node.title = "Persona Template";
-	Persona_Template_Node.prototype.onExecute = function() {
-		if(this.getInputData(0) !== undefined) {
-			this.first_name_widget.value = this.getInputData(0);
-			this.properties.first_name = this.getInputData(0);
-		}
-		if(this.getInputData(1) !== undefined) {
-			this.last_name_widget.value = this.getInputData(1);
-			this.properties.last_name = this.getInputData(1);
-		}
-		if(this.getInputData(2) !== undefined) {
-			this.version_widget.value = this.getInputData(2);
-			this.properties.version = this.getInputData(2);
-		}
-		if(this.getInputData(3) !== undefined) {
-			this.description_widget.value = this.getInputData(3);
-			this.properties.description = this.getInputData(3);
-		}
-		if(this.getInputData(4) !== undefined) {
-			this.backstory_widget.value = this.getInputData(4);
-			this.properties.backstory = this.getInputData(4);
-		}
-		if(this.getInputData(5) !== undefined) {
-			this.constitution_widget.value = this.getInputData(5);
-			this.properties.constitution = this.getInputData(5);
-		}
-		if(this.getInputData(6) !== undefined) {
-			this.goal_widget.value = this.getInputData(6);
-			this.properties.goal = this.getInputData(6);
-		}
-
-		this.setOutputData(0, this.properties.first_name );
-		this.setOutputData(1, this.properties.last_name );
-		this.setOutputData(2, this.properties.version );
-		this.setOutputData(3, this.properties.description );
-		this.setOutputData(4, this.properties.backstory );
-		this.setOutputData(5, this.properties.constitution );
-		this.setOutputData(6, this.properties.goal );
-	}
-
-	// prompt template node
-	function Prompt_Template_Node(){
-		/*
-		// each one has an input, property, and widget
-		pre_constitution_prompt
-		post_constitution_prompt
-		pre_goal_prompt
-		post_goal_prompt
-		pre_context_prompt
-		post_context_prompt
-		pre_instruction_prompt
-		post_instruction_prompt
-		response_prompt
-
-		constitution
-		goal
-		instruction
-		context
-		
-		*/
-		
-		this.addInput("pre_constitution_prompt", "string");
-		this.addInput("post_constitution_prompt", "string");
-		this.addInput("pre_goal_prompt", "string");
-		this.addInput("post_goal_prompt", "string");
-		this.addInput("pre_context_prompt", "string");
-		this.addInput("post_context_prompt", "string");
-		this.addInput("pre_instruction_prompt", "string");
-		this.addInput("post_instruction_prompt", "string");
-		this.addInput("response_prompt", "string");
-
-		this.addInput("constitution", "string");
-		this.addInput("goal", "string");
-		this.addInput("instruction", "string");
-		this.addInput("context", "string");
-
-		this.addOutput("final_prompt", "string");
-
-
-		this.properties = { 
-			pre_constitution_prompt: "",
-			post_constitution_prompt: "",
-			pre_goal_prompt: "",
-			post_goal_prompt: "",
-			pre_context_prompt: "",
-			post_context_prompt: "",
-			pre_instruction_prompt: "",
-			post_instruction_prompt: "",
-			response_prompt: "",
-			constitution: "",
-			goal: "",
-			instruction: "",
-			context: "",
-			final_prompt: ""
-		};
-
-		this.pre_constitution_prompt_widget = this.addWidget("text","Pre Constitution Prompt",this.properties.pre_constitution_prompt,"pre_constitution_prompt");
-		this.post_constitution_prompt_widget = this.addWidget("text","Post Constitution Prompt",this.properties.post_constitution_prompt,"post_constitution_prompt");
-		this.pre_goal_prompt_widget = this.addWidget("text","Pre Goal Prompt",this.properties.pre_goal_prompt,"pre_goal_prompt");
-		this.post_goal_prompt_widget = this.addWidget("text","Post Goal Prompt",this.properties.post_goal_prompt,"post_goal_prompt");
-		this.pre_context_prompt_widget = this.addWidget("text","Pre Context Prompt",this.properties.pre_context_prompt,"pre_context_prompt");
-		this.post_context_prompt_widget = this.addWidget("text","Post Context Prompt",this.properties.post_context_prompt,"post_context_prompt");
-		this.pre_instruction_prompt_widget = this.addWidget("text","Pre Instruction Prompt",this.properties.pre_instruction_prompt,"pre_instruction_prompt");
-		this.post_instruction_prompt_widget = this.addWidget("text","Post Instruction Prompt",this.properties.post_instruction_prompt,"post_instruction_prompt");
-		this.response_prompt_widget = this.addWidget("text","Response Prompt",this.properties.response_prompt,"response_prompt");
-
-
-	}
-	Prompt_Template_Node.title = "Prompt Template";
-	Prompt_Template_Node.prototype.onExecute = function() {
-		if(this.getInputData(0) !== undefined) {
-			this.pre_constitution_prompt_widget.value = this.getInputData(0);
-			this.properties.pre_constitution_prompt = this.getInputData(0);
-		}
-		if(this.getInputData(1) !== undefined) {
-			this.post_constitution_prompt_widget.value = this.getInputData(1);
-			this.properties.post_constitution_prompt = this.getInputData(1);
-		}
-		if(this.getInputData(2) !== undefined) {
-			this.pre_goal_prompt_widget.value = this.getInputData(2);
-			this.properties.pre_goal_prompt = this.getInputData(2);
-		}
-		if(this.getInputData(3) !== undefined) {
-			this.post_goal_prompt_widget.value = this.getInputData(3);
-			this.properties.post_goal_prompt = this.getInputData(3);
-		}
-		if(this.getInputData(4) !== undefined) {
-			this.pre_context_prompt_widget.value = this.getInputData(4);
-			this.properties.pre_context_prompt = this.getInputData(4);
-		}
-		if(this.getInputData(5) !== undefined) {
-			this.post_context_prompt_widget.value = this.getInputData(5);
-			this.properties.post_context_prompt = this.getInputData(5);
-		}
-		if(this.getInputData(6) !== undefined) {
-			this.pre_instruction_prompt_widget.value = this.getInputData(6);
-			this.properties.pre_instruction_prompt = this.getInputData(6);
-		}
-		if(this.getInputData(7) !== undefined) {
-			this.post_instruction_prompt_widget.value = this.getInputData(7);
-			this.properties.post_instruction_prompt = this.getInputData(7);
-		}
-		if(this.getInputData(8) !== undefined) {
-			this.response_prompt_widget.value = this.getInputData(8);
-			this.properties.response_prompt = this.getInputData(8);
-		}
-		if(this.getInputData(9) !== undefined) {
-			this.properties.constitution = this.getInputData(9);
-		}
-		if(this.getInputData(10) !== undefined) {
-			this.properties.goal = this.getInputData(10);
-		}
-		if(this.getInputData(11) !== undefined) {
-			this.properties.instruction = this.getInputData(11);
-		}
-		if(this.getInputData(12) !== undefined) {
-			this.properties.context = this.getInputData(12);
-		}
-		
-		this.properties.final_prompt = this.properties.pre_constitution_prompt + " " + this.properties.constitution + " " + this.properties.post_constitution_prompt + " " +
-										this.properties.pre_goal_prompt + " " + this.properties.goal + " " + this.properties.post_goal_prompt + " " +
-										this.properties.pre_context_prompt + " " + this.properties.context + " " + this.properties.post_context_prompt + " " +
-										this.properties.pre_instruction_prompt + " " + this.properties.instruction + " " + this.properties.post_instruction_prompt + " " +
-										this.properties.response_prompt;
-
-		this.setOutputData(0, this.properties.final_prompt );
-	}
+	
 
 	// long term memory storage node
 	function Weaviate_Ingest_Node(){
@@ -1521,8 +1458,6 @@
 		}
 	}
 
-
-
 	function GPT_Node() {
 		this.addInput("system", "string");
 		this.addInput("user", "string");
@@ -1534,21 +1469,17 @@
 		this.properties = {
 			server_url: "",
 			api_key: "",
-			buffer_length: 10,
+			buffer_length: 0,
 			chat_buffer: [],
-			last_user_input: "",
-			last_output: "",
 			model: "gpt-3.5-turbo"
 		};
 
 		// buffer length widget
 		this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length, "buffer_length", {precision:0, step:10});
 		// clear buffer button
-		this.addInput("clear", LiteGraph.ACTION);
+		this.addInput("clear", "string");
 		this.addWidget("button","Clear Buffer","", ()=>{
 			this.properties.chat_buffer = [];
-			this.properties.last_user_input = "";
-			this.properties.last_output = "";
 		});
 
 		this.addOutput("out", "string");
@@ -1556,6 +1487,13 @@
 	}
 	GPT_Node.title = "GPT";
 	GPT_Node.prototype.onExecute = async function() {
+		let should_clear = this.getInputData(5);
+
+		this.properties.buffer_length = this.buffer_length_widget.value;
+		
+		if(should_clear !== undefined && should_clear !== "") {
+			this.properties.chat_buffer = [];
+		}
 		let system = this.getInputData(0);
 		if(system === undefined) {
 			this.setOutputData(0, "");
@@ -1568,10 +1506,6 @@
 			return;
 		}
 
-		if(user === this.properties.last_user_input) {
-			this.setOutputData(0, this.properties.last_output);
-			return;
-		}
 
 		console.log("-----GPT node executing-----")
 		console.log("user: " + user)
@@ -1595,34 +1529,33 @@
 		let system_role = {"role": "system", "content": system};
 
 		this.properties.api_key = api_key;
+
+		if(this.properties.buffer_length <= 0) {
+			this.properties.buffer_length = 0;
+			this.properties.chat_buffer = [];
+		}
+
 		this.properties.chat_buffer.push({"role": "user", "content": user});
 
 		// check for buffer overflow
-		if(this.properties.chat_buffer.length > this.properties.buffer_length) {
+
+		if(this.properties.chat_buffer.length > this.properties.buffer_length && this.properties.buffer_length > 0) {
 			this.properties.chat_buffer.shift();
 		}
 
 		let messages = this.properties.chat_buffer.map((item) => item);
+		console.log("messages: " + JSON.stringify(messages));
 
 		// prepend system message
 		messages.unshift(system_role);
 
 		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model);
 
-		this.properties.last_user_input = user;
-		this.properties.last_output = gpt_response;
-
 		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
 		this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
 	}
-	GPT_Node.prototype.onAction = function(action, param) {
-		if(action == "clear") {
-			this.properties.chat_buffer = [];
-			this.properties.last_user_input = "";
-			this.properties.last_output = "";
-		}
-	}
+
 
 	function Password_Node() {
 		// just a text input node that hides the text and an output
@@ -2271,8 +2204,8 @@
 		}
 	}
 	
-	// Keyphrase_Extraction_Node
-	function Keyphrase_Extraction_Node() {
+	// Keyword_Extraction_Node
+	function Keyword_Extraction_Node() {
 		this.addInput("text", "string");
 		this.addInput("server url", "string");
 		this.addOutput("array out", "string");
@@ -2283,8 +2216,8 @@
 		};
 		this.server_url_widget = this.addWidget("text","Server Url",this.properties.server_url, "server_url");
 	}
-	Keyphrase_Extraction_Node.title = "Keyphrase Extraction";
-	Keyphrase_Extraction_Node.prototype.onExecute = async function() {
+	Keyword_Extraction_Node.title = "Keyword Extraction";
+	Keyword_Extraction_Node.prototype.onExecute = async function() {
 		let text = this.getInputData(0);
 		if(text === undefined || text === "") {
 			this.setOutputData(0, "");
@@ -2304,13 +2237,12 @@
 			this.properties.server_url = this.server_url_widget.value;
 		}
 
-		console.log("-----Keyphrase Extraction node executing-----")
+		console.log("-----Keyword Extraction node executing-----")
 		console.log("text: " + text)
 
 		let server_url = this.properties.server_url;
-		console.log("server_url: " + server_url)
 
-		let response = await fetch(server_url + "/api/keyphrase_extraction", {
+		let response = await fetch(server_url + "/keyword_extraction", {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -2322,8 +2254,8 @@
 		let json = await response.json();
 		
 		console.log(json);
-		this.properties.last_output = json;
-		this.setOutputData(0, json);
+		this.properties.last_output = JSON.stringify(json["keywords"]);
+		this.setOutputData(0, this.properties.last_output);
 
 	}
 
@@ -2493,9 +2425,7 @@
 			Weaviate_Query_Node: Weaviate_Query_Node,
 			
 			Random_Selection_Node: Random_Selection_Node,
-			Prompt_Template_Node: Prompt_Template_Node,
 			Text_Node: Text_Node,
-			Persona_Template_Node: Persona_Template_Node,
 			Audio_Generation_Node: Audio_Generation_Node,
 			Prefix_Text_Node: Prefix_Text_Node,
 			Suffix_Text_Node: Suffix_Text_Node,
@@ -2528,6 +2458,12 @@
 			Note_Node:Note_Node,
 			Time_Node:Time_Node,
 			Img_URL_To_Base64_Node:Img_URL_To_Base64_Node,
-			Vision_Node:Vision_Node
+			Vision_Node:Vision_Node,
+			Keyword_Extraction_Node:Keyword_Extraction_Node,
+			Dictionary_Assembler_Node:Dictionary_Assembler_Node,
+			Dictionary_Bus_Input_Node:Dictionary_Bus_Input_Node,
+			Dictionary_Bus_Output_Node:Dictionary_Bus_Output_Node,
+			Dictionary_Bus_Get_Node:Dictionary_Bus_Get_Node,
+			Dictionary_Bus_Set_Node:Dictionary_Bus_Set_Node,
 		};
 	}
