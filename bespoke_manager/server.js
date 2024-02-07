@@ -92,6 +92,8 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("IO/Dictionary Bus Get", Nodes.Dictionary_Bus_Get_Node );
     // IO/Dictionary_Bus_Set_Node
     LiteGraph.registerNodeType("IO/Dictionary Bus Set", Nodes.Dictionary_Bus_Set_Node );
+    // Text/Multiline_Text_Node
+    LiteGraph.registerNodeType("Text/Multiline Text", Nodes.Multiline_Text_Node );
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);

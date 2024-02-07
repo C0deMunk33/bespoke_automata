@@ -1082,6 +1082,26 @@
 		this.setOutputData(0, this.properties.value );
 	}
 
+	function Multiline_Text_Node(){
+		this.addOutput("out", "string");
+		this.addInput("in", "string");
+		this.addProperty("value", "");
+		this.text_widget = this.addWidget("text","Text",this.properties.value,"value", {
+			lines:10,
+			multiline: true
+		});
+	}
+	Multiline_Text_Node.title = "Multiline Text";
+	Multiline_Text_Node.prototype.onExecute = function() {
+		
+		if(this.getInputData(0) !== undefined) {
+			this.text_widget.value = this.getInputData(0);
+			this.properties.value = this.getInputData(0);
+		} else if(this.text_widget.value !== this.properties.value) {
+			this.properties.value = this.text_widget.value;
+		}
+		this.setOutputData(0, this.properties.value );
+	}
 	// Random Selection Node
 	function Random_Selection_Node(){
 		this.properties = { value: "First Names", values: "First Names;Last Names;States;Famous People;Industries;Political Parties" };
@@ -2474,5 +2494,6 @@
 			Dictionary_Bus_Output_Node:Dictionary_Bus_Output_Node,
 			Dictionary_Bus_Get_Node:Dictionary_Bus_Get_Node,
 			Dictionary_Bus_Set_Node:Dictionary_Bus_Set_Node,
+			Multiline_Text_Node:Multiline_Text_Node,
 		};
 	}
