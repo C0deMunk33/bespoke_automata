@@ -190,7 +190,7 @@ def vision():
 def chat():
     data = request.json
     print("data")
-    print(data)
+    print(data["grammar"])
     messages = data.get('messages')
     model_path = data.get('model')
     n_ctx = data.get('max_tokens')

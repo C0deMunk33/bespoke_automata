@@ -20,6 +20,7 @@
 			'Authorization': `Bearer ${api_key}`
 		  };
 
+		  console.log(grammar)
 		  const data = {
 			model: model,
 			messages: messages,
