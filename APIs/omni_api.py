@@ -8,6 +8,7 @@ import psutil
 import io
 import base64
 from llama_cpp import Llama
+from llama_cpp.llama import Llama, LlamaGrammar
 from llama_cpp.llama_chat_format import Llava15ChatHandler
 import whisper
 import time
@@ -193,6 +194,8 @@ def chat():
     messages = data.get('messages')
     model_path = data.get('model')
     n_ctx = data.get('max_tokens')
+    grammar_text = data.get('grammar')
+    grammar = LlamaGrammar.from_string(grammar_text)
 
     if messages is None:
         return jsonify({'error': 'No messages provided'}), 400
