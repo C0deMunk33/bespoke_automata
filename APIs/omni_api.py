@@ -197,6 +197,7 @@ def chat():
     model_path = data.get('model')
     n_ctx = data.get('max_tokens')
     grammar_text = data.get('grammar')
+    grammar = None
     if(grammar_text is not None and len(grammar_text) > 0):
         grammar = LlamaGrammar.from_string(grammar_text)
 
