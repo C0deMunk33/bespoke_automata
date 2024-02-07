@@ -14,17 +14,19 @@
 	const gpt_url = 'https://api.openai.com'
 	const default_gpt_model = "gpt-3.5-turbo";
 	
-	call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model) { 
+	call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model, grammar=undefined) { 
 		const headers = {
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${api_key}`
 		  };
 
+		  console.log(grammar)
 		  const data = {
 			model: model,
 			messages: messages,
 			max_tokens: 2000,
-			stream: false
+			stream: false, 
+			grammar: grammar
 		  };
 		  final_url = url + gpt_endpoint;
 		
@@ -1080,6 +1082,26 @@
 		this.setOutputData(0, this.properties.value );
 	}
 
+	function Multiline_Text_Node(){
+		this.addOutput("out", "string");
+		this.addInput("in", "string");
+		this.addProperty("value", "");
+		this.text_widget = this.addWidget("text","Text",this.properties.value,"value", {
+			lines:10,
+			multiline: true
+		});
+	}
+	Multiline_Text_Node.title = "Multiline Text";
+	Multiline_Text_Node.prototype.onExecute = function() {
+		
+		if(this.getInputData(0) !== undefined) {
+			this.text_widget.value = this.getInputData(0);
+			this.properties.value = this.getInputData(0);
+		} else if(this.text_widget.value !== this.properties.value) {
+			this.properties.value = this.text_widget.value;
+		}
+		this.setOutputData(0, this.properties.value );
+	}
 	// Random Selection Node
 	function Random_Selection_Node(){
 		this.properties = { value: "First Names", values: "First Names;Last Names;States;Famous People;Industries;Political Parties" };
@@ -1478,6 +1500,9 @@
 		this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length, "buffer_length", {precision:0, step:10});
 		// clear buffer button
 		this.addInput("clear", "string");
+		// grammars text input
+		this.addInput("grammars", "string");
+
 		this.addWidget("button","Clear Buffer","", ()=>{
 			this.properties.chat_buffer = [];
 		});
@@ -1487,10 +1512,11 @@
 	}
 	GPT_Node.title = "GPT";
 	GPT_Node.prototype.onExecute = async function() {
-		let should_clear = this.getInputData(5);
 
 		this.properties.buffer_length = this.buffer_length_widget.value;
 		
+
+		let should_clear = this.getInputData(5);
 		if(should_clear !== undefined && should_clear !== "") {
 			this.properties.chat_buffer = [];
 		}
@@ -1549,7 +1575,10 @@
 		// prepend system message
 		messages.unshift(system_role);
 
-		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model);
+		let grammar = this.getInputData(6);
+		
+
+		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
 
 		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
@@ -2465,5 +2494,6 @@
 			Dictionary_Bus_Output_Node:Dictionary_Bus_Output_Node,
 			Dictionary_Bus_Get_Node:Dictionary_Bus_Get_Node,
 			Dictionary_Bus_Set_Node:Dictionary_Bus_Set_Node,
+			Multiline_Text_Node:Multiline_Text_Node,
 		};
 	}
