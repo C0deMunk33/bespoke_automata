@@ -76,9 +76,7 @@ class OmniApi:
         return jsonify(result)
         
     def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format, grammar=None):
-        if grammar is not None:
-            self.chat_llm.set_grammar(grammar)
-        result = self.chat_llm.create_chat_completion(messages=messages)
+        result = self.chat_llm.create_chat_completion(messages=messages, grammar=grammar)
         return jsonify({'chat': result})
 
     def load_whisper(self, model_path):
@@ -201,7 +199,7 @@ def chat():
     if(grammar_text is not None and len(grammar_text) > 0):
         print("grammar_text")
         print(grammar_text)
-        grammar = LlamaGrammar.from_string(grammar_text)
+        grammar = LlamaGrammar.from_string(grammar_text, verbose=True)
 
     if messages is None:
         return jsonify({'error': 'No messages provided'}), 400
