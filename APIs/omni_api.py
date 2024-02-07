@@ -75,7 +75,9 @@ class OmniApi:
         )
         return jsonify(result)
         
-    def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format):
+    def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format, grammar=None):
+        if grammar is not None:
+            self.chat_llm.set_grammar(grammar)
         result = self.chat_llm.create_chat_completion(messages=messages)
         return jsonify({'chat': result})
 
@@ -195,7 +197,8 @@ def chat():
     model_path = data.get('model')
     n_ctx = data.get('max_tokens')
     grammar_text = data.get('grammar')
-    grammar = LlamaGrammar.from_string(grammar_text)
+    if(grammar_text is not None and len(grammar_text) > 0):
+        grammar = LlamaGrammar.from_string(grammar_text)
 
     if messages is None:
         return jsonify({'error': 'No messages provided'}), 400
@@ -207,7 +210,7 @@ def chat():
         return jsonify({'error': 'No n_ctx provided'}), 400
 
     omni_api.load_chat_model(model_path, n_ctx, 25, "chatml")
-    result = omni_api.chat(messages, model_path, n_ctx, 25, "chatml")
+    result = omni_api.chat(messages, model_path, n_ctx, 25, "chatml", grammar)
     print("out_text")
     print(result)
     return result
