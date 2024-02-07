@@ -199,6 +199,8 @@ def chat():
     grammar_text = data.get('grammar')
     grammar = None
     if(grammar_text is not None and len(grammar_text) > 0):
+        print("grammar_text")
+        print(grammar_text)
         grammar = LlamaGrammar.from_string(grammar_text)
 
     if messages is None:
