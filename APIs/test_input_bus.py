@@ -9,7 +9,7 @@ data = {
     "input_busses" : {
         "bus_1" : {
             "omni_api_url":"http://192.168.0.8:5000/",
-            "user_in":"this is a test input from the mods",
+            "user_in":"eat a dick you silly bot, what are you going to do? Fucker.",
             "incoming_moderator_prompt_gate_prompt": "in this input against the rules of conduct?",
             "incoming_moderator_prompt_gate_system_prompt": "You are a moderator bot",
             "rules_of_conduct": "no swearing, no hate speech, no spam",

@@ -136,7 +136,7 @@ function set_inputs(graph, input_data){
 function read_outputs(graph){
     // get the output from all the text output nodes and return it
     const textOutputs = graph._nodes.filter(node => node.type === "IO/Text Output");
-    return textOutputs.map(output => {
+    results = textOutputs.map(output => {
         const node = graph._nodes_by_id[output.id];
         return {
             name: output.title || output.id,
@@ -144,6 +144,34 @@ function read_outputs(graph){
             value: node.properties.text
         }
     });
+
+    let output_busses = {};
+    let dictionaryBusSets = graph._nodes.filter(node => node.type === "IO/Dictionary Bus Set");
+    dictionaryBusSets.forEach(set => {
+        const props = set.properties;
+
+        let bus_id = "unknown";
+        if(props.bus_id && props.bus_id !== "")
+            bus_id = props.bus_id;
+
+        let variable_name = "unknown";
+        if(props.variable_name && props.variable_name !== "")
+            variable_name = props.variable_name;
+
+        if(output_busses[bus_id] === undefined)
+            output_busses[bus_id] = [];
+        
+        console.log("props: ", props)
+        output_busses[bus_id].push({
+            "name":variable_name,
+            "value":props.variable_value
+        });
+    });
+
+    return {
+        "results": results,
+        "output_busses": output_busses
+    };
 }
 
 async function run_step(graph){
