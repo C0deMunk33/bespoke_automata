@@ -8,23 +8,27 @@
 		LiteGraph = require("./litegraph.js");
 		// dummy window object
 		window = {};
-	}
+	}	
+	// global bus dictionary
+	global_bus_dictionaries = {};
 
 	const gpt_endpoint = '/v1/chat/completions';
 	const gpt_url = 'https://api.openai.com'
 	const default_gpt_model = "gpt-3.5-turbo";
 	
-	call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model) { 
+	call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model, grammar=undefined) { 
 		const headers = {
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${api_key}`
 		  };
 
+		  console.log(grammar)
 		  const data = {
 			model: model,
 			messages: messages,
 			max_tokens: 2000,
-			stream: false
+			stream: false, 
+			grammar: grammar
 		  };
 		  final_url = url + gpt_endpoint;
 		
@@ -679,8 +683,7 @@
 		}
 	}
 
-	// global bus dictionary
-	let global_bus_dictionaries = {};
+
 
 	function set_global_bus_dictionary(bus_id, input_dict) {
 		global_bus_dictionaries[bus_id] = input_dict;
@@ -762,9 +765,11 @@
 	// end green theme
 	Dictionary_Bus_Get_Node.prototype.onExecute = function() {
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			console.log("setting bus_id to: " + this.getInputData(0))
 			this.properties.bus_id = this.getInputData(0);
 			this.text_widget.value = this.getInputData(0);
-		} else if (this.text_widget.value !== this.properties.bus_id) {
+		} else {
+			console.log("setting bus_id to: " + this.text_widget.value)
 			this.properties.bus_id = this.text_widget.value;
 		}
 
@@ -775,7 +780,11 @@
 			this.properties.variable_name = this.variable_widget.value;
 		}
 
+		console.log("bus_id: " + this.properties.bus_id)
 		let bus_dict = global_bus_dictionaries[this.properties.bus_id];
+		console.log("bus_dict: " + bus_dict)
+		// add dicts
+		console.log("dicts: " + JSON.stringify(global_bus_dictionaries))
 		this.setOutputData(0, bus_dict[this.properties.variable_name]);
 	}
 
@@ -1080,6 +1089,26 @@
 		this.setOutputData(0, this.properties.value );
 	}
 
+	function Multiline_Text_Node(){
+		this.addOutput("out", "string");
+		this.addInput("in", "string");
+		this.addProperty("value", "");
+		this.text_widget = this.addWidget("text","Text",this.properties.value,"value", {
+			lines:10,
+			multiline: true
+		});
+	}
+	Multiline_Text_Node.title = "Multiline Text";
+	Multiline_Text_Node.prototype.onExecute = function() {
+		
+		if(this.getInputData(0) !== undefined) {
+			this.text_widget.value = this.getInputData(0);
+			this.properties.value = this.getInputData(0);
+		} else if(this.text_widget.value !== this.properties.value) {
+			this.properties.value = this.text_widget.value;
+		}
+		this.setOutputData(0, this.properties.value );
+	}
 	// Random Selection Node
 	function Random_Selection_Node(){
 		this.properties = { value: "First Names", values: "First Names;Last Names;States;Famous People;Industries;Political Parties" };
@@ -1478,6 +1507,9 @@
 		this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length, "buffer_length", {precision:0, step:10});
 		// clear buffer button
 		this.addInput("clear", "string");
+		// grammars text input
+		this.addInput("grammars", "string");
+
 		this.addWidget("button","Clear Buffer","", ()=>{
 			this.properties.chat_buffer = [];
 		});
@@ -1487,10 +1519,11 @@
 	}
 	GPT_Node.title = "GPT";
 	GPT_Node.prototype.onExecute = async function() {
-		let should_clear = this.getInputData(5);
 
 		this.properties.buffer_length = this.buffer_length_widget.value;
 		
+
+		let should_clear = this.getInputData(5);
 		if(should_clear !== undefined && should_clear !== "") {
 			this.properties.chat_buffer = [];
 		}
@@ -1517,10 +1550,8 @@
 		}
 
 		let api_key = this.getInputData(3);
-		if(api_key === undefined) {
-			console.log("GPT API key not set");
-			this.setOutputData(0, "");
-			return;
+		if(api_key !== undefined && api_key !== "") {
+			this.properties.api_key = api_key;
 		}
 
 		if(this.getInputData(4) !== undefined && this.getInputData(4) !== "") {
@@ -1549,7 +1580,10 @@
 		// prepend system message
 		messages.unshift(system_role);
 
-		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model);
+		let grammar = this.getInputData(6);
+		console.log("grammar: " + grammar)
+
+		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
 
 		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
@@ -2379,6 +2413,7 @@
 		
 		// set global var
 		window[this.properties.var_name] = this.properties.var_value;
+		console.log("window[" + this.properties.var_name + "] = " + window[this.properties.var_name])
 	}
 
 	function Global_Variable_Get_Node(){
@@ -2393,8 +2428,9 @@
 	}
 	Global_Variable_Get_Node.title = "Get Global Var";
 	Global_Variable_Get_Node.prototype.onExecute = function() {
+		console.log("getting global var: " + this.properties.var_name + " = " + window[this.properties.var_name])
 		// update properties
-		if(this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.var_name && this.getInputData(0) !== "") {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			this.properties.var_name = this.getInputData(0);
 			// set widget value
 			this.var_name_widget.value = this.getInputData(0);
@@ -2402,10 +2438,9 @@
 			this.properties.var_name = this.var_name_widget.value;
 		}
 
-		console.log("got var name: " + this.properties.var_name)
-		console.log("got var value: " + this.properties.var_value)
+		this.properties.var_value = window[this.properties.var_name];
 		// get global var
-		this.setOutputData(0, window[this.properties.var_name]);
+		this.setOutputData(0, this.properties.var_value);
 	}
 
 
@@ -2465,5 +2500,6 @@
 			Dictionary_Bus_Output_Node:Dictionary_Bus_Output_Node,
 			Dictionary_Bus_Get_Node:Dictionary_Bus_Get_Node,
 			Dictionary_Bus_Set_Node:Dictionary_Bus_Set_Node,
+			Multiline_Text_Node:Multiline_Text_Node,
 		};
 	}

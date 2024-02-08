@@ -8,6 +8,7 @@ import psutil
 import io
 import base64
 from llama_cpp import Llama
+from llama_cpp.llama import Llama, LlamaGrammar
 from llama_cpp.llama_chat_format import Llava15ChatHandler
 import whisper
 import time
@@ -74,8 +75,8 @@ class OmniApi:
         )
         return jsonify(result)
         
-    def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format):
-        result = self.chat_llm.create_chat_completion(messages=messages)
+    def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format, grammar=None):
+        result = self.chat_llm.create_chat_completion(messages=messages, grammar=grammar)
         return jsonify({'chat': result})
 
     def load_whisper(self, model_path):
@@ -188,11 +189,19 @@ def vision():
 @app.route(Routes["chat"], methods=['POST'])
 def chat():
     data = request.json
-    print("data")
-    print(data)
     messages = data.get('messages')
     model_path = data.get('model')
     n_ctx = data.get('max_tokens')
+    grammar_text = None
+    try:
+        grammar_text = data.get('grammar')
+    except:
+        pass
+    grammar = None
+    if(grammar_text is not None and len(grammar_text) > 0):
+        print("grammar_text")
+        print(grammar_text)
+        grammar = LlamaGrammar.from_string(grammar_text, verbose=True)
 
     if messages is None:
         return jsonify({'error': 'No messages provided'}), 400
@@ -204,7 +213,7 @@ def chat():
         return jsonify({'error': 'No n_ctx provided'}), 400
 
     omni_api.load_chat_model(model_path, n_ctx, 25, "chatml")
-    result = omni_api.chat(messages, model_path, n_ctx, 25, "chatml")
+    result = omni_api.chat(messages, model_path, n_ctx, 25, "chatml", grammar)
     print("out_text")
     print(result)
     return result
