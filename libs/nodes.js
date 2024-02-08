@@ -8,7 +8,9 @@
 		LiteGraph = require("./litegraph.js");
 		// dummy window object
 		window = {};
-	}
+	}	
+	// global bus dictionary
+	global_bus_dictionaries = {};
 
 	const gpt_endpoint = '/v1/chat/completions';
 	const gpt_url = 'https://api.openai.com'
@@ -681,8 +683,7 @@
 		}
 	}
 
-	// global bus dictionary
-	let global_bus_dictionaries = {};
+
 
 	function set_global_bus_dictionary(bus_id, input_dict) {
 		global_bus_dictionaries[bus_id] = input_dict;
@@ -764,9 +765,11 @@
 	// end green theme
 	Dictionary_Bus_Get_Node.prototype.onExecute = function() {
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			console.log("setting bus_id to: " + this.getInputData(0))
 			this.properties.bus_id = this.getInputData(0);
 			this.text_widget.value = this.getInputData(0);
-		} else if (this.text_widget.value !== this.properties.bus_id) {
+		} else {
+			console.log("setting bus_id to: " + this.text_widget.value)
 			this.properties.bus_id = this.text_widget.value;
 		}
 
@@ -777,7 +780,11 @@
 			this.properties.variable_name = this.variable_widget.value;
 		}
 
+		console.log("bus_id: " + this.properties.bus_id)
 		let bus_dict = global_bus_dictionaries[this.properties.bus_id];
+		console.log("bus_dict: " + bus_dict)
+		// add dicts
+		console.log("dicts: " + JSON.stringify(global_bus_dictionaries))
 		this.setOutputData(0, bus_dict[this.properties.variable_name]);
 	}
 
@@ -1543,10 +1550,8 @@
 		}
 
 		let api_key = this.getInputData(3);
-		if(api_key === undefined) {
-			console.log("GPT API key not set");
-			this.setOutputData(0, "");
-			return;
+		if(api_key !== undefined && api_key !== "") {
+			this.properties.api_key = api_key;
 		}
 
 		if(this.getInputData(4) !== undefined && this.getInputData(4) !== "") {
@@ -1576,7 +1581,7 @@
 		messages.unshift(system_role);
 
 		let grammar = this.getInputData(6);
-		
+		console.log("grammar: " + grammar)
 
 		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
 
@@ -2408,6 +2413,7 @@
 		
 		// set global var
 		window[this.properties.var_name] = this.properties.var_value;
+		console.log("window[" + this.properties.var_name + "] = " + window[this.properties.var_name])
 	}
 
 	function Global_Variable_Get_Node(){
@@ -2422,8 +2428,9 @@
 	}
 	Global_Variable_Get_Node.title = "Get Global Var";
 	Global_Variable_Get_Node.prototype.onExecute = function() {
+		console.log("getting global var: " + this.properties.var_name + " = " + window[this.properties.var_name])
 		// update properties
-		if(this.getInputData(0) !== undefined && this.getInputData(0) !== this.properties.var_name && this.getInputData(0) !== "") {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			this.properties.var_name = this.getInputData(0);
 			// set widget value
 			this.var_name_widget.value = this.getInputData(0);
@@ -2431,10 +2438,9 @@
 			this.properties.var_name = this.var_name_widget.value;
 		}
 
-		console.log("got var name: " + this.properties.var_name)
-		console.log("got var value: " + this.properties.var_value)
+		this.properties.var_value = window[this.properties.var_name];
 		// get global var
-		this.setOutputData(0, window[this.properties.var_name]);
+		this.setOutputData(0, this.properties.var_value);
 	}
 
 

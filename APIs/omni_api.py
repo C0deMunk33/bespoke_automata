@@ -189,12 +189,14 @@ def vision():
 @app.route(Routes["chat"], methods=['POST'])
 def chat():
     data = request.json
-    print("data")
-    print(data["grammar"])
     messages = data.get('messages')
     model_path = data.get('model')
     n_ctx = data.get('max_tokens')
-    grammar_text = data.get('grammar')
+    grammar_text = None
+    try:
+        grammar_text = data.get('grammar')
+    except:
+        pass
     grammar = None
     if(grammar_text is not None and len(grammar_text) > 0):
         print("grammar_text")
