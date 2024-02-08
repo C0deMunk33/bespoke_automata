@@ -189,7 +189,7 @@ def vision():
 @app.route(Routes["chat"], methods=['POST'])
 def chat():
     data = request.json
-    print("data")
+    print(data)
     print(data["grammar"])
     messages = data.get('messages')
     model_path = data.get('model')

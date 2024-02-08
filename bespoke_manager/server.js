@@ -10,7 +10,7 @@ async function load_graph(graph_file){
     console.log("loading graph: ", graph_file)
     const graphData = JSON.parse(fs.readFileSync(graph_file, 'utf8'));
     const graph = new LGraph();
-    console.log("graphData: ", graphData)
+    //console.log("graphData: ", graphData)
     LiteGraph.clearRegisteredTypes()
     LiteGraph.registerNodeType("Text/Text", Nodes.Text_Node );
     LiteGraph.registerNodeType("Text/Random Text", Nodes.Random_Selection_Node );
@@ -114,14 +114,23 @@ function set_inputs(graph, input_data){
         
         if(input_data[input.title] !== undefined){
             console.log("setting input: ", input.title)
+            console.log("input_data[input.title]: ", input_data[input.title])
             node.properties.text = input_data[input.title];
         } else {
-            console.log("ERROR: bad inputs")
+            console.log("ERROR: bad inputs, missing input: ", input.title)
             return;
         }
 
         
     });
+
+    
+    if(input_data.input_busses){
+        console.log("setting input_busses: ", input_data.input_busses)
+        console.log("global_bus_dictionaries: ", global_bus_dictionaries)
+        global_bus_dictionaries = input_data.input_busses;
+        console.log("global_bus_dictionaries: ", global_bus_dictionaries)
+    }
 }
 
 function read_outputs(graph){
@@ -166,8 +175,69 @@ async function load_graphs(app){
         const graphObj = JSON.parse(fs.readFileSync('graphs/' + graph, 'utf8'));
         const textInputs = graphObj.nodes.filter(node => node.type === "IO/Text Input");
         const textOutputs = graphObj.nodes.filter(node => node.type === "IO/Text Output");
+
+        //Dictionary_Bus_Get_Node get variable_name and bus_id
+        const dictionaryBusGets = graphObj.nodes.filter(node => node.type === "IO/Dictionary Bus Get");
+        //Dictionary_Bus_Set_Node
+        const dictionaryBusSets = graphObj.nodes.filter(node => node.type === "IO/Dictionary Bus Set");
+
+        let unknown = "unknown"
         let inputs = [];
         let outputs = [];
+        let input_busses = {};
+        let output_busses = {};
+
+        dictionaryBusGets.forEach(get => {
+            const props = get.properties;
+
+            let bus_id = unknown;
+            if(props.bus_id && props.bus_id !== "")
+                bus_id = props.bus_id;
+
+            let variable_name = unknown;
+            if(props.variable_name && props.variable_name !== "")
+                variable_name = props.variable_name;
+
+            if(input_busses[bus_id] === undefined)
+                input_busses[bus_id] = [];
+            
+            input_busses[bus_id].push(variable_name);
+            
+        });
+
+        // Function to make array elements unique
+        const makeUnique = (arr) => Array.from(new Set(arr));
+
+
+        dictionaryBusSets.forEach(set => {
+            const props = set.properties;
+
+            let bus_id = unknown;
+            if(props.bus_id && props.bus_id !== "")
+                bus_id = props.bus_id;
+
+            let variable_name = unknown;
+            if(props.variable_name && props.variable_name !== "")
+                variable_name = props.variable_name;
+
+            if(output_busses[bus_id] === undefined)
+                output_busses[bus_id] = [variable_name];
+            else
+                output_busses[bus_id].push(variable_name);
+        });
+
+
+        // Make each input bus array items unique
+        Object.keys(input_busses).forEach(key => {
+            input_busses[key] = makeUnique(input_busses[key]);
+        });
+
+        // Make each output bus array items unique
+        Object.keys(output_busses).forEach(key => {
+            output_busses[key] = makeUnique(output_busses[key]);
+        });
+
+
         textInputs.forEach(input => {
             const props = input.properties;
             inputs.push({
@@ -206,7 +276,9 @@ async function load_graphs(app){
             
             res.send({
                 "inputs": inputs,
-                "outputs": outputs
+                "outputs": outputs,
+                "input_busses": input_busses,
+                "output_busses": output_busses
             });
         });
         // print all the endpoints
