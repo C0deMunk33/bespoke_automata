@@ -1581,7 +1581,7 @@
 		messages.unshift(system_role);
 
 		let grammar = this.getInputData(6);
-		
+		console.log("grammar: " + grammar)
 
 		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
 
