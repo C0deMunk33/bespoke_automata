@@ -1500,7 +1500,7 @@
 			api_key: "",
 			buffer_length: 0,
 			chat_buffer: [],
-			model: "gpt-3.5-turbo"
+			model: ""
 		};
 
 		// buffer length widget
@@ -1517,7 +1517,7 @@
 		this.addOutput("out", "string");
 		this.addOutput("buffer", "string");
 	}
-	GPT_Node.title = "GPT";
+	GPT_Node.title = "LLM";
 	GPT_Node.prototype.onExecute = async function() {
 
 		this.properties.buffer_length = this.buffer_length_widget.value;
@@ -1639,7 +1639,9 @@
 		this.addInput("prompt", "string");
 		this.addInput("server url", "string");
 		this.addInput("api key", "string");
-		this.addInput("model", "string")
+		this.addInput("model", "string");
+		this.addInput("grammar", "string");
+
 
 		this.addOutput("yes", LiteGraph.ACTION);
 		this.addOutput("no", LiteGraph.ACTION);
@@ -1657,7 +1659,38 @@
 		this.prompt_widget = this.addWidget("text","Prompt",this.properties.prompt, "prompt");
 
 	}
-	Prompt_Gate_GPT.title = "Prompt Gate (GPT)";
+	Prompt_Gate_GPT.title = "Prompt Gate";
+	Prompt_Gate_GPT.default_grammar = 
+	`root ::= object
+
+	value ::= object | array | string | number | ("true" | "false" | "null") ws
+	
+	object ::=
+	  "{" ws
+		"\"decision\"" ":" ws item ws "," ws
+		"\"reason\"" ":" ws string ws
+	  "}" ws
+	
+	item ::= "\"item a\"" | "\"item b\"" | "\"item c\""
+	
+	array ::=
+	  "[" ws (
+				value
+		("," ws value)*
+	  )? "]" ws
+	
+	string ::=
+	  "\"" (
+		[^"\\] |
+		"\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F]) # escapes
+	  )* "\"" ws
+	
+	number ::= ("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? ws
+	
+	ws ::= ([ \t\n\r]*)
+	`
+
+
 	Prompt_Gate_GPT.prototype.onExecute = async function() {
 		let in_prompt = this.getInputData(3)||"";
 		// trim the in_prompt
@@ -1675,6 +1708,13 @@
 			this.properties.model = this.getInputData(6);
 		} else {
 			console.log("prompt gate model not set")
+		}
+
+		// grammar
+		let grammar = this.getInputData(7);
+		console.log("grammar: " + grammar);
+		if(grammar === undefined || grammar === "") {
+			grammar = Prompt_Gate_GPT.default_grammar;
 		}
 
 		let input = this.getInputData(0);
@@ -1703,18 +1743,12 @@
 
 		let server_url = this.getInputData(4) || gpt_endpoint;
 		let api_key = this.getInputData(5);
-		if(api_key === undefined) {
-			console.log("GPT API key not set");
-			this.setOutputData(2, "");
-			this.setOutputData(3, "");
-			return;
-		}
 
 		let messages = [];
 		messages.push({"role": "system", "content": system});
 		messages.push({"role": "user", "content": this.properties.prompt});
 
-		let gpt_response = await call_gpt(messages, api_key, server_url, this.properties.model);
+		let gpt_response = await call_gpt(messages, api_key, server_url, this.properties.model, grammar);
 
 		
 		this.properties.reasoning = gpt_response;

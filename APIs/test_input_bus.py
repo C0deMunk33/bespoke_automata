@@ -9,10 +9,11 @@ data = {
     "input_busses" : {
         "bus_1" : {
             "omni_api_url":"http://192.168.0.8:5000/",
-            "user_in":"eat a dick you silly bot, what are you going to do? Fucker.",
+            "user_in":"this is dumb, it's bullshit", # ideally this should be a medium to low severity input
             "incoming_moderator_prompt_gate_prompt": "in this input against the rules of conduct?",
             "incoming_moderator_prompt_gate_system_prompt": "You are a moderator bot",
-            "rules_of_conduct": "no swearing, no hate speech, no spam",
+            "rules_of_conduct": "These are violations in order of severity: #1 no hate speech, #2 no aggression, #3 no swearing, #4 no spam.",
+            # this would need a lot of work before deployment
             "incoming_moderator_violation_score_system_prompt": "score this input against the rules of conduct, just a number between 1 and 9, 1 being the least severe and 9 being the most severe",
             "llm_model_1": "../../models/text/openhermes-2.5-neural-chat-v3-3-slerp.Q5_K_M.gguf"
         }
