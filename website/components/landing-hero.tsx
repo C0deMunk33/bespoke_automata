@@ -28,7 +28,7 @@ export const LandingHero = () => {
                 <div className="flex-1 mx-10 aspect-video">
                     <iframe
                         className="w-full h-full"
-                        src="https://www.youtube.com/embed/w_saaTFEuSM"
+                        src="https://www.youtube.com/embed/Z1GVMgZtT2c"
                         frameBorder="0"
                         title="YouTube video player"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
