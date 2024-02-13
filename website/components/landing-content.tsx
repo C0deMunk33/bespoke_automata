@@ -1,4 +1,5 @@
 "use client"
+import { useEffect, useState } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -19,11 +20,20 @@ const testimonials = [
     },
 ]
 
-export const LandingContent = () => {   
+export const LandingContent = () => {  
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) {
+        return null
+    } 
     return (
         <div className="px-10 pb-20">
-            <h2 className="text-center text-white font-extrabold mb-10 text-4xl">
-                Use Automata For
+            <h2 className="text-center text-white font-extrabold mt-20 mb-10 text-4xl">
+                Use Automata For:
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3
                     lg:grid-cols-3 gap-4">

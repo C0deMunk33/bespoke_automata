@@ -1,11 +1,20 @@
 "use client"
-
+import { useEffect, useState } from "react"
 import TypewriterComponent from "typewriter-effect"
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export const LandingHero = () => {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) {
+        return null
+    }
 
     return (
         <div className="text-white font-bold pt-24 sm:pt-36 text-center space-y-5">
@@ -29,7 +38,6 @@ export const LandingHero = () => {
                     <iframe
                         className="w-full h-full"
                         src="https://www.youtube.com/embed/Z1GVMgZtT2c"
-                        frameBorder="0"
                         title="YouTube video player"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen

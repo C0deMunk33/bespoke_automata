@@ -1,4 +1,5 @@
 "use client"
+import { useEffect, useState } from "react";
 
 import { Poiret_One } from "next/font/google"
 import Image from "next/image" 
@@ -12,6 +13,15 @@ const font = Poiret_One({
 });
 
 export const LandingNavbar = () => {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) {
+        return null
+    }
 
     return (
         <nav className="p-4 bg-transparent flex items-center justify-between">
