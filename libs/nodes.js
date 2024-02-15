@@ -1661,19 +1661,16 @@
 	}
 	Prompt_Gate_GPT.title = "Prompt Gate";
 	Prompt_Gate_GPT.default_grammar = 
-	`root ::= object
-
-	value ::= object | array | string | number | ("true" | "false" | "null") ws
+	`root   ::= object
+	value  ::= object | array | string | number | ("true" | "false" | "null") ws
 	
 	object ::=
-	  "{" ws
-		"\"decision\"" ":" ws item ws "," ws
-		"\"reason\"" ":" ws string ws
-	  "}" ws
+	  "{" ws (
+				string ":" ws value
+		("," ws string ":" ws value)*
+	  )? "}" 
 	
-	item ::= "\"item a\"" | "\"item b\"" | "\"item c\""
-	
-	array ::=
+	array  ::=
 	  "[" ws (
 				value
 		("," ws value)*
@@ -1687,7 +1684,9 @@
 	
 	number ::= ("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? ws
 	
-	ws ::= ([ \t\n\r]*)
+	# Optional space: by convention, applied in this grammar after literal chars when allowed
+	ws ::= ([ \t\n] ws)?
+	
 	`
 
 
@@ -1734,9 +1733,9 @@
 		let system = this.getInputData(2) || "";
 
 		if (context !== "") {
-			system += " Answer the question below given the following context: " + context 
+			system += ". Given the following context: " + context + ","; 
 		}
-		system += " Please answer the question below about this text with a simple yes or no, followed by a sentence about your reasoning: " + input;
+		system += " Please answer the question below about this text with a JSON dict containing the keys 'decision' which is a yes or no, and 'reason' which is a sentence about your reasoning: " + input;
 
 		console.log("-----Prompt Gate node executing-----")
 		console.log("input: " + input)
