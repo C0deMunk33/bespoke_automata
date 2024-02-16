@@ -32,12 +32,14 @@ export const LandingNavbar = () => {
                     >
                         <div className="relative h-24 w-96 mr-4">
                             <Link href="/">
-                                <Image 
-                                    className="rounded-md"
-                                    src="/logo.png"
-                                    alt="Logo"
-                                    fill
-                                />
+                            <a className="block h-full w-full">
+                            <img
+                                src="/banner_no_bg.png"
+                                alt="Logo"
+                                className="rounded-md object-contain w-full h-full"
+                                style={{ objectFit: 'contain' }}
+                            />
+                            </a>
                             </Link>
                         </div>
                         {/* <h1 className={cn("text-2xl font-bold text-white", font.className)}>Vaut</h1> */}

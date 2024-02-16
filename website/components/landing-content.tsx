@@ -72,6 +72,15 @@ export const LandingContent = () => {
                     </Button>
                 </Link>
             </div>
+            <div className="flex items-center justify-center gap-x-2 pt-20">
+                <p className="text-white text-center">
+                    © 2024 Bespoke Automata. All rights reserved.
+                </p>
+                <p className="text-white text-center">
+                    Site Designed by <a href="">[REDACTED]</a>
+                </p>
+            </div>
+
         </div>
     )
 }

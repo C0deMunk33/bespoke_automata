@@ -70,6 +70,10 @@
   * {
     @apply border-border;
   }
+  html {
+    background-color: #111827;
+    height: 100%;
+  }
   body {
     @apply bg-background text-foreground;
   }
