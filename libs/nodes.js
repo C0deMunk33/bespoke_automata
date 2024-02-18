@@ -27,7 +27,7 @@
 			const data = {
 				model: model,
 				messages: messages,
-				max_tokens: 2000,
+				max_tokens: 9999,
 				stream: false, 
 				grammar: grammar
 			};
