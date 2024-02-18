@@ -76,8 +76,23 @@ class OmniApi:
         return jsonify(result)
         
     def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format, grammar=None):
-        result = self.chat_llm.create_chat_completion(messages=messages, grammar=grammar)
-        return jsonify({'chat': result})
+        try:
+            result = self.chat_llm.create_chat_completion(messages=messages, grammar=grammar)
+            return jsonify({'chat': result})
+        except Exception as e:
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print(e)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            
+            return jsonify({'error': str(e), 'chat': None})
 
     def load_whisper(self, model_path):
         self.whisper_model = whisper.load_model("large", "cuda", model_path, True)

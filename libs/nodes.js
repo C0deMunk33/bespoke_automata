@@ -17,29 +17,42 @@
 	const default_gpt_model = "gpt-3.5-turbo";
 	
 	call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model, grammar=undefined) { 
-		const headers = {
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${api_key}`
-		  };
+		try {
+			const headers = {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${api_key}`
+			};
 
-		  console.log(grammar)
-		  const data = {
-			model: model,
-			messages: messages,
-			max_tokens: 2000,
-			stream: false, 
-			grammar: grammar
-		  };
-		  final_url = url + gpt_endpoint;
-		
-		  const response = await fetch(final_url, {
-			method: 'POST',
-			headers: headers,
-			body: JSON.stringify(data)
-		  });
-		
-		  const responseData = await response.json();
-		  return responseData.chat.choices[0].message.content;
+			console.log(grammar)
+			const data = {
+				model: model,
+				messages: messages,
+				max_tokens: 2000,
+				stream: false, 
+				grammar: grammar
+			};
+			final_url = url + gpt_endpoint;
+
+			const response = await fetch(final_url, {
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(data)
+			});
+
+			const responseData = await response.json();
+			return responseData.chat.choices[0].message.content;
+		} catch (error) {
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
+			console.log(error);
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
+			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
+
+			return "error";
+		}
 
 	}
 
