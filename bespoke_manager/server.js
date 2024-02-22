@@ -175,7 +175,11 @@ function read_outputs(graph){
 }
 
 async function run_step(graph){
-    await graph.runStepAsync();
+    do {
+        window.run_again = false;
+        await graph.runStepAsync();
+    } while(window.run_again !== undefined && window.run_again === true);
+    
 }
 
 // TODO: save graph state to files

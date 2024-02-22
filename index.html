@@ -376,9 +376,12 @@
 
 	// set menu bar button actions
 	elem = document.getElementById("top_menu_bar");
-	elem.querySelector("#run").addEventListener("click",function(){
-		//graph.start(5000)
-		graph.runStepAsync()
+	elem.querySelector("#run").addEventListener("click", async function(){
+		do {
+			window.run_again = false;
+			await graph.runStepAsync();
+		} while(window.run_again !== undefined && window.run_again === true);
+
 	});
 
 	//ctrl-s does a Quicksave stops the browser from saving the page

@@ -931,10 +931,7 @@
 		this.addInput("reset text", "string");
 		this.addOutput("out item", "string");
 		this.properties = {
-			step: 0,
-			last_step_text: "",
-			last_reset_text: ""
-
+			step: 0
 		};
 		this.step_widget = this.addWidget("number","Step",this.properties.step,"step", {precision:0, step:10});
 	}
@@ -942,27 +939,21 @@
 	Array_Stepper_Node.prototype.onExecute = function() {
 		// check for reset
 		if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {	
-			if(this.getInputData(2) !== this.properties.last_reset_text) {
-				this.properties.step = 0;
-				this.step_widget.value = 0;
-				this.properties.last_reset_text = this.getInputData(2);
-				this.setOutputData(0, "");
-			}
+			this.properties.step = 0;
+			this.step_widget.value = 0;
+			this.setOutputData(0, "");
 		}
 		
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			let input_array = JSON.parse(this.getInputData(0));
-			if(this.getInputData(1) !== undefined 
-				&& this.getInputData(1) !== ""
-				&& this.getInputData(1) !== this.properties.last_step_text) {
+			if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 				this.properties.step += 1;
 				if(this.properties.step >= input_array.length) {
-					this.properties.step = 0;
+					this.setOutputData(0, "");
+					return;
 				}
-
-				this.properties.last_step_text = this.getInputData(1);
+				
 				this.step_widget.value = this.properties.step;
-
 				// set output
 				this.setOutputData(0, input_array[this.properties.step]);
 			}
@@ -1850,19 +1841,19 @@
 
 	//start node
 	function Start_Node(){
-		this.addInput("start", LiteGraph.ACTION);
-		// run button
-		this.addWidget("button","Run","", ()=>{
-			graph.runStepAsync()
-		});
+		this.addInput("trigger", "string");
+
 	}
-	Start_Node.title = "Start";
-	Start_Node.prototype.onAction = function(action, param) {
-		if(action == "start") {
-			console.log("-----------------Start triggered---------------------")
-			graph.runStepAsync()
-		}
+	Start_Node.title = "Run Again";
+	Start_Node.prototype.onExecute = function() {
+		if(this.getInputData(0) !== undefined && this.getInputData(0) !== ""){
+			// set gloabl variable to true
+			console.log("setting run again to true")
+			console.log(this.getInputData(0))
+			window.run_again = true;
+		} 
 	}
+
 
 	// trigger on text node
 	function Emit_Node(){
@@ -2163,13 +2154,11 @@
 	function Gate() {
 		this.addInput("in_0", "string");
 		this.addInput("in_1", "string");
-		// out action
-		this.addOutput("out", LiteGraph.ACTION);
 		// out string
 		this.addOutput("out", "string");		
 		this.properties = {
 			"gate_type": "and",
-			"and_output": "0"
+			"and_output": "0 =>"
 		};
 		let that = this;
 		//widget for gate type
@@ -2178,7 +2167,7 @@
 		}, { property: "gate_type", values: ["and", "or", "not", "xor"] } );
 
 		// widget for output selector for and gate, 0, 1, 0 then 1, 1 then 0
-		this.and_output_widget = this.addWidget("combo","", "0", function(v){
+		this.and_output_widget = this.addWidget("combo","", "0 =>", function(v){
 			that.properties.and_output = v;
 		}, { property: "and_output", values: ["0 =>", "1 =>", "0 + 1 =>", "1 + 0 =>"] } );
 
@@ -2194,7 +2183,15 @@
 		let in_0 = (this.getInputData(0) || "").trim();
 		let in_1 = (this.getInputData(1) || "").trim();
 
-		console.log("GATE NODE: " + in_0 + " " + in_1)
+		console.log("GATE NODE: ")
+		console.log("in_0: " + in_0)
+		console.log("in_1: " + in_1)
+
+		// AND: if both inputs are not empty, set output to input 0 or input 1, else set output to empty
+		// OR: if either input is not empty, set output to input 0 or input 1, else set output to empty
+		// NOT: if input 0 is empty, set output to input 1, else set output to empty
+		// XOR: if both inputs are not empty, set output to input 0 or input 1, else set output to empty
+
 		// set output to gate type
 		switch(this.properties.gate_type) {
 			case "and":
@@ -2213,29 +2210,46 @@
 							this.setOutputData(0, in_1 + " " + in_0);
 							break;
 					}
-					// trigger out
-					this.trigger("out", this.properties.gate_type);
+				} else {
+					this.setOutputData(0, "");
 				}
 				break;
 			case "or":
-				if(this.getInputData(0) !== undefined || this.getInputData(1) !== undefined) {
-					this.setOutputData(0, this.getInputData(0) + " " + this.getInputData(1));
+				if(in_0 !== "" || in_1 !== "") {
+					switch(this.properties.and_output) {
+						case "0 =>":
+							this.setOutputData(0, in_0);
+							break;
+						case "1 =>":
+							this.setOutputData(0, in_1);
+							break;
+						case "0 + 1 =>":
+							this.setOutputData(0, in_0 + " " + in_1);
+							break;
+						case "1 + 0 =>":
+							this.setOutputData(0, in_1 + " " + in_0);
+							break;
+					}
+				} else {
+					this.setOutputData(0, "");
 				}
 				break;
 			case "not":
-				if(this.getInputData(0) === undefined) {
-					this.setOutputData(0, this.getInputData(1));
+				if(in_0 === "" || in_0 === undefined) {
+					this.setOutputData(0, in_1);
 				} else {
-					this.setOutputData(0, this.getInputData(0));
+					this.setOutputData(0, "");
 				}
 				break;
 			case "xor":
-				if(this.getInputData(0) !== undefined && this.getInputData(1) !== undefined) {
-					this.setOutputData(0, this.getInputData(0) + " " + this.getInputData(1));
-				} else if(this.getInputData(0) !== undefined) {
-					this.setOutputData(0, this.getInputData(0));
-				} else if(this.getInputData(1) !== undefined) {
-					this.setOutputData(0, this.getInputData(1));
+				if(in_0 !== "" && in_1 !== "") {
+					this.setOutputData(0, "");
+				} else if(in_0 !== "") {
+					this.setOutputData(0, in_0);
+				} else if(in_1 !== "") {
+					this.setOutputData(0, in_1);
+				} else {
+					this.setOutputData(0, "");
 				}
 				break;
 		}
