@@ -176,6 +176,8 @@ function read_outputs(graph){
 
 async function run_step(graph){
     do {
+        console.log(graph)
+        console.log("running step for graph: ")
         window.run_again = false;
         await graph.runStepAsync();
     } while(window.run_again !== undefined && window.run_again === true);
