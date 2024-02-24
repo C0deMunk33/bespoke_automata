@@ -567,7 +567,8 @@
 		this.brain_name_widget = this.addWidget("text","Brain Name",this.properties.brain_name,"brain_name");
 		this.call_brain = async function(brain, input_variables) { 
 			let final_url = this.properties.url + "/brains/" + this.properties.brain_name;
-
+			console.log("calling brain: " + this.properties.brain_name)
+			console.log("final url: " + final_url)
 			const headers = {
 				'Content-Type': 'application/json'
 			};
@@ -608,6 +609,8 @@
 			this.setOutputData(0, JSON.stringify(output));
 		} else {
 			// call brain api
+			console.log("calling brain")
+
 			let output = await this.call_brain();
 			console.log(output)
 			// output is an array of dictionaries with "name" and "value" fields
@@ -1591,11 +1594,7 @@
 		let grammar = this.getInputData(6);
 		console.log("grammar: " + grammar)
 
-		console.log("calling gpt")
-
 		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
-
-		console.log("gpt response: " + gpt_response);
 
 		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
