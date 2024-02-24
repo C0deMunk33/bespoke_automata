@@ -34,6 +34,8 @@
 			};
 			final_url = url + gpt_endpoint;
 
+
+			console.log("final url: " + final_url)
 			const response = await fetch(final_url, {
 				method: 'POST',
 				headers: headers,
