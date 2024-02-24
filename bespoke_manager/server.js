@@ -4,9 +4,7 @@ const fs = require('fs');
 const { LGraph, LGraphCanvas, LiteGraph } = require('../libs/litegraph.js');
 const Nodes = require('../libs/nodes.js');
 
-// npm install undici
-import { fetch, setGlobalDispatcher, Agent} from 'undici';
-setGlobalDispatcher(new Agent({connect: { timeout: 300_000 }}));
+
 
 async function load_graph(graph_file){
     console.log("loading graph: ", graph_file)

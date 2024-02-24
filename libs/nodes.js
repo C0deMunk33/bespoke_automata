@@ -8,6 +8,7 @@
 		LiteGraph = require("./litegraph.js");
 		// dummy window object
 		window = {};
+		
 	}	
 	// global bus dictionary
 	global_bus_dictionaries = {};
@@ -40,6 +41,7 @@
 			});
 
 			const responseData = await response.json();
+			console.log("llm response: " + JSON.stringify(responseData))
 			return responseData.chat.choices[0].message.content;
 		} catch (error) {
 			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
