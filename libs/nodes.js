@@ -873,10 +873,10 @@
 	Array_Assembler_Node.title = "Array Assembler";
 	Array_Assembler_Node.prototype.onExecute = function() {
 		if(this.getInputData(1) !== undefined 
-		&& this.getInputData(1) !== ""
-		&& this.getInputData(1) !== this.properties.variable_value) {
+		&& this.getInputData(1) !== "") {
 			this.properties.variable_value = this.getInputData(1);
 		} else {
+			this.setOutputData(0, JSON.stringify(this.properties.array));
 			return;
 		}
 		
@@ -1616,6 +1616,7 @@
 
 		let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
 
+		console.log("setting GPT output: " + gpt_response)
 		this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 		this.setOutputData(0, gpt_response);
 		this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
