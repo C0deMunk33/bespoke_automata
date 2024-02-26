@@ -880,14 +880,9 @@
 			return;
 		}
 		
-		input_array_string = (this.getInputData(0) | "")
-
-		// strip away any whitespace
-		input_array_string = input_array_string.replace(/\s/g, '');
+		let input_array_string = (this.getInputData(0) | "").trim();
 
 		if(input_array_string === "") {
-
-			
 			console.log("~~~~~~~~~~~~~~~~~~~~~~")
 			console.log("parsing input array: " + input_array_string)
 			console.log("~~~~~~~~~~~~~~~~~~~~~~")
