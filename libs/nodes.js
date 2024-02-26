@@ -928,7 +928,12 @@
 				console.log("index out of bounds");
 				return;
 			}
-			this.setOutputData(0, JSON.stringify(input_array[this.properties.index]));
+			// if item is a string, output the string, otherwise output the stringified item
+			if(typeof input_array[this.properties.index] === "string") {
+				this.setOutputData(0, input_array[this.properties.index]);
+			} else {
+				this.setOutputData(0, JSON.stringify(input_array[this.properties.index]));
+			}
 		}
 	}
 	
@@ -953,6 +958,10 @@
 		
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 			let input_array = JSON.parse(this.getInputData(0));
+
+			console.log("current step: " + this.properties.step)
+			console.log("input array: " + input_array)
+			console.log("current item: " + input_array[this.properties.step])
 			if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 				this.properties.step += 1;
 				if(this.properties.step >= input_array.length) {
@@ -962,6 +971,8 @@
 				
 				this.step_widget.value = this.properties.step;
 				// set output
+				this.setOutputData(0, input_array[this.properties.step]);
+			} else {
 				this.setOutputData(0, input_array[this.properties.step]);
 			}
 		}
@@ -1097,6 +1108,10 @@
 		} else if(this.text_widget.value !== this.properties.value) {
 			this.properties.value = this.text_widget.value;
 		}
+		console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+		console.log("Text node executing")
+		console.log("outputting: " + this.properties.value)
+		console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 		this.setOutputData(0, this.properties.value );
 	}
 
