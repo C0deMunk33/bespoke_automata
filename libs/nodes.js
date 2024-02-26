@@ -880,12 +880,21 @@
 			return;
 		}
 		
-		input_array_string = (this.getInputData(0) | "[]").strip()
-		
-		console.log("~~~~~~~~~~~~~~~~~~~~~~")
-		console.log("parsing input array: " + input_array_string)
-		console.log("~~~~~~~~~~~~~~~~~~~~~~")
-		this.properties.array = JSON.parse(this.getInputData(0));
+		input_array_string = (this.getInputData(0) | "")
+
+		// strip away any whitespace
+		input_array_string = input_array_string.replace(/\s/g, '');
+
+		if(input_array_string === "") {
+
+			
+			console.log("~~~~~~~~~~~~~~~~~~~~~~")
+			console.log("parsing input array: " + input_array_string)
+			console.log("~~~~~~~~~~~~~~~~~~~~~~")
+			this.properties.array = JSON.parse(input_array_string);
+		} else {
+			this.properties.array = [];
+		}
 
 				
 		this.properties.array.push(this.properties.variable_value);
