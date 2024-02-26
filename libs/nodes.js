@@ -43,7 +43,7 @@
 			});
 
 			const responseData = await response.json();
-			console.log("llm response: " + JSON.stringify(responseData))
+			console.log("llm response: " + JSON.stringify(responseData.chat.choices[0].message.content))
 			return responseData.chat.choices[0].message.content;
 		} catch (error) {
 			console.log("~~~~~~~~~~~~~~~~~~~~~~~")
