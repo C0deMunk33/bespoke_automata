@@ -28,7 +28,7 @@
 			const data = {
 				model: model,
 				messages: messages,
-				max_tokens: 9999,
+				max_tokens: 30000,
 				stream: false, 
 				grammar: (grammar === undefined || grammar === "") ? undefined : grammar
 			};
@@ -876,11 +876,11 @@
 		&& this.getInputData(1) !== "") {
 			this.properties.variable_value = this.getInputData(1);
 		} else {
-			this.setOutputData(0, JSON.stringify(this.properties.array));
+			this.setOutputData(0, JSON.stringify([]));
 			return;
 		}
 		
-		let input_array_string = (this.getInputData(0) | "").trim();
+		let input_array_string = (this.getInputData(0) | "").toString().trim();
 
 		if(input_array_string === "") {
 			console.log("~~~~~~~~~~~~~~~~~~~~~~")

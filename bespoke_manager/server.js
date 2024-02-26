@@ -201,12 +201,12 @@ let loaded_graphs = {};
 
 async function load_graphs(app){
     // Load all the graphs in the graphs directory. parse the graph. graph.nodes is an array of nodes, find all the nodes with the type "IO/Text Input" and "IO/Text Output". Make an endpoint for each graph that takes the input data and returns the output data for each of the text output nodes.
-    const graphs = fs.readdirSync('graphs');
+    const graphs = fs.readdirSync('../../brains');
     await graphs.forEach(async graph => {
         const filename = graph.split('.')[0];
         const extension = graph.split('.')[1];
         
-        const graphObj = JSON.parse(fs.readFileSync('graphs/' + graph, 'utf8'));
+        const graphObj = JSON.parse(fs.readFileSync('../../brains/' + graph, 'utf8'));
         const textInputs = graphObj.nodes.filter(node => node.type === "IO/Text Input");
         const textOutputs = graphObj.nodes.filter(node => node.type === "IO/Text Output");
 
@@ -291,7 +291,7 @@ async function load_graphs(app){
 
         //console.log("loading graph: ", filename)
         
-        loaded_graphs[filename] = await load_graph('graphs/' + graph);
+        loaded_graphs[filename] = await load_graph('../../brains/' + graph);
 
         app.post('/brains/' + filename, async (req, res) => {
             // get json data from request
@@ -333,7 +333,7 @@ async function start_server(){
     await load_graphs(app);
     // add list of graphs endpoint
     app.get('/brains', async (req, res) => {
-        const graphs = fs.readdirSync('graphs');
+        const graphs = fs.readdirSync('../../brains');
         res.send(graphs);
     });
 
