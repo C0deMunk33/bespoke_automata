@@ -2326,8 +2326,6 @@
 		this.addInput("server url", "string");
 		this.addOutput("array out", "string");
 		this.properties = {
-			"last_text": "",
-			"last_output": "",
 			"server_url": ""
 		};
 		this.server_url_widget = this.addWidget("text","Server Url",this.properties.server_url, "server_url");
@@ -2338,11 +2336,6 @@
 		if(text === undefined || text === "") {
 			this.setOutputData(0, "");
 			return;
-		} else if(text === this.properties.last_text) {
-			this.setOutputData(0, this.properties.last_output);
-			return;
-		} else {
-			this.properties.last_text = text;
 		}
 
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== this.properties.server_url && this.getInputData(1) !== "") {
@@ -2370,8 +2363,9 @@
 		let json = await response.json();
 		
 		console.log(json);
-		this.properties.last_output = JSON.stringify(json["keywords"]);
-		this.setOutputData(0, this.properties.last_output);
+		let output = JSON.stringify(json["keywords"]);
+		console.log("output: " + output);
+		this.setOutputData(0, output);
 
 	}
 
