@@ -881,6 +881,11 @@
 		}
 		
 		if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+			console.log("~~~~~~~~~~~~~~~~~~~~~~")
+			console.log("parsing input array: " + this.getInputData(0))
+			console.log("~~~~~~~~~~~~~~~~~~~~~~")
+			
+
 			this.properties.array = JSON.parse(this.getInputData(0));
 		} 
 		
