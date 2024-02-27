@@ -42,9 +42,6 @@ class OmniApi:
         print("loading vision")
         if self.clip_model_path != clip_path or self.vision_model_path != model_path:
 
-            print(f"model_path: {model_path}")
-            print(f"clip_path: {clip_path}")
-
             # check if file exists
             if not os.path.isfile(clip_path):
                 raise Exception(f"File does not exist: {clip_path}")
@@ -56,9 +53,9 @@ class OmniApi:
             self.clip_model_path = clip_path
             # load model
             # "../../models/vision/bakllava/mmproj-model-f16.gguf"
-            print("loading chat handler")
+            
             self.chat_handler = Llava15ChatHandler(clip_model_path=clip_path)
-            print("chat handler loaded")
+            
             self.vision_llm = Llama(
                     # "../../models/vision/bakllava/ggml-model-q5_k.gguf"
                 model_path= model_path,
@@ -74,6 +71,8 @@ class OmniApi:
             self.chat_llm_path = model_path
 
     def vision(self, system_prompt, user_prompt, image_url):
+        print("~" * 100)
+        print("starting vision")
         result = self.vision_llm.create_chat_completion(
             messages = [
                 {"role": "system", "content": system_prompt},
@@ -86,6 +85,9 @@ class OmniApi:
                 }
             ]
         )
+
+        print(result)
+        print("~" * 100)
         return jsonify(result)
         
     def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format, grammar=None):
