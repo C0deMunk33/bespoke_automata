@@ -56,8 +56,9 @@ class OmniApi:
             self.clip_model_path = clip_path
             # load model
             # "../../models/vision/bakllava/mmproj-model-f16.gguf"
+            print("loading chat handler")
             self.chat_handler = Llava15ChatHandler(clip_model_path=clip_path)
-            
+            print("chat handler loaded")
             self.vision_llm = Llama(
                     # "../../models/vision/bakllava/ggml-model-q5_k.gguf"
                 model_path= model_path,
