@@ -196,10 +196,14 @@ def vision():
     user_prompt = request.json['user_prompt']        
     model_path = request.json['model_path']
     clip_path = request.json['clip_path']
-    omni_api.load_vision(clip_path, model_path)
-    result = omni_api.vision(system_prompt, user_prompt, image_url)
-    print(result)
-    return result
+    try:
+        omni_api.load_vision(clip_path, model_path)
+        result = omni_api.vision(system_prompt, user_prompt, image_url)
+        print(result)
+        return result
+    except Exception as e:
+        print(e)
+        return jsonify({'error': str(e)})
 
 @app.route(Routes["chat"], methods=['POST'])
 def chat():
