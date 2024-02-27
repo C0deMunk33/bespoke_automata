@@ -41,14 +41,23 @@ class OmniApi:
     def load_vision(self, clip_path, model_path):
         print("loading vision")
         if self.clip_model_path != clip_path or self.vision_model_path != model_path:
+
+            print(f"model_path: {model_path}")
+            print(f"clip_path: {clip_path}")
+
+            # check if file exists
+            if not os.path.isfile(clip_path):
+                raise Exception(f"File does not exist: {clip_path}")
+            
+            if not os.path.isfile(model_path):
+                raise Exception(f"File does not exist: {model_path}")
+
             self.vision_model_path = model_path
             self.clip_model_path = clip_path
             # load model
             # "../../models/vision/bakllava/mmproj-model-f16.gguf"
             self.chat_handler = Llava15ChatHandler(clip_model_path=clip_path)
             
-            print(f"model_path: {model_path}")
-            print(f"clip_path: {clip_path}")
             self.vision_llm = Llama(
                     # "../../models/vision/bakllava/ggml-model-q5_k.gguf"
                 model_path= model_path,
