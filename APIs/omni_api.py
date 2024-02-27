@@ -80,10 +80,10 @@ class OmniApi:
             os.makedirs("saved_images")
 
         # image_url is a base64 encoded imageurl, save it to a file
-        image_url = image_url.split(",")[1]
-        image = base64.b64decode(image_url)
-        with open("saved_images/image.png", "wb") as file:
-            file.write(image)
+        temp_image_url = image_url.split(",")[1]
+        temp_image = base64.b64decode(temp_image_url)
+        with open("saved_images/image.jpg", "wb") as file:
+            file.write(temp_image)
         
 
         result = self.vision_llm.create_chat_completion(
