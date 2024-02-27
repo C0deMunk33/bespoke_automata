@@ -20,6 +20,7 @@ import threading
 from datasets import load_dataset
 from keybert import KeyBERT
 
+
 from simple_vector_db import SimpleVectorDB
 
 # flask app
@@ -74,10 +75,15 @@ class OmniApi:
         print("~" * 100)
         print("starting vision")
 
-        # image_url is a base64 encoded image, decode and show
-        image = base64.b64decode(image_url)
-        image = Image.open(io.BytesIO(image))
-        image.show()
+        #create saved_images directory if it doesn't exist
+        if not os.path.exists("saved_images"):
+            os.makedirs("saved_images")
+            
+        # image_url is a base64 encoded image, save it to a file
+        image_data = base64.b64decode(image_url)
+        image_filename = f"./saved_images/{int(time.time())}.png"
+        with open(image_filename, "wb") as f:
+            f.write(image_data)
 
         result = self.vision_llm.create_chat_completion(
             messages = [
