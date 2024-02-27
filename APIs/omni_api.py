@@ -73,6 +73,12 @@ class OmniApi:
     def vision(self, system_prompt, user_prompt, image_url):
         print("~" * 100)
         print("starting vision")
+
+        # image_url is a base64 encoded image, decode and show
+        image = base64.b64decode(image_url)
+        image = Image.open(io.BytesIO(image))
+        image.show()
+
         result = self.vision_llm.create_chat_completion(
             messages = [
                 {"role": "system", "content": system_prompt},
