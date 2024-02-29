@@ -71,7 +71,7 @@ class OmniApi:
             self.chat_llm = Llama(model_path=model_path, n_ctx=n_ctx, n_gpu_layers=n_gpu_layers, chat_format=chat_format)
             self.chat_llm_path = model_path
 
-    def vision(self, system_prompt, user_prompt, image_url):
+    def vision(self, system_prompt, user_prompt, image_url, grammar=None):
         print("~" * 100)
         print("starting vision")
 
@@ -87,6 +87,7 @@ class OmniApi:
         
 
         result = self.vision_llm.create_chat_completion(
+            grammar=grammar,
             messages = [
                 {"role": "system", "content": system_prompt},
                 {
@@ -224,9 +225,21 @@ def vision():
     user_prompt = request.json['user_prompt']        
     model_path = request.json['model_path']
     clip_path = request.json['clip_path']
+
+    grammar_text = None
+    try:
+        grammar_text = data.get('grammar')
+    except:
+        pass
+    grammar = None
+    if(grammar_text is not None and len(grammar_text) > 0):
+        print("grammar_text")
+        print(grammar_text)
+        grammar = LlamaGrammar.from_string(grammar_text, verbose=True)
+
     try:
         omni_api.load_vision(clip_path, model_path)
-        result = omni_api.vision(system_prompt, user_prompt, image_url)
+        result = omni_api.vision(system_prompt, user_prompt, image_url, grammar)
         print(result)
         return result
     except Exception as e:

@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const { LGraph, LGraphCanvas, LiteGraph } = require('../libs/litegraph.js');
 const Nodes = require('../libs/nodes.js');
-
+// npm install body-parser
 
 
 async function load_graph(graph_file){
@@ -201,12 +201,12 @@ let loaded_graphs = {};
 
 async function load_graphs(app){
     // Load all the graphs in the graphs directory. parse the graph. graph.nodes is an array of nodes, find all the nodes with the type "IO/Text Input" and "IO/Text Output". Make an endpoint for each graph that takes the input data and returns the output data for each of the text output nodes.
-    const graphs = fs.readdirSync('../../brains');
+    const graphs = fs.readdirSync('graphs');
     await graphs.forEach(async graph => {
         const filename = graph.split('.')[0];
         const extension = graph.split('.')[1];
         
-        const graphObj = JSON.parse(fs.readFileSync('../../brains/' + graph, 'utf8'));
+        const graphObj = JSON.parse(fs.readFileSync('graphs/' + graph, 'utf8'));
         const textInputs = graphObj.nodes.filter(node => node.type === "IO/Text Input");
         const textOutputs = graphObj.nodes.filter(node => node.type === "IO/Text Output");
 
@@ -291,7 +291,7 @@ async function load_graphs(app){
 
         //console.log("loading graph: ", filename)
         
-        loaded_graphs[filename] = await load_graph('../../brains/' + graph);
+        loaded_graphs[filename] = await load_graph('graphs/' + graph);
 
         app.post('/brains/' + filename, async (req, res) => {
             // get json data from request
@@ -324,18 +324,23 @@ async function load_graphs(app){
 const app = express();
 var cors = require('cors');
 const e = require('express');
-app.use(cors())
-const PORT = 9999;
 
+const PORT = 9999;
+bodyParser = require('body-parser')
 async function start_server(){
-    app.use(express.json());
+    app.use(express.json({limit: '50mb'}));
+    app.use(express.urlencoded({limit: '50mb', extended: true}));
+    app.use(express.text({limit: '50mb'}) );
     app.use(express.static('public'));
+    app.use(cors())
     await load_graphs(app);
     // add list of graphs endpoint
     app.get('/brains', async (req, res) => {
-        const graphs = fs.readdirSync('../../brains');
+        const graphs = fs.readdirSync('graphs');
         res.send(graphs);
     });
+
+
 
     // print all the endpoints
     console.log("endpoints: ", app._router.stack.filter(r => r.route).map(r => r.route.path));
