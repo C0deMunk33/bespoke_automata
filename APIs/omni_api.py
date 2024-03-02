@@ -61,9 +61,10 @@ class OmniApi:
                     # "../../models/vision/bakllava/ggml-model-q5_k.gguf"
                 model_path= model_path,
                 chat_handler=self.chat_handler,
-                n_ctx=4096, # n_ctx should be increased to accomodate the image embedding
+                n_ctx=0, # n_ctx should be increased to accomodate the image embedding
                 logits_all=True,# needed to make llava work
-                n_gpu_layers=-1
+                n_gpu_layers=-1,
+                chat_format="chatml"
             )
 
     def load_chat_model(self, model_path, n_ctx, n_gpu_layers, chat_format):
@@ -88,6 +89,9 @@ class OmniApi:
 
         result = self.vision_llm.create_chat_completion(
             grammar=grammar,
+            #repeat_penalty=1.0,
+            #max_tokens=100,
+            #response_format={"type":"json_object"}",
             messages = [
                 {"role": "system", "content": system_prompt},
                 {
@@ -226,11 +230,8 @@ def vision():
     model_path = request.json['model_path']
     clip_path = request.json['clip_path']
 
-    grammar_text = None
-    try:
-        grammar_text = data.get('grammar')
-    except:
-        pass
+    grammar_text = request.json['grammar']
+    
     grammar = None
     if(grammar_text is not None and len(grammar_text) > 0):
         print("grammar_text")
