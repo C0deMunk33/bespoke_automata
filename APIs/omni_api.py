@@ -194,6 +194,10 @@ class OmniApi:
         return keywords
     
     def ocr(self, base64_image):
+        # base64_image is a base64 url encoded image
+        # strip the url part
+        base64_image = base64_image.split(",")[1]
+        # decode the base64 image
         image = Image.open(io.BytesIO(base64.b64decode(base64_image)))
         return pytesseract.image_to_string(image)
 
