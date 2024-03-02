@@ -217,7 +217,7 @@ Routes = {
     "tts_stream": "/tts_stream",
     "tts": "/tts",
     "keyword_extraction": "/keyword_extraction",
-    "ocr": "/ocr
+    "ocr": "/ocr"
 }
 
 omni_api = OmniApi()
