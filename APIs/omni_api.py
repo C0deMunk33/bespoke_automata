@@ -19,7 +19,8 @@ import uuid
 import threading
 from datasets import load_dataset
 from keybert import KeyBERT
-
+import pytesseract
+from PIL import Image
 
 from simple_vector_db import SimpleVectorDB
 
@@ -191,7 +192,10 @@ class OmniApi:
         
         keywords = self.keyword_extractor_model.extract_keywords(text)
         return keywords
-        
+    
+    def ocr(self, base64_image):
+        image = Image.open(io.BytesIO(base64.b64decode(base64_image)))
+        return pytesseract.image_to_string(image)
 
 Routes = {
     "vision": "/vision",
@@ -212,8 +216,8 @@ Routes = {
     "whisper": "/whisper",
     "tts_stream": "/tts_stream",
     "tts": "/tts",
-    "keyword_extraction": "/keyword_extraction"
-
+    "keyword_extraction": "/keyword_extraction",
+    "ocr": "/ocr
 }
 
 omni_api = OmniApi()
@@ -246,6 +250,11 @@ def vision():
     except Exception as e:
         print(e)
         return jsonify({'error': str(e)})
+
+@app.route(Routes["ocr"], methods=['POST'])
+def ocr():
+    base64_image = request.json['img_base64']
+    return jsonify({'text': omni_api.ocr(base64_image)})
 
 @app.route(Routes["chat"], methods=['POST'])
 def chat():

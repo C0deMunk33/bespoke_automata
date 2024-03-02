@@ -2350,6 +2350,53 @@ Vision_Node.prototype.onExecute = async function() {
 	this.setOutputData(0, msg);
 }
 
+// OCR_Node
+function OCR_Node() {
+	// NOTE: USE BASE64 ENCODING FOR IMAGES
+	this.addInput("img base64", "string");
+	this.addInput("server url", "string");
+	this.addOutput("out", "string");
+	this.properties = {
+		"server_url": ""
+	};
+	this.server_url_widget = this.addWidget("text","Server Url",this.properties.server_url, "server_url");
+}
+OCR_Node.title = "OCR";
+OCR_Node.prototype.onExecute = async function() {
+	// update properties
+	if(this.getInputData(1) !== undefined && this.getInputData(1) !== this.properties.server_url && this.getInputData(1) !== "") {
+		this.properties.server_url = this.getInputData(1);
+		// set widget value
+		this.server_url_widget.value = this.getInputData(1);
+	} else {
+		this.properties.server_url = this.server_url_widget.value;
+	}
+
+	let server_url = this.properties.server_url;
+	console.log("server_url: " + server_url)
+
+	let img_base64 = this.getInputData(0);
+	console.log("img_base64: " + img_base64)
+
+	if(img_base64 === undefined || img_base64 === "") {
+		this.setOutputData(0, "");
+		return;
+	}
+
+	let response = await fetch(server_url + "/ocr", {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"img_base64": img_base64
+		})
+	});
+	let json = await response.json();
+	console.log("results:")
+	console.log(json);
+	this.setOutputData(0, json["text"]);
+}
 
 // JSON_API_Node url input, url widget, 1 output which is a json string
 function JSON_API_Node() {
@@ -2499,5 +2546,6 @@ if (typeof module !== 'undefined' && module.exports) {
 		Dictionary_Bus_Get_Node:Dictionary_Bus_Get_Node,
 		Dictionary_Bus_Set_Node:Dictionary_Bus_Set_Node,
 		Multiline_Text_Node:Multiline_Text_Node,
+		OCR_Node:OCR_Node,
 	};
 }
