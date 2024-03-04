@@ -47,11 +47,17 @@ class OmniApi:
         self.svdb = SimpleVectorDB()
         self.whisper_model_path = None
         self.keyword_extractor_model = None
+
+    def unload_model(self):
+        self.vision_llm = None
+        self.chat_llm = None
+        self.model_type_loaded = ModelType.NONE
         
     def load_vision(self, clip_path, model_path):
         print("loading vision")
         if self.clip_model_path != clip_path or self.vision_model_path != model_path or self.model_type_loaded != ModelType.VISION:
-
+            
+            self.unload_model()
             # check if file exists
             if not os.path.isfile(clip_path):
                 raise Exception(f"File does not exist: {clip_path}")
@@ -78,7 +84,9 @@ class OmniApi:
             self.model_type_loaded = ModelType.VISION
 
     def load_chat_model(self, model_path, n_ctx, n_gpu_layers, chat_format):
+        
         if self.chat_llm_path != model_path or self.model_type_loaded != ModelType.CHAT:
+            self.unload_model()
             self.chat_llm = Llama(model_path=model_path, n_ctx=n_ctx, n_gpu_layers=n_gpu_layers, chat_format=chat_format)
             self.chat_llm_path = model_path
             self.model_type_loaded = ModelType.CHAT
