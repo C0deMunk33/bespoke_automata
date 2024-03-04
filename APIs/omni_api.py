@@ -29,9 +29,17 @@ app = Flask(__name__)
 #use cors
 flask_cors.CORS(app)
 
+# enum for which model type is loaded, none, vision 
+class ModelType:
+    NONE = 0
+    VISION = 1
+    CHAT = 2
+    
 class OmniApi:
     def __init__(self):
+        self.model_type_loaded = ModelType.NONE
         self.vision_llm = None
+        self.chat_llm = None
         self.chat_handler = None
         self.clip_model_path = ""
         self.vision_model_path = ""
@@ -42,7 +50,7 @@ class OmniApi:
         
     def load_vision(self, clip_path, model_path):
         print("loading vision")
-        if self.clip_model_path != clip_path or self.vision_model_path != model_path:
+        if self.clip_model_path != clip_path or self.vision_model_path != model_path or self.model_type_loaded != ModelType.VISION:
 
             # check if file exists
             if not os.path.isfile(clip_path):
@@ -67,11 +75,13 @@ class OmniApi:
                 n_gpu_layers=-1,
                 chat_format="chatml"
             )
+            self.model_type_loaded = ModelType.VISION
 
     def load_chat_model(self, model_path, n_ctx, n_gpu_layers, chat_format):
-        if self.chat_llm_path != model_path:
+        if self.chat_llm_path != model_path or self.model_type_loaded != ModelType.CHAT:
             self.chat_llm = Llama(model_path=model_path, n_ctx=n_ctx, n_gpu_layers=n_gpu_layers, chat_format=chat_format)
             self.chat_llm_path = model_path
+            self.model_type_loaded = ModelType.CHAT
 
     def vision(self, system_prompt, user_prompt, image_url, grammar=None):
         print("~" * 100)
