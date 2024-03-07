@@ -150,7 +150,7 @@ class OmniApi:
         self.whisper_model = whisper.load_model("large", "cuda", model_path, True)
         self.whisper_model_path = model_path
 
-    def transcribe_with_wisper(self, audio):
+    def transcribe_with_whisper(self, audio):
         result = self.whisper_model.transcribe(audio)
         return result["text"]
     
@@ -419,7 +419,7 @@ def whisper_route():
     filename = omni_api.save_audio_as_mp3(audio_bytes, filename)
     
     # Transcribe the audio
-    text = omni_api.transcribe_with_wisper(filename)
+    text = omni_api.transcribe_with_whisper(filename)
     return jsonify({"transcription": text})
 
 audio_clip_dir = "clips"
