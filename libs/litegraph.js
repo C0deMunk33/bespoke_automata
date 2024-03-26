@@ -8648,7 +8648,7 @@ LGraphNode.prototype.executeAction = function(action)
         ctx.textAlign = horizontal ? "center" : "left";
         ctx.font = this.inner_text_font;
 
-        var render_text = !low_quality;
+        var render_text = true//!low_quality;
 
         var out_slot = this.connecting_output;
         var in_slot = this.connecting_input;
@@ -9195,7 +9195,7 @@ LGraphNode.prototype.executeAction = function(action)
                 }
                 
                 ctx.fillStyle = node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR;
-				if(low_quality)
+				if(false) // disabled for now
 					ctx.fillRect( title_height * 0.5 - box_size *0.5, title_height * -0.5 - box_size *0.5, box_size , box_size  );
 				else
 				{
@@ -9240,7 +9240,7 @@ LGraphNode.prototype.executeAction = function(action)
                     selected
                 );
             }
-            if (!low_quality) {
+            if (/*!low_quality*/ true) { // disabled for now 
                 ctx.font = this.title_text_font;
                 var title = String(node.getTitle());
                 if (title) {
@@ -9277,7 +9277,7 @@ LGraphNode.prototype.executeAction = function(action)
 				var x = node.size[0] - w;
 				var over = LiteGraph.isInsideRectangle( this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x+2, -w+2, w-4, w-4 );
 				ctx.fillStyle = over ? "#888" : "#555";
-				if( shape == LiteGraph.BOX_SHAPE || low_quality)
+				if( shape == LiteGraph.BOX_SHAPE /*|| low_quality*/)
 					ctx.fillRect(x+2, -w+2, w-4, w-4);
 				else
 				{
@@ -9901,7 +9901,7 @@ LGraphNode.prototype.executeAction = function(action)
         posY += 2;
         var lines = 1;
         var H = LiteGraph.NODE_WIDGET_HEIGHT;
-        var show_text = this.ds.scale > 0.5;
+        var show_text = this.ds.scale > 0.27;
         ctx.save();
         ctx.globalAlpha = this.editor_alpha;
         var outline_color = LiteGraph.WIDGET_OUTLINE_COLOR;

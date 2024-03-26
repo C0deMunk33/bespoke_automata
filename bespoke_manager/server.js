@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const { LGraph, LGraphCanvas, LiteGraph } = require('../libs/litegraph.js');
 const Nodes = require('../libs/nodes.js');
-
+// npm install body-parser
 
 
 async function load_graph(graph_file){
@@ -94,6 +94,8 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("IO/Dictionary Bus Set", Nodes.Dictionary_Bus_Set_Node );
     // Text/Multiline_Text_Node
     LiteGraph.registerNodeType("Text/Multiline Text", Nodes.Multiline_Text_Node );
+    // LLM/OCR_Node
+    LiteGraph.registerNodeType("LLM/OCR", Nodes.OCR_Node );
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);
@@ -175,7 +177,13 @@ function read_outputs(graph){
 }
 
 async function run_step(graph){
-    await graph.runStepAsync();
+    do {
+        console.log(graph)
+        console.log("running step for graph: ")
+        window.run_again = false;
+        await graph.runStepAsync();
+    } while(window.run_again !== undefined && window.run_again === true);
+    
 }
 
 // TODO: save graph state to files
@@ -318,18 +326,23 @@ async function load_graphs(app){
 const app = express();
 var cors = require('cors');
 const e = require('express');
-app.use(cors())
-const PORT = 9999;
 
+const PORT = 9999;
+bodyParser = require('body-parser')
 async function start_server(){
-    app.use(express.json());
+    app.use(express.json({limit: '50mb'}));
+    app.use(express.urlencoded({limit: '50mb', extended: true}));
+    app.use(express.text({limit: '50mb'}) );
     app.use(express.static('public'));
+    app.use(cors())
     await load_graphs(app);
     // add list of graphs endpoint
     app.get('/brains', async (req, res) => {
         const graphs = fs.readdirSync('graphs');
         res.send(graphs);
     });
+
+
 
     // print all the endpoints
     console.log("endpoints: ", app._router.stack.filter(r => r.route).map(r => r.route.path));

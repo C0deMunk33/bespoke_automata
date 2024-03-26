@@ -19,6 +19,8 @@ import uuid
 import threading
 from datasets import load_dataset
 from keybert import KeyBERT
+import pytesseract
+from PIL import Image
 
 from simple_vector_db import SimpleVectorDB
 
@@ -27,9 +29,17 @@ app = Flask(__name__)
 #use cors
 flask_cors.CORS(app)
 
+# enum for which model type is loaded, none, vision 
+class ModelType:
+    NONE = 0
+    VISION = 1
+    CHAT = 2
+    
 class OmniApi:
     def __init__(self):
+        self.model_type_loaded = ModelType.NONE
         self.vision_llm = None
+        self.chat_llm = None
         self.chat_handler = None
         self.clip_model_path = ""
         self.vision_model_path = ""
@@ -37,31 +47,70 @@ class OmniApi:
         self.svdb = SimpleVectorDB()
         self.whisper_model_path = None
         self.keyword_extractor_model = None
+
+    def unload_model(self):
+        self.vision_llm = None
+        self.chat_llm = None
+        self.model_type_loaded = ModelType.NONE
         
     def load_vision(self, clip_path, model_path):
-        if self.clip_model_path != clip_path or self.vision_model_path != model_path:
+        print("loading vision")
+        if self.clip_model_path != clip_path or self.vision_model_path != model_path or self.model_type_loaded != ModelType.VISION:
+            
+            self.unload_model()
+            # check if file exists
+            if not os.path.isfile(clip_path):
+                raise Exception(f"File does not exist: {clip_path}")
+            
+            if not os.path.isfile(model_path):
+                raise Exception(f"File does not exist: {model_path}")
+
             self.vision_model_path = model_path
             self.clip_model_path = clip_path
             # load model
             # "../../models/vision/bakllava/mmproj-model-f16.gguf"
+            
             self.chat_handler = Llava15ChatHandler(clip_model_path=clip_path)
             
             self.vision_llm = Llama(
                     # "../../models/vision/bakllava/ggml-model-q5_k.gguf"
                 model_path= model_path,
                 chat_handler=self.chat_handler,
-                n_ctx=4096, # n_ctx should be increased to accomodate the image embedding
+                n_ctx=0, # n_ctx should be increased to accomodate the image embedding
                 logits_all=True,# needed to make llava work
-                n_gpu_layers=-1
+                n_gpu_layers=-1,
+                chat_format="chatml"
             )
+            self.model_type_loaded = ModelType.VISION
 
     def load_chat_model(self, model_path, n_ctx, n_gpu_layers, chat_format):
-        if self.chat_llm_path != model_path:
+        
+        if self.chat_llm_path != model_path or self.model_type_loaded != ModelType.CHAT:
+            self.unload_model()
             self.chat_llm = Llama(model_path=model_path, n_ctx=n_ctx, n_gpu_layers=n_gpu_layers, chat_format=chat_format)
             self.chat_llm_path = model_path
+            self.model_type_loaded = ModelType.CHAT
 
-    def vision(self, system_prompt, user_prompt, image_url):
+    def vision(self, system_prompt, user_prompt, image_url, grammar=None):
+        print("~" * 100)
+        print("starting vision")
+
+        #create saved_images directory if it doesn't exist
+        if not os.path.exists("saved_images"):
+            os.makedirs("saved_images")
+
+        # image_url is a base64 encoded imageurl, save it to a file
+        temp_image_url = image_url.split(",")[1]
+        temp_image = base64.b64decode(temp_image_url)
+        with open("saved_images/image.jpg", "wb") as file:
+            file.write(temp_image)
+        
+
         result = self.vision_llm.create_chat_completion(
+            grammar=grammar,
+            #repeat_penalty=1.0,
+            #max_tokens=100,
+            #response_format={"type":"json_object"}",
             messages = [
                 {"role": "system", "content": system_prompt},
                 {
@@ -73,17 +122,35 @@ class OmniApi:
                 }
             ]
         )
+
+        print(result)
+        print("~" * 100)
         return jsonify(result)
         
     def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format, grammar=None):
-        result = self.chat_llm.create_chat_completion(messages=messages, grammar=grammar)
-        return jsonify({'chat': result})
+        try:
+            result = self.chat_llm.create_chat_completion(messages=messages, grammar=grammar)
+            return jsonify({'chat': result})
+        except Exception as e:
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print(e)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            print("~" * 100)
+            
+            return jsonify({'error': str(e), 'chat': None})
 
     def load_whisper(self, model_path):
         self.whisper_model = whisper.load_model("large", "cuda", model_path, True)
         self.whisper_model_path = model_path
 
-    def transcribe_with_wisper(self, audio):
+    def transcribe_with_whisper(self, audio):
         result = self.whisper_model.transcribe(audio)
         return result["text"]
     
@@ -143,7 +210,14 @@ class OmniApi:
         
         keywords = self.keyword_extractor_model.extract_keywords(text)
         return keywords
-        
+    
+    def ocr(self, base64_image):
+        # base64_image is a base64 url encoded image
+        # strip the url part
+        base64_image = base64_image.split(",")[1]
+        # decode the base64 image
+        image = Image.open(io.BytesIO(base64.b64decode(base64_image)))
+        return pytesseract.image_to_string(image)
 
 Routes = {
     "vision": "/vision",
@@ -164,8 +238,8 @@ Routes = {
     "whisper": "/whisper",
     "tts_stream": "/tts_stream",
     "tts": "/tts",
-    "keyword_extraction": "/keyword_extraction"
-
+    "keyword_extraction": "/keyword_extraction",
+    "ocr": "/ocr"
 }
 
 omni_api = OmniApi()
@@ -181,10 +255,28 @@ def vision():
     user_prompt = request.json['user_prompt']        
     model_path = request.json['model_path']
     clip_path = request.json['clip_path']
-    omni_api.load_vision(clip_path, model_path)
-    result = omni_api.vision(system_prompt, user_prompt, image_url)
-    print(result)
-    return result
+
+    grammar_text = request.json['grammar']
+    
+    grammar = None
+    if(grammar_text is not None and len(grammar_text) > 0):
+        print("grammar_text")
+        print(grammar_text)
+        grammar = LlamaGrammar.from_string(grammar_text, verbose=True)
+
+    try:
+        omni_api.load_vision(clip_path, model_path)
+        result = omni_api.vision(system_prompt, user_prompt, image_url, grammar)
+        print(result)
+        return result
+    except Exception as e:
+        print(e)
+        return jsonify({'error': str(e)})
+
+@app.route(Routes["ocr"], methods=['POST'])
+def ocr():
+    base64_image = request.json['img_base64']
+    return jsonify({'text': omni_api.ocr(base64_image)})
 
 @app.route(Routes["chat"], methods=['POST'])
 def chat():
@@ -327,7 +419,7 @@ def whisper_route():
     filename = omni_api.save_audio_as_mp3(audio_bytes, filename)
     
     # Transcribe the audio
-    text = omni_api.transcribe_with_wisper(filename)
+    text = omni_api.transcribe_with_whisper(filename)
     return jsonify({"transcription": text})
 
 audio_clip_dir = "clips"
