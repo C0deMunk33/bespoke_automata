@@ -119,7 +119,7 @@ class SimpleVectorDB:
 
     def get_by_id(self, collection_name, id):
         return self.db[collection_name].get(id)
-
+    
     def get_by_title(self, collection_name, title):
         for doc in self.db[collection_name].values():
             if doc['title'] == title:

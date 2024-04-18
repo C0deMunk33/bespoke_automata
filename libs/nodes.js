@@ -656,6 +656,8 @@ Variable_Forward_Node.prototype.onExecute = function() {
 	if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 		let input_dict = JSON.parse(this.getInputData(0));
 		this.setOutputData(0, input_dict[this.properties.variable_name]);
+	} else {
+		this.setOutputData(0, "");
 	}
 }
 
@@ -1322,7 +1324,6 @@ Random_Selection_Node.prototype.onExecute = function() {
 	this.setOutputData(0, result );
 }
 
-//TODO: compare number node, outputs to "yes" output based on the setting: gt, lt, eq, gte, lte
 
 
 
@@ -1435,6 +1436,12 @@ function GPT_Node() {
 	this.addInput("server url", "string")
 	this.addInput("api key", "string");
 	this.addInput("model", "string");
+	// clear buffer button
+	this.addInput("clear", "string");
+	// grammars text input
+	this.addInput("grammars", "string");
+	// buffer inject, allows for adding an item to the chat buffer before user input
+	this.addInput("buffer inject", "string")
 
 	// yes/no switch widget for memory on/off
 	this.properties = {
@@ -1447,10 +1454,7 @@ function GPT_Node() {
 
 	// buffer length widget
 	this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length, "buffer_length", {precision:0, step:10});
-	// clear buffer button
-	this.addInput("clear", "string");
-	// grammars text input
-	this.addInput("grammars", "string");
+	
 
 	this.addWidget("button","Clear Buffer","", ()=>{
 		this.properties.chat_buffer = [];
@@ -1479,6 +1483,11 @@ GPT_Node.prototype.onExecute = async function() {
 	if(user === undefined || user === "") {
 		this.setOutputData(0, "");
 		return;
+	}
+
+	// inject buffer item
+	if(this.getInputData(7) !== undefined && this.getInputData(7) !== "") {
+		this.properties.chat_buffer.push({"role": "assistant", "content": this.getInputData(7)});
 	}
 
 
@@ -1952,22 +1961,74 @@ Add_Node.prototype.onExecute = function() {
 	this.setOutputData(0, this.properties.number);
 }
 
-// Compare number node
-function Compare_Number_Node(){
+// TODO: Compare number node
+
+
+// Compare Text Node
+function Compare_Text_Node(){
 	this.addInput("in_0", "string");
 	this.addInput("in_1", "string");
-	this.addOutput("out", "string");
+	this.addOutput("true", "string");
+	this.addOutput("false", "string");
 	this.properties = {
-		"compare_type": "greater than",
-		"compare_types": ["greater than", 
-						  "less than", 
-						  "equal to", 
-						  "not equal to", 
-						  "greater than or equal to", 
-						  "less than or equal to"],	
+		"compare_type": "equal to",
+		"compare_types": ["equal to",
+						  "not equal to",
+						  "contains",
+						  "does not contain",
+						  "starts with",
+						  "ends with"],
 	};
 
+	this.compare_widget = this.addWidget("combo","", this.properties.compare_type, function(v){
+		this.properties.compare_type = v;
+	}
+	, { property: "compare_type", values: this.properties.compare_types });
+
 }
+Compare_Text_Node.title = "Compare Text";
+Compare_Text_Node.prototype.onExecute = function() {
+	let a = "";
+	let b = "";
+	if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
+		a = this.getInputData(0);
+	}
+	if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+		b = this.getInputData(1);
+	}
+	console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	console.log("Comparing: " + a + " and " + b)
+	console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	let result = false;
+	switch(this.properties.compare_type) {
+		case "equal to":
+			result = a == b;
+			break;
+		case "not equal to":
+			result = a != b;
+			break;
+		case "contains":
+			result = a.includes(b);
+			break;
+		case "does not contain":
+			result = !a.includes(b);
+			break;
+		case "starts with":
+			result = a.startsWith(b);
+			break;
+		case "ends with":
+			result = a.endsWith(b);
+			break;
+	}
+	if(result) {
+		this.setOutputData(0, "true");
+		this.setOutputData(1, "");
+	} else {
+		this.setOutputData(0, "");
+		this.setOutputData(1, "false");
+	}
+}
+
 
 // random number node, 0 inputs, 1 number output, 2 widgets for min and max
 function Random_Number_Node(){
@@ -2419,12 +2480,27 @@ JSON_API_Node.prototype.onExecute = async function() {
 		this.properties.url = this.url_widget.value;
 	}
 
-	let url = this.properties.url;
-	console.log("url: " + url)
-	let response = await fetch(url);
-	let json = await response.json();
-	console.log(json);
-	this.setOutputData(0, json);
+	let post_vars = {};
+	if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+		post_vars = this.getInputData(1);
+		let url = this.properties.url;
+		console.log("url: " + url)
+		let response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(post_vars)
+		});
+		let json = await response.json();
+		console.log(json);
+		this.setOutputData(0, json);
+	} else {
+		this.setOutputData(0, "");
+	}
+
+
+	
 }
 
 
@@ -2547,5 +2623,6 @@ if (typeof module !== 'undefined' && module.exports) {
 		Dictionary_Bus_Set_Node:Dictionary_Bus_Set_Node,
 		Multiline_Text_Node:Multiline_Text_Node,
 		OCR_Node:OCR_Node,
+		Compare_Text_Node:Compare_Text_Node,
 	};
 }

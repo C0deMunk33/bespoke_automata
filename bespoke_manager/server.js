@@ -96,6 +96,8 @@ async function load_graph(graph_file){
     LiteGraph.registerNodeType("Text/Multiline Text", Nodes.Multiline_Text_Node );
     // LLM/OCR_Node
     LiteGraph.registerNodeType("LLM/OCR", Nodes.OCR_Node );
+    // Compare_Text_Node
+    LiteGraph.registerNodeType("Text/Compare Text", Nodes.Compare_Text_Node );
     let e = graph.configure(graphData);
     if(e) {
         console.log("Error configuring graph: " + e);
