@@ -2493,8 +2493,8 @@ JSON_API_Node.prototype.onExecute = async function() {
 			body: JSON.stringify(post_vars)
 		});
 		let json = await response.json();
-		console.log(json);
-		this.setOutputData(0, json);
+		let json_dict_string = JSON.stringify(json);
+		this.setOutputData(0, json_dict_string);
 	} else {
 		this.setOutputData(0, "");
 	}
