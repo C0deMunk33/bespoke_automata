@@ -913,7 +913,7 @@ Array_Assembler_Node.prototype.onExecute = function() {
 
 function Array_Item_Forward_Node(){
 	this.addInput("in array", "string");
-	this.addInput("index", "number");
+	this.addInput("index", "string");
 	this.addOutput("out item", "string");
 	this.properties = {
 		index: 0
