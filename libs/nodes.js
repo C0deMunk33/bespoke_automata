@@ -30,7 +30,8 @@ call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_mode
 			messages: messages,
 			max_tokens: 30000,
 			stream: false, 
-			grammar: (grammar === undefined || grammar === "") ? undefined : grammar
+			grammar: (grammar === undefined || grammar === "") ? undefined : grammar,
+			stop: ["<|im_end|>"]
 		};
 		final_url = url + gpt_endpoint;
 
@@ -42,9 +43,17 @@ call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_mode
 			body: JSON.stringify(data)
 		});
 
+		console.log("response: ")
+
 		const responseData = await response.json();
-		console.log("llm response: " + JSON.stringify(responseData.chat.choices[0].message.content))
-		return responseData.chat.choices[0].message.content;
+		if(responseData.chat !== undefined) {
+			console.log(JSON.stringify(responseData))
+			console.log("llm response: " + JSON.stringify(responseData.chat.choices[0].message.content))
+			return responseData.chat.choices[0].message.content;
+		} else {
+			return responseData.choices[0].message.content;
+		}
+		
 	} catch (error) {
 		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
 		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
