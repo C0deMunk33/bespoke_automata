@@ -17,7 +17,7 @@ const gpt_endpoint = '/v1/chat/completions';
 const gpt_url = 'https://api.openai.com'
 const default_gpt_model = "gpt-3.5-turbo";
 
-call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model, grammar=undefined) { 
+call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model, grammar=undefined, temperature=undefined) { 
 	try {
 		const headers = {
 			'Content-Type': 'application/json',
@@ -31,6 +31,7 @@ call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_mode
 			max_tokens: 30000,
 			stream: false, 
 			grammar: (grammar === undefined || grammar === "") ? undefined : grammar,
+			temperature: (temperature === undefined || temperature === "") ? undefined : temperature,
 			stop: ["<|im_end|>"]
 		};
 		final_url = url + gpt_endpoint;
@@ -43,12 +44,12 @@ call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_mode
 			body: JSON.stringify(data)
 		});
 
-		console.log("response: ")
+		//console.log("response: ")
 
 		const responseData = await response.json();
 		if(responseData.chat !== undefined) {
-			console.log(JSON.stringify(responseData))
-			console.log("llm response: " + JSON.stringify(responseData.chat.choices[0].message.content))
+			//console.log(JSON.stringify(responseData))
+			//console.log("llm response: " + JSON.stringify(responseData.chat.choices[0].message.content))
 			return responseData.chat.choices[0].message.content;
 		} else {
 			return responseData.choices[0].message.content;
@@ -655,6 +656,7 @@ function Variable_Forward_Node(){
 }
 Variable_Forward_Node.title = "Variable Forward";
 Variable_Forward_Node.prototype.onExecute = function() {
+	
 	if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 		this.properties.variable_name = this.getInputData(1);
 		this.text_widget.value = this.getInputData(1);
@@ -662,8 +664,11 @@ Variable_Forward_Node.prototype.onExecute = function() {
 		this.properties.variable_name = this.text_widget.value;
 	}
 
+	console.log(this.properties.variable_name)
 	if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 		let input_dict = JSON.parse(this.getInputData(0));
+		console.log("variable forward input dict: " + JSON.stringify(input_dict))
+		console.log("variable forward value: " + input_dict[this.properties.variable_name])
 		this.setOutputData(0, input_dict[this.properties.variable_name]);
 	} else {
 		this.setOutputData(0, "");
@@ -686,33 +691,43 @@ function Dictionary_Assembler_Node(){
 	this.addInput("var name", "string");
 	this.addInput("var value", "string");
 	this.addOutput("out dict", "string");
-	this.properties = { 
+	this.properties = {
 		variable_name: "",
-		variable_value: ""
 	};
 	this.text_widget = this.addWidget("text","Variable Name",this.properties.variable_name,"variable_name");
 }
 Dictionary_Assembler_Node.title = "Dictionary Assembler";
 Dictionary_Assembler_Node.prototype.onExecute = function() {
-	if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
-		this.properties.variable_name = this.getInputData(1);
-		this.text_widget.value = this.getInputData(1);
-	}
 
-	if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
-		this.properties.variable_value = this.getInputData(2);
-	}
+	let variable_name = "";
+	let variable_value = "";
+	let input_dict = {};
 
 	if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
-		let input_dict = JSON.parse(this.getInputData(0));
-		input_dict[this.properties.variable_name] = this.properties.variable_value;
-		this.setOutputData(0, JSON.stringify(input_dict));
+		input_dict = JSON.parse(this.getInputData(0));		
+	} 
+
+	if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
+		variable_name = this.getInputData(1);
+		this.properties.variable_name = variable_name;
 	} else {
-		let input_dict = {};
-		input_dict[this.properties.variable_name] = this.properties.variable_value;
-		this.setOutputData(0, JSON.stringify(input_dict));
+		this.properties.variable_name = this.text_widget.value;
+		variable_name = this.properties.variable_name;
 	}
+
+	console.log("variable name: " + variable_name)
+	if(this.getInputData(2) !== undefined && this.getInputData(2) !== "") {
+		variable_value = this.getInputData(2);
+	}
+	console.log("variable value: " + variable_value)
+	console.log("input dict: " + JSON.stringify(input_dict))
+	if(variable_value !== "" && variable_name !== "") {
+		input_dict[variable_name] = variable_value;	
+	}	
+
+	this.setOutputData(0, JSON.stringify(input_dict));
 }
+
 
 
 
@@ -796,11 +811,10 @@ Dictionary_Bus_Get_Node.bg_color = "#353"
 // end green theme
 Dictionary_Bus_Get_Node.prototype.onExecute = function() {
 	if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
-		console.log("setting bus_id to: " + this.getInputData(0))
+
 		this.properties.bus_id = this.getInputData(0);
 		this.text_widget.value = this.getInputData(0);
 	} else {
-		console.log("setting bus_id to: " + this.text_widget.value)
 		this.properties.bus_id = this.text_widget.value;
 	}
 
@@ -894,9 +908,6 @@ Array_Assembler_Node.prototype.onExecute = function() {
 	let input_array_string = (this.getInputData(0) | "").toString().trim();
 
 	if(input_array_string === "") {
-		console.log("~~~~~~~~~~~~~~~~~~~~~~")
-		console.log("parsing input array: " + input_array_string)
-		console.log("~~~~~~~~~~~~~~~~~~~~~~")
 		this.properties.array = JSON.parse(input_array_string);
 	} else {
 		this.properties.array = [];
@@ -978,9 +989,6 @@ Array_Stepper_Node.prototype.onExecute = function() {
 	if(this.getInputData(0) !== undefined && this.getInputData(0) !== "") {
 		let input_array = JSON.parse(this.getInputData(0));
 
-		console.log("current step: " + this.properties.step)
-		console.log("input array: " + input_array)
-		console.log("current item: " + input_array[this.properties.step])
 		if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {
 			this.properties.step += 1;
 			if(this.properties.step >= input_array.length) {
@@ -1127,10 +1135,7 @@ Text_Node.prototype.onExecute = function() {
 	} else if(this.text_widget.value !== this.properties.value) {
 		this.properties.value = this.text_widget.value;
 	}
-	console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-	console.log("Text node executing")
-	console.log("outputting: " + this.properties.value)
-	console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
 	this.setOutputData(0, this.properties.value );
 }
 
@@ -1451,6 +1456,9 @@ function GPT_Node() {
 	this.addInput("grammars", "string");
 	// buffer inject, allows for adding an item to the chat buffer before user input
 	this.addInput("buffer inject", "string")
+	// temperature input
+	this.addInput("temperature", "string");
+	
 
 	// yes/no switch widget for memory on/off
 	this.properties = {
@@ -1458,12 +1466,11 @@ function GPT_Node() {
 		api_key: "",
 		buffer_length: 0,
 		chat_buffer: [],
-		model: ""
+		model: "",
 	};
 
 	// buffer length widget
 	this.buffer_length_widget = this.addWidget("number","Buffer Length",this.properties.buffer_length, "buffer_length", {precision:0, step:10});
-	
 
 	this.addWidget("button","Clear Buffer","", ()=>{
 		this.properties.chat_buffer = [];
@@ -1500,7 +1507,7 @@ GPT_Node.prototype.onExecute = async function() {
 	}
 
 
-	console.log("-----GPT node executing-----")
+	console.log("-----LLM node executing-----")
 	console.log("user: " + user)
 
 	if(this.getInputData(2) !== undefined) {
@@ -1535,17 +1542,16 @@ GPT_Node.prototype.onExecute = async function() {
 	}
 
 	let messages = this.properties.chat_buffer.map((item) => item);
-	console.log("messages: " + JSON.stringify(messages));
 
 	// prepend system message
 	messages.unshift(system_role);
 
 	let grammar = this.getInputData(6);
-	console.log("grammar: " + grammar)
+	let temperature = this.getInputData(8);
 
-	let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
+	let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar, temperature);
 
-	console.log("setting GPT output: " + gpt_response)
+	console.log("setting LLM output: " + gpt_response)
 	this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 	this.setOutputData(0, gpt_response);
 	this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
@@ -1601,11 +1607,8 @@ function Prompt_Gate_GPT(){
 	this.addInput("server url", "string");
 	this.addInput("api key", "string");
 	this.addInput("model", "string");
-	this.addInput("grammar", "string");
+	this.addInput("null", "string");
 
-
-	this.addOutput("yes", LiteGraph.ACTION);
-	this.addOutput("no", LiteGraph.ACTION);
 	this.addOutput("yes", "string");
 	this.addOutput("no", "string");
 	this.addOutput("reasoning", "string");
@@ -1613,45 +1616,31 @@ function Prompt_Gate_GPT(){
 		prompt: "",
 		url: gpt_endpoint,
 		api_key: "",
-		reasoning: "",
-		last_input: "",
 		model: "gpt-3.5-turbo"
 	 };
 	this.prompt_widget = this.addWidget("text","Prompt",this.properties.prompt, "prompt");
 
 }
 Prompt_Gate_GPT.title = "Prompt Gate";
-Prompt_Gate_GPT.default_grammar = 
-`root   ::= object
-value  ::= object | array | string | number | ("true" | "false" | "null") ws
+Prompt_Gate_GPT.default_grammar = String.raw`root ::= (
+	"{ " 
+		"\"decision\" : " ( "\"yes\"" | "\"no\"" ) "," 
+		"\"reason\" : " string
+	"}"
+)
 
-object ::=
-  "{" ws (
-			string ":" ws value
-	("," ws string ":" ws value)*
-  )? "}" 
-
-array  ::=
-  "[" ws (
-			value
-	("," ws value)*
-  )? "]" ws
-
-string ::=
+string ::= (
   "\"" (
 	[^"\\] |
 	"\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F]) # escapes
   )* "\"" ws
+)
 
-number ::= ("-"? ([0-9] | [1-9] [0-9]*)) ("." [0-9]+)? ([eE] [-+]? [0-9]+)? ws
-
-# Optional space: by convention, applied in this grammar after literal chars when allowed
 ws ::= ([ \t\n] ws)?
-
 `
 
-
 Prompt_Gate_GPT.prototype.onExecute = async function() {
+	console.log("executing prompt gate")
 	let in_prompt = this.getInputData(3)||"";
 	// trim the in_prompt
 	in_prompt = in_prompt.trim();
@@ -1670,25 +1659,22 @@ Prompt_Gate_GPT.prototype.onExecute = async function() {
 		console.log("prompt gate model not set")
 	}
 
-	// grammar
-	let grammar = this.getInputData(7);
+	// grammar TODO: reenable grammar later?
+
+	grammar = Prompt_Gate_GPT.default_grammar;
+	/*let grammar = this.getInputData(7);
 	console.log("grammar: " + grammar);
 	if(grammar === undefined || grammar === "") {
 		grammar = Prompt_Gate_GPT.default_grammar;
-	}
+	}*/
 
 	let input = this.getInputData(0);
 	if(input === undefined || input === "") {
+		this.setOutputData(0, "");
+		this.setOutputData(1, "");
 		this.setOutputData(2, "");
-		this.setOutputData(3, "");
-		this.properties.last_input = "";
 		return;
-	} else if(input === this.properties.last_input) {
-		return;
-	} else {
-		this.properties.last_input = input.trim();
-		
-	}
+	} 
 
 	let context = this.getInputData(1) || "";
 	let system = this.getInputData(2) || "";
@@ -1710,21 +1696,22 @@ Prompt_Gate_GPT.prototype.onExecute = async function() {
 
 	let gpt_response = await call_gpt(messages, api_key, server_url, this.properties.model, grammar);
 
+	let parsed_response = JSON.parse(gpt_response);
 	
-	this.properties.reasoning = gpt_response;
-	this.setOutputData(4, gpt_response);
+	let decision = parsed_response.decision;
+	let reasoning = parsed_response.reason;
 
-	const positive_words = ["yes", "yeah"]
-
-	if(containsWords(positive_words,gpt_response.toLowerCase())) {
-		this.trigger("yes", this.properties.last_input);
-		this.setOutputData(2, this.properties.last_input);
-		this.setOutputData(3, "");
+	this.setOutputData(2, reasoning);
+	console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	console.log("decision: " + decision)
+	console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	if(decision === "yes") {
+		this.setOutputData(0, input);
+		this.setOutputData(1, "");
 	}
 	else {
-		this.trigger("no", this.properties.last_input);
-		this.setOutputData(2, "");
-		this.setOutputData(3, this.properties.last_input);
+		this.setOutputData(0, "");
+		this.setOutputData(1, input);
 	}
 }
 
@@ -1937,10 +1924,13 @@ Triggered_Text_Output_Node.prototype.onExecute = function() {
 	} else if(this.text_widget.value !== "") {
 		this.properties.text = this.text_widget.value;
 	}
+
 	if(this.getInputData(1) !== undefined && this.getInputData(1) !== "") {			
+		console.log("triggered")
+		console.log("outputting: " + this.properties.text)
 		this.setOutputData(0, this.properties.text);
 	} else {
-		this.setOutputData(0, "");
+		this.setOutputData(0, undefined);
 	}
 }
 

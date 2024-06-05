@@ -127,9 +127,13 @@ class OmniApi:
         print("~" * 100)
         return jsonify(result)
         
-    def chat(self, messages, model_path, n_ctx, n_gpu_layers, chat_format, grammar=None):
+    def chat(self, messages, grammar=None, temperature=None):
         try:
-            result = self.chat_llm.create_chat_completion(messages=messages, grammar=grammar)
+            result = self.chat_llm.create_chat_completion(
+                messages=messages, 
+                grammar=grammar,
+                temperature=temperature
+                )
             return jsonify(result)
         except Exception as e:
             print("~" * 100)
@@ -295,6 +299,12 @@ def chat():
         print(grammar_text)
         grammar = LlamaGrammar.from_string(grammar_text, verbose=True)
 
+    temperature = None
+    try:
+        temperature = data.get('temperature')
+    except:
+        pass
+
     if messages is None:
         return jsonify({'error': 'No messages provided'}), 400
 
@@ -304,8 +314,8 @@ def chat():
     if n_ctx is None:
         return jsonify({'error': 'No n_ctx provided'}), 400
 
-    omni_api.load_chat_model(model_path, n_ctx, 25, "chatml")
-    result = omni_api.chat(messages, model_path, n_ctx, 25, "chatml", grammar)
+    omni_api.load_chat_model(model_path, n_ctx, -1, "chatml")
+    result = omni_api.chat(messages=messages, grammar=grammar, temperature=temperature)
     print("out_text")
     print(result)
     return result
