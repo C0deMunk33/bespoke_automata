@@ -129,12 +129,18 @@ class OmniApi:
         
     def chat(self, messages, grammar=None, temperature=None):
         try:
-            result = self.chat_llm.create_chat_completion(
-                messages=messages, 
-                grammar=grammar,
-                temperature=temperature
-                )
-            return jsonify(result)
+            result = None
+            if temperature is not None:
+                result = self.chat_llm.create_chat_completion(
+                    messages=messages, 
+                    grammar=grammar,
+                    temperature=temperature
+                    )
+            else:
+                result = self.chat_llm.create_chat_completion(
+                    messages=messages, 
+                    grammar=grammar
+                    )
         except Exception as e:
             print("~" * 100)
             print("~" * 100)
