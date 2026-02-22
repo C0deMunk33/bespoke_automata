@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BESPOKE AUTOMATA</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" type="text/css" href="/libs/litegraph.css">
+    <link rel="stylesheet" href="/libs/airoyyo.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poiret+One&display=swap" rel="stylesheet">
+    <script src="/libs/socket.io.js"></script>
+    <script type="text/javascript" src="/libs/litegraph.js"></script>
+    <script type="text/javascript" src="/libs/weaviate.js"></script>
+    <script type="text/javascript" src="/libs/nodes.js"></script>
+    <script type="text/javascript" src="/libs/schema.js"></script>
+    <script type="text/javascript" src="/libs/jszip.min.js"></script>
+    <style>
+        @font-face { font-family: 'Resagnicto'; src: url('/libs/Resagnicto.ttf') format('truetype'); }
+        @font-face { font-family: 'HerrVonMuellerhoff'; src: url('/libs/HerrVonMuellerhoff-Regular.otf') format('opentype'); }
+        @font-face { font-family: 'Poiret One'; src: url('/libs/PoiretOne-Regular.ttf') format('truetype'); }
+
+        body {
+            background-image: url("background.jpg");
+            background-repeat: repeat;
+        }
+
+        /* --- Tab navigation --- */
+        #app-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 32px;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            z-index: 10000;
+            border-bottom: 1px solid #333;
+            padding: 0 8px;
+            gap: 2px;
+        }
+        #app-nav .nav-brand {
+            font-family: "Poiret One", sans-serif;
+            color: #d0d0d0;
+            font-size: 13px;
+            letter-spacing: 0.15em;
+            margin-right: 16px;
+            user-select: none;
+        }
+        #app-nav .nav-brand b {
+            font-family: "Resagnicto", sans-serif;
+            font-weight: normal;
+        }
+        .nav-tab {
+            padding: 6px 16px;
+            background: transparent;
+            color: #999;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .nav-tab:hover { color: #ddd; }
+        .nav-tab.active { color: #FF6F61; border-bottom-color: #FF6F61; }
+
+        .nav-status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #777;
+        }
+        .nav-status .dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #4caf50;
+            display: inline-block;
+        }
+        .nav-status code {
+            color: #4fc3f7;
+            font-size: 11px;
+        }
+
+        /* --- View containers --- */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* Editor view: full-screen canvas below nav */
+        #view-editor {
+            position: fixed;
+            top: 32px; left: 0; right: 0; bottom: 0;
+        }
+        #view-editor #top_menu_bar { top: 0; z-index: 100; }
+        #view-editor #left_panel { top: 32px; z-index: 200; }
+        #view-editor .panel_toggle_open,
+        #view-editor .panel_toggle_closed { top: 32px; z-index: 150; }
+        #view-editor canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* Manager + Runner views */
+        #view-manager, #view-runner {
+            position: fixed;
+            top: 32px; left: 0; right: 0; bottom: 0;
+            overflow-y: auto;
+            background: #0f0f1a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* --- Manager styles --- */
+        .mgr-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+        .mgr-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .mgr-header h2 { font-size: 20px; color: #e94560; font-weight: 600; }
+        .mgr-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            background: #0f3460;
+            color: #e0e0e0;
+            transition: background 0.2s;
+        }
+        .mgr-btn:hover { background: #1a4a7a; }
+        .mgr-btn-danger {
+            background: transparent;
+            color: #e94560;
+            border: 1px solid #e94560;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        .mgr-btn-danger:hover { background: rgba(233,69,96,0.15); }
+        .mgr-brain {
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+        .mgr-brain:hover { border-color: #1a4a7a; }
+        .mgr-brain h3 { font-size: 15px; color: #e94560; margin-bottom: 6px; }
+        .mgr-brain .io-summary { font-size: 12px; color: #888; }
+        .mgr-detail {
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .mgr-detail h3 { font-size: 18px; color: #e94560; margin-bottom: 16px; }
+        .schema-section { margin-bottom: 16px; }
+        .schema-section h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin-bottom: 6px; }
+        .schema-table { width: 100%; border-collapse: collapse; }
+        .schema-table th, .schema-table td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #1e2d4a; font-size: 13px; color: #e0e0e0; }
+        .schema-table th { color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 500; }
+        .tag-input { background: #1b5e20; color: #a5d6a7; }
+        .tag-output { background: #4a1524; color: #ef9a9a; }
+        .tag-bus { background: #0d47a1; color: #90caf9; }
+        .connection-info { background: #0f1b30; border: 1px solid #0f3460; border-radius: 8px; padding: 12px; margin-top: 12px; }
+        .connection-info label { font-size: 11px; text-transform: uppercase; color: #888; display: block; margin-bottom: 4px; }
+        .connection-info code { font-size: 13px; color: #4fc3f7; user-select: all; }
+        .mgr-empty { text-align: center; padding: 60px 20px; color: #555; }
+
+        /* --- Runner styles --- */
+        .runner-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 32px;
+        }
+        .runner-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .runner-header h2 { font-size: 20px; color: #e94560; font-weight: 600; }
+        .brain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); gap: 20px; }
+        .brain-card { background: #1a1a2e; border: 1px solid #0f3460; border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
+        .brain-card:hover { border-color: #1a4a7a; }
+        .brain-card-header { padding: 14px 20px; border-bottom: 1px solid #0f3460; }
+        .brain-card-header h3 { font-size: 15px; color: #e94560; }
+        .brain-card-body { padding: 16px 20px; }
+        .field-group { margin-bottom: 12px; }
+        .field-group label { display: block; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; color: #888; margin-bottom: 4px; }
+        .field-group textarea {
+            width: 100%; min-height: 50px; padding: 8px 10px;
+            background: #0d1117; border: 1px solid #0f3460; border-radius: 6px;
+            color: #e0e0e0; font-family: inherit; font-size: 13px; resize: vertical;
+        }
+        .field-group textarea:focus { outline: none; border-color: #e94560; }
+        .bus-group { margin-top: 10px; padding: 10px; background: rgba(15,52,96,0.2); border-radius: 6px; border: 1px solid #0f3460; }
+        .bus-group-title { font-size: 11px; text-transform: uppercase; color: #4fc3f7; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .brain-card-actions { padding: 10px 20px; border-top: 1px solid #0f3460; }
+        .btn-run { padding: 8px 16px; background: #e94560; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; }
+        .btn-run:hover { background: #d63851; }
+        .btn-run:disabled { background: #555; cursor: not-allowed; }
+        .output-panel { margin: 12px 20px 20px; background: #0d1117; border: 1px solid #0f3460; border-radius: 6px; overflow: hidden; }
+        .output-panel-header { padding: 8px 12px; background: rgba(15,52,96,0.3); font-size: 11px; text-transform: uppercase; color: #888; }
+        .output-panel-body { padding: 12px; font-size: 13px; white-space: pre-wrap; word-break: break-word; line-height: 1.5; max-height: 300px; overflow-y: auto; color: #e0e0e0; }
+        .runner-empty { text-align: center; padding: 60px 20px; color: #555; }
+        .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* File list layout overrides */
+        #file_list_element .file {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        #file_list_element .file .file-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #file_list_element .file .file_button {
+            float: none;
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body style="width:100%; height:100%">
+
+<!-- ===== Top Navigation ===== -->
+<div id="app-nav">
+    <span class="nav-brand">BESPOKE <b>AUTOMATA</b></span>
+    <button class="nav-tab active" onclick="switchTab('editor')">Editor</button>
+    <button class="nav-tab" onclick="switchTab('manager')">Manager</button>
+    <button class="nav-tab" onclick="switchTab('runner')">Runner</button>
+    <div class="nav-status">
+        <span class="dot"></span>
+        <span>MCP</span>
+        <code id="navSseEndpoint"></code>
+    </div>
+</div>
+
+<!-- ===== Editor View ===== -->
+<div id="view-editor" class="view active">
+    <div id="top_menu_bar">
+        <span>
+            <img id="site_icon" src="icon.svg" alt="icon">
+        </span>
+        <input id="top_menu_file_name" type="text" value="untitled_brain">
+        <div class="menu_gap"></div>
+        <button id="run"><img class="menu_button_icon" src="play.svg" alt="play"> Run</button>
+    </div>
+    <div id="left_panel" class="hidden">
+        <div id="file_list_title" style="padding:5px;color:var(--secondary-text-color);font-weight:bold;">Saved Brains</div>
+        <div id="file_list_element"></div>
+        <div id="panel_bottom_buttons">
+            <button id="new_brain" class="bottom_panel_button">New Brain</button>
+            <button id="import_brain" class="bottom_panel_button">Import Brain</button>
+            <button id="export_workspace" class="bottom_panel_button">Export Workspace</button>
+            <button id="import_workspace" class="bottom_panel_button">Import Workspace</button>
+            <button id="clear_workspace" class="bottom_panel_button">Clear Workspace</button>
+        </div>
+    </div>
+    <div id="left_panel_toggle" class="panel_toggle_closed">&#9654;</div>
+    <canvas id="mycanvas" width="1024" height="720" style="border: 1px solid"></canvas>
+</div>
+
+<!-- ===== Manager View ===== -->
+<div id="view-manager" class="view">
+    <div class="mgr-content">
+        <div class="mgr-header">
+            <h2>Brain Manager</h2>
+            <button class="mgr-btn" onclick="mgrReload()">Reload Brains</button>
+        </div>
+        <div id="mgrList"></div>
+        <div id="mgrDetail"></div>
+    </div>
+</div>
+
+<!-- ===== Runner View ===== -->
+<div id="view-runner" class="view">
+    <div class="runner-content">
+        <div class="runner-header">
+            <h2>Run Brains</h2>
+            <button class="mgr-btn" onclick="runnerRefresh()">Refresh</button>
+        </div>
+        <div id="runnerContainer"></div>
+    </div>
+</div>
+
+<script>
+// =============================================
+//  Tab switching
+// =============================================
+let currentTab = 'editor';
+
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('view-' + tab).classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach(t => {
+        if (t.textContent.toLowerCase() === tab) t.classList.add('active');
+    });
+    if (tab === 'manager') mgrLoad();
+    if (tab === 'runner') runnerRefresh();
+    if (tab === 'editor') { canvas.resize(); updateEditorHiPPICanvas(); }
+}
+
+// Load status bar
+fetch('/api/status').then(r => r.json()).then(s => {
+    document.getElementById('navSseEndpoint').textContent = s.sseEndpoint;
+}).catch(() => {});
+
+// =============================================
+//  EDITOR
+// =============================================
+
+let save_buffer = [];
+let save_buffer_length = 10;
+let save_buffer_index = 0;
+let is_saving = false;
+let current_loaded_graph_name = 'untitled_brain_' + Math.floor(Date.now() / 1000);
+let file_list = [];
+
+async function editorLoadFileList() {
+    try {
+        const res = await fetch('/api/graphs');
+        file_list = await res.json();
+    } catch (e) {
+        file_list = [];
+    }
+    draw_file_list(file_list);
+}
+
+async function editorLoadGraph(name) {
+    try {
+        const res = await fetch('/api/graphs/' + encodeURIComponent(name));
+        if (!res.ok) return null;
+        return await res.json();
+    } catch (e) { return null; }
+}
+
+async function editorSaveGraph(name, data) {
+    try {
+        await fetch('/api/graphs/' + encodeURIComponent(name), {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+    } catch (e) { console.error('Save failed:', e); }
+}
+
+async function editorDeleteGraph(name) {
+    try {
+        await fetch('/api/graphs/' + encodeURIComponent(name), { method: 'DELETE' });
+    } catch (e) { console.error('Delete failed:', e); }
+}
+
+function draw_file_list(file_name_list) {
+    const el = document.getElementById('file_list_element');
+    el.innerHTML = '';
+    for (let i = 0; i < file_name_list.length; i++) {
+        const file_name = file_name_list[i];
+        const file = document.createElement('div');
+        file.className = 'file' + (file_name === current_loaded_graph_name ? ' active' : '');
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'file-name';
+        nameSpan.textContent = file_name;
+        nameSpan.title = file_name;
+        file.appendChild(nameSpan);
+
+        file.addEventListener('click', async function(event) {
+            if (event.target.classList.contains('file_button')) return;
+            save_buffer = [];
+            save_buffer_index = 0;
+            const data = await editorLoadGraph(file_name);
+            if (data) {
+                save_buffer.push(JSON.stringify(data));
+                graph.configure(data);
+                top_menu_file_name.value = file_name;
+                document.title = 'Bespoke Automata - ' + file_name;
+                current_loaded_graph_name = file_name;
+                draw_file_list(file_list);
+            } else {
+                alert('File not found: ' + file_name);
+            }
+        });
+
+        const download_button = document.createElement('button');
+        download_button.innerHTML = '&#8595;';
+        download_button.className = 'file_button';
+        download_button.title = 'Download';
+        download_button.addEventListener('click', async function() {
+            const data = await editorLoadGraph(file_name);
+            if (data) {
+                const blob = new Blob([JSON.stringify(data)]);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file_name + '.brain';
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            }
+        });
+
+        const delete_button = document.createElement('button');
+        delete_button.innerHTML = '&#x2715;';
+        delete_button.className = 'file_button';
+        delete_button.title = 'Delete';
+        delete_button.addEventListener('click', async function() {
+            if (confirm('Delete ' + file_name + '?')) {
+                await editorDeleteGraph(file_name);
+                await editorLoadFileList();
+                if (file_list.length > 0 && current_loaded_graph_name === file_name) {
+                    current_loaded_graph_name = file_list[0];
+                    const data = await editorLoadGraph(current_loaded_graph_name);
+                    if (data) {
+                        graph.configure(data);
+                        save_buffer = [JSON.stringify(data)];
+                        save_buffer_index = 0;
+                    }
+                    top_menu_file_name.value = current_loaded_graph_name;
+                    document.title = 'Bespoke Automata - ' + current_loaded_graph_name;
+                } else if (file_list.length === 0) {
+                    graph.clear();
+                    current_loaded_graph_name = 'untitled_brain_' + Math.floor(Date.now() / 1000);
+                    top_menu_file_name.value = current_loaded_graph_name;
+                }
+                draw_file_list(file_list);
+            }
+        });
+        file.appendChild(download_button);
+        file.appendChild(delete_button);
+        el.appendChild(file);
+    }
+}
+
+// Left panel toggle
+const left_panel_toggle = document.getElementById('left_panel_toggle');
+const left_panel = document.getElementById('left_panel');
+left_panel_toggle.addEventListener('click', function() {
+    left_panel.classList.toggle('hidden');
+    left_panel.classList.toggle('visible');
+    left_panel_toggle.innerHTML = left_panel.classList.contains('visible') ? '&#9664;' : '&#9654;';
+    left_panel_toggle.classList.toggle('panel_toggle_open');
+    left_panel_toggle.classList.toggle('panel_toggle_closed');
+});
+
+// Node registration + graph setup
+function set_nodes() {
+    LiteGraph.clearRegisteredTypes();
+    LiteGraph.registerNodeType("Text/Text", Text_Node);
+    LiteGraph.registerNodeType("Text/Random Text", Random_Selection_Node);
+    LiteGraph.registerNodeType("Text/Prefix Text", Prefix_Text_Node);
+    LiteGraph.registerNodeType("Text/Suffix Text", Suffix_Text_Node);
+    LiteGraph.registerNodeType("Text/Concatenate Text", Concatenate_Text_Node);
+    LiteGraph.registerNodeType("Storage/Weaviate Store", Weaviate_Ingest_Node);
+    LiteGraph.registerNodeType("Storage/Weaviate Query", Weaviate_Query_Node);
+    LiteGraph.registerNodeType("IO/Text Input", Text_Input_Node);
+    LiteGraph.registerNodeType("IO/Text Output", Text_Output_Node);
+    LiteGraph.registerNodeType("Image/URL to Base64", Img_URL_To_Base64_Node);
+    LiteGraph.registerNodeType("LLM/Vision", Vision_Node);
+    LiteGraph.registerNodeType("Audio/Audio Generation", Audio_Generation_Node);
+    LiteGraph.registerNodeType("Control/Start", Start_Node);
+    LiteGraph.registerNodeType("Control/Counter", Counter_Node);
+    LiteGraph.registerNodeType("Control/Number Output", Triggered_Number_Output_Node);
+    LiteGraph.registerNodeType("Control/Text Output", Triggered_Text_Output_Node);
+    LiteGraph.registerNodeType("Math/Add", Add_Node);
+    LiteGraph.registerNodeType("Text/Random Number", Random_Number_Node);
+    LiteGraph.registerNodeType("Control/Gate", Gate);
+    LiteGraph.registerNodeType("API/JSON API", JSON_API_Node);
+    LiteGraph.registerNodeType("LLM/GPT", GPT_Node);
+    LiteGraph.registerNodeType("LLM/Venice API", Venice_API_Node);
+    LiteGraph.registerNodeType("Text/Password", Password_Node);
+    LiteGraph.registerNodeType("Control/Prompt Gate (GPT)", Prompt_Gate_GPT);
+    LiteGraph.registerNodeType("Storage/Simple Vector DB Read", Simple_Vector_DB_Read_Node);
+    LiteGraph.registerNodeType("Storage/Simple Vector DB Write", Simple_Vector_DB_Write_Node);
+    LiteGraph.registerNodeType("Brains/Brain", Brain_Node);
+    LiteGraph.registerNodeType("Text/Variable Forward", Variable_Forward_Node);
+    LiteGraph.registerNodeType("Text/Dictionary Assembler", Dictionary_Assembler_Node);
+    LiteGraph.registerNodeType("Control/Global Variable Get", Global_Variable_Get_Node);
+    LiteGraph.registerNodeType("Control/Global Variable Set", Global_Variable_Set_Node);
+    LiteGraph.registerNodeType("Text/Array Assembler", Array_Assembler_Node);
+    LiteGraph.registerNodeType("Text/Array Item Forward", Array_Item_Forward_Node);
+    LiteGraph.registerNodeType("Control/Array Stepper", Array_Stepper_Node);
+    LiteGraph.registerNodeType("Control/Random Array Item", Random_Array_Item_Node);
+    LiteGraph.registerNodeType("Control/Random Dictionary Item", Random_Dictionary_Item_Node);
+    LiteGraph.registerNodeType("System/Note", Note_Node);
+    LiteGraph.registerNodeType("System/Time", Time_Node);
+    LiteGraph.registerNodeType("Text/Keyword Extraction", Keyword_Extraction_Node);
+    LiteGraph.registerNodeType("IO/Dictionary Bus Input", Dictionary_Bus_Input_Node);
+    LiteGraph.registerNodeType("IO/Dictionary Bus Output", Dictionary_Bus_Output_Node);
+    LiteGraph.registerNodeType("IO/Dictionary Bus Get", Dictionary_Bus_Get_Node);
+    LiteGraph.registerNodeType("IO/Dictionary Bus Set", Dictionary_Bus_Set_Node);
+    LiteGraph.registerNodeType("Text/Multiline Text", Multiline_Text_Node);
+    LiteGraph.registerNodeType("LLM/OCR", OCR_Node);
+}
+
+var graph = new LGraph();
+set_nodes();
+var canvas = new LGraphCanvas("#mycanvas", graph);
+updateEditorHiPPICanvas();
+window.addEventListener("resize", function() {
+    if (currentTab === 'editor') { canvas.resize(); updateEditorHiPPICanvas(); }
+});
+
+function updateEditorHiPPICanvas() {
+    const ratio = window.devicePixelRatio;
+    const c = document.getElementById("mycanvas");
+    if (ratio === 1) return;
+    const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const height = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) - 32;
+    c.width = width * ratio;
+    c.height = height * ratio;
+    c.style.width = width + "px";
+    c.style.height = height + "px";
+    c.getContext("2d").scale(ratio, ratio);
+}
+
+// Run button
+document.getElementById("run").addEventListener("click", async function() {
+    do {
+        window.run_again = false;
+        await graph.runStepAsync();
+    } while (window.run_again !== undefined && window.run_again === true);
+});
+
+// Ctrl+S save
+document.addEventListener("keydown", function(e) {
+    if (e.code === "KeyS" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        editorSaveGraph(current_loaded_graph_name, graph.serialize());
+        editorLoadFileList();
+        return false;
+    }
+    return true;
+});
+
+// File name text box
+const top_menu_file_name = document.getElementById("top_menu_file_name");
+
+async function update_filename() {
+    const newName = top_menu_file_name.value;
+    if (!newName) return;
+    if (newName !== current_loaded_graph_name) {
+        if (file_list.includes(newName)) {
+            if (!confirm('Overwrite ' + newName + '?')) {
+                top_menu_file_name.value = current_loaded_graph_name;
+                return;
+            }
+        }
+    }
+    document.title = 'Bespoke Automata - ' + newName;
+    current_loaded_graph_name = newName;
+    await editorSaveGraph(newName, graph.serialize());
+    await editorLoadFileList();
+}
+
+top_menu_file_name.addEventListener("blur", update_filename);
+top_menu_file_name.addEventListener("keydown", function(e) {
+    if (e.code === "Enter" || e.code === "NumpadEnter") top_menu_file_name.blur();
+});
+
+// Bottom panel buttons
+document.getElementById("new_brain").addEventListener("click", async function() {
+    await editorSaveGraph(current_loaded_graph_name, graph.serialize());
+    graph.clear();
+    current_loaded_graph_name = 'untitled_brain_' + Math.floor(Date.now() / 1000);
+    top_menu_file_name.value = current_loaded_graph_name;
+    document.title = 'Bespoke Automata - ' + current_loaded_graph_name;
+    save_buffer = [];
+    save_buffer_index = 0;
+});
+
+document.getElementById("import_brain").addEventListener("click", function() {
+    const el = document.createElement("input");
+    el.type = "file";
+    el.accept = ".brain";
+    el.style.display = "none";
+    document.body.appendChild(el);
+    el.click();
+    document.body.removeChild(el);
+    el.addEventListener("change", function() {
+        const file = el.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const data = JSON.parse(e.target.result);
+            const name = file.name.replace(/\.brain$/, '');
+            graph.configure(data);
+            save_buffer = [e.target.result];
+            save_buffer_index = 0;
+            top_menu_file_name.value = name;
+            current_loaded_graph_name = name;
+            document.title = 'Bespoke Automata - ' + name;
+            await editorSaveGraph(name, data);
+            await editorLoadFileList();
+        };
+        reader.readAsText(file);
+    });
+});
+
+document.getElementById("export_workspace").addEventListener("click", async function() {
+    const zip = new JSZip();
+    for (const name of file_list) {
+        const data = await editorLoadGraph(name);
+        if (data) zip.file(name + '.brain', JSON.stringify(data));
+    }
+    const content = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "workspace.zip";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+});
+
+document.getElementById("import_workspace").addEventListener("click", function() {
+    if (!confirm("Replace current workspace with imported zip?")) return;
+    const el = document.createElement("input");
+    el.type = "file";
+    el.accept = ".zip";
+    el.style.display = "none";
+    document.body.appendChild(el);
+    el.click();
+    document.body.removeChild(el);
+    el.addEventListener("change", function() {
+        const file = el.files[0];
+        if (!file) return;
+        JSZip.loadAsync(file).then(async function(zip) {
+            for (const [relativePath, zipEntry] of Object.entries(zip.files)) {
+                const text = await zipEntry.async("string");
+                const name = relativePath.replace(/\.brain$/, '');
+                try {
+                    const data = JSON.parse(text);
+                    await editorSaveGraph(name, data);
+                } catch (e) {}
+            }
+            await editorLoadFileList();
+            if (file_list.length > 0) {
+                current_loaded_graph_name = file_list[0];
+                const data = await editorLoadGraph(current_loaded_graph_name);
+                if (data) { graph.configure(data); save_buffer = [JSON.stringify(data)]; save_buffer_index = 0; }
+                top_menu_file_name.value = current_loaded_graph_name;
+                document.title = 'Bespoke Automata - ' + current_loaded_graph_name;
+            }
+        });
+    });
+});
+
+document.getElementById("clear_workspace").addEventListener("click", async function() {
+    if (!confirm("Delete ALL brains in the workspace? This cannot be undone.")) return;
+    for (const name of [...file_list]) {
+        await editorDeleteGraph(name);
+    }
+    graph.clear();
+    current_loaded_graph_name = 'untitled_brain_' + Math.floor(Date.now() / 1000);
+    top_menu_file_name.value = current_loaded_graph_name;
+    document.title = 'Bespoke Automata - ' + current_loaded_graph_name;
+    save_buffer = [];
+    save_buffer_index = 0;
+    await editorLoadFileList();
+    draw_file_list(file_list);
+});
+
+// Auto-save to server every 5 seconds
+graph.onAfterChange = function() {
+    is_saving = true;
+    const graph_data = JSON.stringify(graph.serialize());
+    if (save_buffer_index < save_buffer.length - 1) save_buffer.splice(save_buffer_index + 1);
+    save_buffer.push(graph_data);
+    if (save_buffer.length > save_buffer_length) save_buffer.shift();
+    save_buffer_index = save_buffer.length - 1;
+    is_saving = false;
+};
+
+window.setInterval(function() {
+    if (is_saving || currentTab !== 'editor') return;
+    editorSaveGraph(current_loaded_graph_name, graph.serialize());
+}, 5000);
+
+// Undo / redo
+document.addEventListener("keydown", function(e) {
+    if (currentTab !== 'editor') return true;
+    if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        if (save_buffer_index > 0) {
+            save_buffer_index--;
+            graph.clear();
+            graph.configure(JSON.parse(save_buffer[save_buffer_index]));
+        }
+        return false;
+    }
+    if (e.code === "KeyY" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        if (save_buffer_index < save_buffer.length - 1) {
+            save_buffer_index++;
+            graph.clear();
+            graph.configure(JSON.parse(save_buffer[save_buffer_index]));
+        }
+        return false;
+    }
+    return true;
+});
+
+// Initial load
+(async function() {
+    await editorLoadFileList();
+    if (file_list.length > 0) {
+        current_loaded_graph_name = file_list[0];
+        const data = await editorLoadGraph(current_loaded_graph_name);
+        if (data) {
+            graph.configure(data);
+            save_buffer = [JSON.stringify(data)];
+            save_buffer_index = 0;
+        }
+        top_menu_file_name.value = current_loaded_graph_name;
+        document.title = 'Bespoke Automata - ' + current_loaded_graph_name;
+    }
+    draw_file_list(file_list);
+})();
+
+// =============================================
+//  MANAGER
+// =============================================
+
+let mgrBrains = [];
+let mgrSelected = null;
+
+async function mgrLoad() {
+    try {
+        const res = await fetch('/api/brains');
+        mgrBrains = await res.json();
+    } catch (e) { mgrBrains = []; }
+    mgrRenderList();
+    if (mgrSelected) {
+        const updated = mgrBrains.find(b => b.name === mgrSelected.name);
+        if (updated) mgrRenderDetail(updated);
+        else { mgrSelected = null; document.getElementById('mgrDetail').innerHTML = ''; }
+    }
+}
+
+async function mgrReload() {
+    await fetch('/api/brains/reload', { method: 'POST' });
+    await mgrLoad();
+}
+
+function mgrRenderList() {
+    const el = document.getElementById('mgrList');
+    if (mgrBrains.length === 0) {
+        el.innerHTML = '<div class="mgr-empty">No brains found. Save a brain in the Editor to get started.</div>';
+        return;
+    }
+    el.innerHTML = mgrBrains.map(b => {
+        const inC = b.schema.inputs.length;
+        const outC = b.schema.outputs.length;
+        return `<div class="mgr-brain" onclick="mgrSelect('${b.name}')">
+            <h3>${b.name}</h3>
+            <div class="io-summary">${inC} input${inC !== 1 ? 's' : ''}, ${outC} output${outC !== 1 ? 's' : ''}</div>
+        </div>`;
+    }).join('');
+}
+
+function mgrSelect(name) {
+    const brain = mgrBrains.find(b => b.name === name);
+    if (!brain) return;
+    mgrSelected = brain;
+    mgrRenderDetail(brain);
+}
+
+function mgrRenderDetail(brain) {
+    const s = brain.schema;
+    let html = `<h3>${brain.name}</h3>`;
+
+    html += `<div class="schema-section"><h4>Text Inputs</h4>`;
+    if (s.inputs.length === 0) html += '<p style="color:#555;font-size:13px">None</p>';
+    else {
+        html += '<table class="schema-table"><tr><th>Name</th><th>Type</th></tr>';
+        html += s.inputs.map(i => `<tr><td>${i.name}</td><td><span class="tag tag-input">string</span></td></tr>`).join('');
+        html += '</table>';
+    }
+    html += '</div>';
+
+    html += `<div class="schema-section"><h4>Text Outputs</h4>`;
+    if (s.outputs.length === 0) html += '<p style="color:#555;font-size:13px">None</p>';
+    else {
+        html += '<table class="schema-table"><tr><th>Name</th><th>Type</th></tr>';
+        html += s.outputs.map(o => `<tr><td>${o.name}</td><td><span class="tag tag-output">string</span></td></tr>`).join('');
+        html += '</table>';
+    }
+    html += '</div>';
+
+    const busInKeys = Object.keys(s.input_busses);
+    if (busInKeys.length > 0) {
+        html += '<div class="schema-section"><h4>Bus Inputs</h4><table class="schema-table"><tr><th>Bus ID</th><th>Variables</th></tr>';
+        busInKeys.forEach(bid => { html += `<tr><td><span class="tag tag-bus">${bid}</span></td><td>${s.input_busses[bid].join(', ')}</td></tr>`; });
+        html += '</table></div>';
+    }
+    const busOutKeys = Object.keys(s.output_busses);
+    if (busOutKeys.length > 0) {
+        html += '<div class="schema-section"><h4>Bus Outputs</h4><table class="schema-table"><tr><th>Bus ID</th><th>Variables</th></tr>';
+        busOutKeys.forEach(bid => { html += `<tr><td><span class="tag tag-bus">${bid}</span></td><td>${s.output_busses[bid].join(', ')}</td></tr>`; });
+        html += '</table></div>';
+    }
+
+    html += `<div class="connection-info"><label>MCP Tool Name</label><code>${brain.name}</code></div>`;
+    document.getElementById('mgrDetail').innerHTML = `<div class="mgr-detail">${html}</div>`;
+}
+
+// =============================================
+//  RUNNER
+// =============================================
+
+let runnerBrains = [];
+
+async function runnerRefresh() {
+    try {
+        const res = await fetch('/api/brains');
+        runnerBrains = await res.json();
+    } catch (e) { runnerBrains = []; }
+    runnerRender();
+}
+
+function runnerRender() {
+    const container = document.getElementById('runnerContainer');
+    if (runnerBrains.length === 0) {
+        container.innerHTML = '<div class="runner-empty"><h3>No Brains Loaded</h3><p>Save a brain in the Editor then reload.</p></div>';
+        return;
+    }
+    container.innerHTML = '<div class="brain-grid">' + runnerBrains.map((b, i) => runnerCard(b, i)).join('') + '</div>';
+}
+
+function runnerCard(brain, index) {
+    const s = brain.schema;
+    const cardId = 'run-' + index;
+    let fieldsHtml = '';
+
+    for (const input of s.inputs) {
+        fieldsHtml += `<div class="field-group"><label>${input.name}</label><textarea id="${cardId}-${input.name}" placeholder="Enter ${input.name}..." rows="2"></textarea></div>`;
+    }
+    for (const [busId, vars] of Object.entries(s.input_busses)) {
+        fieldsHtml += `<div class="bus-group"><div class="bus-group-title">Bus: ${busId}</div>`;
+        for (const v of vars) {
+            fieldsHtml += `<div class="field-group"><label>${v}</label><textarea id="${cardId}-bus__${busId}__${v}" placeholder="Enter ${v}..." rows="1"></textarea></div>`;
+        }
+        fieldsHtml += '</div>';
+    }
+
+    return `<div class="brain-card" id="${cardId}">
+        <div class="brain-card-header"><h3>${brain.name}</h3></div>
+        <div class="brain-card-body">${fieldsHtml || '<p style="color:#555;font-size:13px">No inputs required</p>'}</div>
+        <div class="brain-card-actions"><button class="btn-run" id="${cardId}-submit" onclick="runnerExec(${index})">Run Brain</button></div>
+        <div id="${cardId}-output"></div>
+    </div>`;
+}
+
+async function runnerExec(index) {
+    const brain = runnerBrains[index];
+    const cardId = 'run-' + index;
+    const s = brain.schema;
+    const btn = document.getElementById(cardId + '-submit');
+    const outputEl = document.getElementById(cardId + '-output');
+
+    const args = {};
+    for (const input of s.inputs) {
+        const el = document.getElementById(cardId + '-' + input.name);
+        if (el) args[input.name] = el.value;
+    }
+    for (const [busId, vars] of Object.entries(s.input_busses)) {
+        if (!args.input_busses) args.input_busses = {};
+        args.input_busses[busId] = {};
+        for (const v of vars) {
+            const el = document.getElementById(cardId + '-bus__' + busId + '__' + v);
+            if (el && el.value) args.input_busses[busId][v] = el.value;
+        }
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Running...';
+    outputEl.innerHTML = '';
+
+    try {
+        const res = await fetch('/api/brains/' + encodeURIComponent(brain.name) + '/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(args)
+        });
+        const result = await res.json();
+
+        if (result.error) {
+            outputEl.innerHTML = `<div class="output-panel" style="border-color:#e94560"><div class="output-panel-header">Error</div><div class="output-panel-body">${escapeHtml(result.error + (result.details ? '\n' + result.details : ''))}</div></div>`;
+        } else {
+            let text = (result.results || []).map(r => r.name + ': ' + r.value).join('\n\n');
+            if (result.output_busses && Object.keys(result.output_busses).length > 0) {
+                text += '\n\n--- Bus Outputs ---\n';
+                for (const [busId, vars] of Object.entries(result.output_busses)) {
+                    for (const v of vars) text += '[' + busId + '] ' + v.name + ': ' + v.value + '\n';
+                }
+            }
+            outputEl.innerHTML = `<div class="output-panel"><div class="output-panel-header">Output</div><div class="output-panel-body">${escapeHtml(text)}</div></div>`;
+        }
+    } catch (err) {
+        outputEl.innerHTML = `<div class="output-panel" style="border-color:#e94560"><div class="output-panel-header">Error</div><div class="output-panel-body">${escapeHtml('Request failed: ' + err.message)}</div></div>`;
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = 'Run Brain';
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+</script>
+</body>
+</html>

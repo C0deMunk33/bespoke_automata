@@ -1534,6 +1534,125 @@ GPT_Node.prototype.onExecute = async function() {
 }
 
 
+const venice_api_url = 'https://api.venice.ai/api/v1';
+const venice_endpoint = '/chat/completions';
+const default_venice_model = 'llama-3.3-70b';
+
+call_venice = async function(messages, api_key, model=default_venice_model, web_search=false) {
+	try {
+		const headers = {
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${api_key}`
+		};
+
+		const data = {
+			model: model,
+			messages: messages,
+			max_tokens: 30000,
+			stream: false,
+			venice_parameters: {
+				enable_web_search: web_search ? "on" : "off"
+			}
+		};
+
+		const response = await fetch(venice_api_url + venice_endpoint, {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify(data)
+		});
+
+		const responseData = await response.json();
+		return responseData.choices[0].message.content;
+	} catch (error) {
+		console.log("Venice API error:", error);
+		return "error";
+	}
+}
+
+function Venice_API_Node() {
+	this.addInput("system", "string");
+	this.addInput("user", "string");
+	this.addInput("api key", "string");
+	this.addInput("model", "string");
+	this.addInput("clear", "string");
+
+	this.properties = {
+		api_key: "",
+		buffer_length: 0,
+		chat_buffer: [],
+		model: default_venice_model,
+		web_search: false
+	};
+
+	this.buffer_length_widget = this.addWidget("number", "Buffer Length", this.properties.buffer_length, "buffer_length", {precision:0, step:10});
+	this.web_search_widget = this.addWidget("toggle", "Web Search", this.properties.web_search, "web_search");
+	this.addWidget("button", "Clear Buffer", "", () => {
+		this.properties.chat_buffer = [];
+	});
+
+	this.addOutput("out", "string");
+	this.addOutput("buffer", "string");
+}
+Venice_API_Node.title = "Venice API";
+Venice_API_Node.prototype.onExecute = async function() {
+	this.properties.buffer_length = this.buffer_length_widget.value;
+	this.properties.web_search = this.web_search_widget.value;
+
+	let should_clear = this.getInputData(4);
+	if (should_clear !== undefined && should_clear !== "") {
+		this.properties.chat_buffer = [];
+	}
+
+	let system = this.getInputData(0);
+	if (system === undefined) {
+		this.setOutputData(0, "");
+		return;
+	}
+
+	let user = this.getInputData(1);
+	if (user === undefined || user === "") {
+		this.setOutputData(0, "");
+		return;
+	}
+
+	let api_key = this.getInputData(2);
+	if (api_key !== undefined && api_key !== "") {
+		this.properties.api_key = api_key;
+	}
+	if (!this.properties.api_key) {
+		this.setOutputData(0, "error: no API key");
+		return;
+	}
+
+	let model_input = this.getInputData(3);
+	if (model_input !== undefined && model_input !== "") {
+		this.properties.model = model_input;
+	}
+
+	let system_role = {"role": "system", "content": system};
+
+	if (this.properties.buffer_length <= 0) {
+		this.properties.buffer_length = 0;
+		this.properties.chat_buffer = [];
+	}
+
+	this.properties.chat_buffer.push({"role": "user", "content": user});
+
+	if (this.properties.chat_buffer.length > this.properties.buffer_length && this.properties.buffer_length > 0) {
+		this.properties.chat_buffer.shift();
+	}
+
+	let messages = this.properties.chat_buffer.map((item) => item);
+	messages.unshift(system_role);
+
+	console.log("-----Venice API node executing-----");
+	let response = await call_venice(messages, this.properties.api_key, this.properties.model, this.properties.web_search);
+
+	this.properties.chat_buffer.push({"role": "assistant", "content": response});
+	this.setOutputData(0, response);
+	this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
+}
+
 function Password_Node() {
 	// just a text input node that hides the text and an output
 	this.addOutput("out", "string");
@@ -2518,6 +2637,7 @@ if (typeof module !== 'undefined' && module.exports) {
 		Gate:Gate,
 		JSON_API_Node: JSON_API_Node,
 		GPT_Node: GPT_Node,
+		Venice_API_Node: Venice_API_Node,
 		Password_Node: Password_Node,
 		Prompt_Gate_GPT: Prompt_Gate_GPT,
 		Simple_Vector_DB_Read_Node: Simple_Vector_DB_Read_Node,

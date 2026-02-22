@@ -1,0 +1,317 @@
+{
+  "last_node_id": 8,
+  "last_link_id": 5,
+  "nodes": [
+    {
+      "id": 5,
+      "type": "IO/Dictionary Bus Get",
+      "pos": [
+        184,
+        32
+      ],
+      "size": {
+        "0": 210,
+        "1": 102
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bus id",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "var name",
+          "type": "string",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text out",
+          "type": "string",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "bus_id": "main_input",
+        "variable_name": "system"
+      }
+    },
+    {
+      "id": 3,
+      "type": "IO/Dictionary Bus Get",
+      "pos": [
+        182,
+        187
+      ],
+      "size": {
+        "0": 210,
+        "1": 102
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bus id",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "var name",
+          "type": "string",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text out",
+          "type": "string",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "bus_id": "main_input",
+        "variable_name": "user"
+      }
+    },
+    {
+      "id": 7,
+      "type": "IO/Dictionary Bus Get",
+      "pos": [
+        197,
+        501
+      ],
+      "size": {
+        "0": 210,
+        "1": 102
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bus id",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "var name",
+          "type": "string",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text out",
+          "type": "string",
+          "links": [
+            4
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "bus_id": "main_input",
+        "variable_name": "model_id"
+      }
+    },
+    {
+      "id": 1,
+      "type": "LLM/Venice API",
+      "pos": [
+        644,
+        271
+      ],
+      "size": {
+        "0": 210,
+        "1": 186
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "system",
+          "type": "string",
+          "link": 1
+        },
+        {
+          "name": "user",
+          "type": "string",
+          "link": 2
+        },
+        {
+          "name": "api key",
+          "type": "string",
+          "link": 3
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "link": 4
+        },
+        {
+          "name": "clear",
+          "type": "string",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "out",
+          "type": "string",
+          "links": [
+            5
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "buffer",
+          "type": "string",
+          "links": null
+        }
+      ],
+      "properties": {
+        "api_key": "",
+        "buffer_length": 0,
+        "chat_buffer": [],
+        "model": "llama-3.3-70b",
+        "web_search": false
+      }
+    },
+    {
+      "id": 6,
+      "type": "IO/Dictionary Bus Get",
+      "pos": [
+        191,
+        340
+      ],
+      "size": {
+        "0": 210,
+        "1": 102
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bus id",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "var name",
+          "type": "string",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text out",
+          "type": "string",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "bus_id": "main_input",
+        "variable_name": "VENICE_API_KEY"
+      }
+    },
+    {
+      "id": 8,
+      "type": "IO/Dictionary Bus Set",
+      "pos": [
+        1021,
+        280
+      ],
+      "size": {
+        "0": 210,
+        "1": 122
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bus id",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "var name",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "var value",
+          "type": "string",
+          "link": 5
+        }
+      ],
+      "properties": {
+        "bus_id": "main_input",
+        "variable_name": "bot_out",
+        "variable_value": ""
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      5,
+      0,
+      1,
+      0,
+      "string"
+    ],
+    [
+      2,
+      3,
+      0,
+      1,
+      1,
+      "string"
+    ],
+    [
+      3,
+      6,
+      0,
+      1,
+      2,
+      "string"
+    ],
+    [
+      4,
+      7,
+      0,
+      1,
+      3,
+      "string"
+    ],
+    [
+      5,
+      1,
+      0,
+      8,
+      2,
+      "string"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}
