@@ -25,6 +25,34 @@ const upload = multer({
     }
 });
 
+// --- MCP config persistence ---
+
+const MCP_CONFIG_PATH = path.join(__dirname, 'mcp_config.json');
+
+function loadMcpConfig() {
+    try {
+        if (fs.existsSync(MCP_CONFIG_PATH)) {
+            return JSON.parse(fs.readFileSync(MCP_CONFIG_PATH, 'utf8'));
+        }
+    } catch (_) {}
+    return {};
+}
+
+function saveMcpConfig(config) {
+    fs.writeFileSync(MCP_CONFIG_PATH, JSON.stringify(config, null, 2));
+}
+
+let mcpConfig = loadMcpConfig();
+
+function isBrainMcpEnabled(name) {
+    return mcpConfig[name] !== false;
+}
+
+function setBrainMcpEnabled(name, enabled) {
+    mcpConfig[name] = enabled;
+    saveMcpConfig(mcpConfig);
+}
+
 // --- Brain state ---
 
 let loadedGraphs = {};
@@ -103,7 +131,8 @@ function createMcpServer() {
         capabilities: { tools: {} }
     });
 
-    for (const brain of brainMetadata) {
+    const enabledBrains = brainMetadata.filter(b => isBrainMcpEnabled(b.name));
+    for (const brain of enabledBrains) {
         const inputSchema = buildToolInputSchema(brain.schema);
         const description = buildToolDescription(brain);
         const brainName = brain.name;
@@ -225,8 +254,20 @@ async function startServer() {
         res.json(brainMetadata.map(b => ({
             name: b.name,
             filename: b.filename,
-            schema: b.schema
+            schema: b.schema,
+            mcp_enabled: isBrainMcpEnabled(b.name)
         })));
+    });
+
+    app.get('/api/brains/:name/mcp', (req, res) => {
+        res.json({ name: req.params.name, mcp_enabled: isBrainMcpEnabled(req.params.name) });
+    });
+
+    app.put('/api/brains/:name/mcp', (req, res) => {
+        const enabled = !!req.body.mcp_enabled;
+        setBrainMcpEnabled(req.params.name, enabled);
+        console.log(`Brain "${req.params.name}" MCP tool: ${enabled ? 'enabled' : 'disabled'}`);
+        res.json({ name: req.params.name, mcp_enabled: enabled });
     });
 
     app.post('/api/brains/reload', async (_req, res) => {

@@ -369,6 +369,60 @@
             letter-spacing: 0.1em;
         }
 
+        /* MCP toggle switch */
+        .mcp-toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mcp-toggle-label {
+            font-family: "Raleway", sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--deco-text-muted);
+        }
+        .mcp-toggle-label.on { color: var(--deco-gold); }
+        .mcp-toggle {
+            position: relative;
+            width: 36px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .mcp-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .mcp-toggle .mcp-slider {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--deco-panel-border);
+            border: 1px solid var(--deco-text-muted);
+            transition: all 0.25s ease;
+        }
+        .mcp-toggle .mcp-slider::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            left: 2px;
+            top: 2px;
+            background: var(--deco-text-muted);
+            transition: all 0.25s ease;
+        }
+        .mcp-toggle input:checked + .mcp-slider {
+            background: rgba(201,168,76,0.2);
+            border-color: var(--deco-gold);
+        }
+        .mcp-toggle input:checked + .mcp-slider::before {
+            transform: translateX(18px);
+            background: var(--deco-gold);
+        }
+        .mgr-brain-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mgr-brain-info { flex: 1; min-width: 0; }
+
         /* --- Runner styles --- */
         .runner-content {
             max-width: 1200px;
@@ -552,15 +606,231 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Scrollbar styling for manager/runner */
+        /* --- MCP view styles --- */
+        #view-mcp {
+            position: fixed;
+            top: 44px; left: 0; right: 0; bottom: 0;
+            overflow-y: auto;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 59px,
+                    rgba(201,168,76,0.03) 59px,
+                    rgba(201,168,76,0.03) 60px
+                ),
+                linear-gradient(180deg, #0c0c0f 0%, #101018 100%);
+            font-family: "Raleway", -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--deco-text);
+        }
+        .mcp-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 40px 60px;
+        }
+        .mcp-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--deco-panel-border);
+            position: relative;
+        }
+        .mcp-page-header::after {
+            content: '\2726  \2726  \2726';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: var(--deco-gold-dim);
+            background: var(--deco-black);
+            padding: 0 12px;
+            letter-spacing: 0.5em;
+        }
+        .mcp-page-header h2 {
+            font-family: "Cinzel", serif;
+            font-size: 22px;
+            color: var(--deco-gold);
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .mcp-section {
+            margin-bottom: 32px;
+        }
+        .mcp-section-title {
+            font-family: "Cinzel", serif;
+            font-size: 13px;
+            color: var(--deco-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--deco-panel-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mcp-tool-count {
+            font-family: "Raleway", sans-serif;
+            font-size: 11px;
+            background: rgba(201,168,76,0.15);
+            color: var(--deco-gold);
+            border: 1px solid var(--deco-gold-dim);
+            padding: 1px 8px;
+            letter-spacing: 0.05em;
+        }
+        .mcp-info-card {
+            background: var(--deco-panel);
+            border: 1px solid var(--deco-panel-border);
+            border-left: 3px solid var(--deco-gold-dim);
+            padding: 20px 24px;
+        }
+        .mcp-desc {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--deco-text);
+            margin-bottom: 16px;
+        }
+        .mcp-desc strong {
+            color: var(--deco-gold-light);
+        }
+        .mcp-field {
+            margin-bottom: 14px;
+        }
+        .mcp-field:last-child { margin-bottom: 0; }
+        .mcp-field label {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--deco-text-muted);
+            margin-bottom: 6px;
+        }
+        .mcp-endpoint-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mcp-endpoint-row code {
+            flex: 1;
+            font-size: 13px;
+            color: var(--deco-gold-light);
+            background: rgba(12,12,15,0.6);
+            border: 1px solid var(--deco-panel-border);
+            padding: 8px 12px;
+            user-select: all;
+            word-break: break-all;
+        }
+        .mcp-endpoint-row .mgr-btn {
+            padding: 6px 14px;
+            font-size: 10px;
+        }
+        .mcp-code-block {
+            background: rgba(12,12,15,0.6);
+            border: 1px solid var(--deco-panel-border);
+            overflow: hidden;
+        }
+        .mcp-code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: rgba(201,168,76,0.04);
+            border-bottom: 1px solid var(--deco-panel-border);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--deco-text-muted);
+        }
+        .mcp-code-header .mgr-btn {
+            padding: 4px 12px;
+            font-size: 9px;
+        }
+        .mcp-code-block pre {
+            margin: 0;
+            padding: 16px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--deco-text);
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .mcp-tool-item {
+            background: var(--deco-panel);
+            border: 1px solid var(--deco-panel-border);
+            border-left: 3px solid var(--deco-gold-dim);
+            padding: 14px 20px;
+            margin-bottom: 8px;
+            transition: border-left-color 0.2s;
+        }
+        .mcp-tool-item:hover {
+            border-left-color: var(--deco-gold);
+        }
+        .mcp-tool-name {
+            font-family: "Cinzel", serif;
+            font-size: 14px;
+            color: var(--deco-gold-light);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .mcp-tool-desc {
+            font-size: 11px;
+            color: var(--deco-text-muted);
+            line-height: 1.5;
+        }
+        .mcp-tool-schema {
+            margin-top: 8px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .mcp-tool-schema .tag {
+            font-size: 9px;
+        }
+        .mcp-empty-tools {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--deco-text-muted);
+            font-size: 13px;
+        }
+        .mcp-hint {
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--deco-text-muted);
+        }
+        .mcp-hint a {
+            color: var(--deco-gold);
+            text-decoration: none;
+        }
+        .mcp-hint a:hover {
+            text-decoration: underline;
+        }
+        .mcp-session-count {
+            font-family: "Cinzel", serif;
+            font-size: 32px;
+            color: var(--deco-gold);
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        /* Scrollbar styling for manager/runner/mcp */
         #view-manager::-webkit-scrollbar,
-        #view-runner::-webkit-scrollbar { width: 6px; }
+        #view-runner::-webkit-scrollbar,
+        #view-mcp::-webkit-scrollbar { width: 6px; }
         #view-manager::-webkit-scrollbar-track,
-        #view-runner::-webkit-scrollbar-track { background: var(--deco-black); }
+        #view-runner::-webkit-scrollbar-track,
+        #view-mcp::-webkit-scrollbar-track { background: var(--deco-black); }
         #view-manager::-webkit-scrollbar-thumb,
-        #view-runner::-webkit-scrollbar-thumb { background: var(--deco-gold-dim); }
+        #view-runner::-webkit-scrollbar-thumb,
+        #view-mcp::-webkit-scrollbar-thumb { background: var(--deco-gold-dim); }
         #view-manager::-webkit-scrollbar-thumb:hover,
-        #view-runner::-webkit-scrollbar-thumb:hover { background: var(--deco-gold); }
+        #view-runner::-webkit-scrollbar-thumb:hover,
+        #view-mcp::-webkit-scrollbar-thumb:hover { background: var(--deco-gold); }
 
         /* File list layout overrides */
         #file_list_element .file {
@@ -597,6 +867,7 @@
     <button class="nav-tab active" onclick="switchTab('editor')">Editor</button>
     <button class="nav-tab" onclick="switchTab('manager')">Manager</button>
     <button class="nav-tab" onclick="switchTab('runner')">Runner</button>
+    <button class="nav-tab" onclick="switchTab('mcp')">MCP</button>
     <div class="nav-status">
         <span class="dot"></span>
         <span>MCP</span>
@@ -652,6 +923,68 @@
     </div>
 </div>
 
+<!-- ===== MCP View ===== -->
+<div id="view-mcp" class="view">
+    <div class="mcp-content">
+        <div class="mcp-page-header">
+            <h2>MCP Server</h2>
+            <button class="mgr-btn" onclick="mcpRefresh()">Refresh</button>
+        </div>
+
+        <div class="mcp-section">
+            <div class="mcp-section-title">Connection</div>
+            <div class="mcp-info-card">
+                <p class="mcp-desc">This server exposes brains as tools via the <strong>Model Context Protocol</strong> (MCP) over Server-Sent Events. Connect any MCP-compatible client to interact with your enabled brains.</p>
+                <div class="mcp-field">
+                    <label>SSE Endpoint</label>
+                    <div class="mcp-endpoint-row">
+                        <code id="mcpSseUrl">loading...</code>
+                        <button class="mgr-btn" onclick="navigator.clipboard.writeText(document.getElementById('mcpSseUrl').textContent)" title="Copy">Copy</button>
+                    </div>
+                </div>
+                <div class="mcp-field">
+                    <label>Messages Endpoint</label>
+                    <div class="mcp-endpoint-row">
+                        <code id="mcpMsgUrl">loading...</code>
+                        <button class="mgr-btn" onclick="navigator.clipboard.writeText(document.getElementById('mcpMsgUrl').textContent)" title="Copy">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mcp-section">
+            <div class="mcp-section-title">Client Configuration</div>
+            <div class="mcp-info-card">
+                <p class="mcp-desc">Add the following to your MCP client configuration (e.g. Claude Desktop, Cursor, etc.):</p>
+                <div class="mcp-code-block">
+                    <div class="mcp-code-header">
+                        <span>mcp_config.json</span>
+                        <button class="mgr-btn" onclick="mcpCopyConfig()" title="Copy">Copy</button>
+                    </div>
+                    <pre id="mcpConfigSnippet">loading...</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="mcp-section">
+            <div class="mcp-section-title">
+                <span>Exposed Tools</span>
+                <span class="mcp-tool-count" id="mcpToolCount">0</span>
+            </div>
+            <div id="mcpToolList"></div>
+            <p class="mcp-hint">Toggle brain MCP exposure in the <a href="#" onclick="switchTab('manager');return false;">Manager</a> tab.</p>
+        </div>
+
+        <div class="mcp-section">
+            <div class="mcp-section-title">Active Sessions</div>
+            <div class="mcp-info-card">
+                <p class="mcp-desc">Currently connected MCP clients:</p>
+                <div class="mcp-session-count" id="mcpSessionCount">0</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // =============================================
 //  Tab switching
@@ -668,6 +1001,7 @@ function switchTab(tab) {
     });
     if (tab === 'manager') mgrLoad();
     if (tab === 'runner') runnerRefresh();
+    if (tab === 'mcp') mcpRefresh();
     if (tab === 'editor') { canvas.resize(); updateEditorHiPPICanvas(); }
 }
 
@@ -675,6 +1009,14 @@ function switchTab(tab) {
 fetch('/api/status').then(r => r.json()).then(s => {
     document.getElementById('navSseEndpoint').textContent = s.sseEndpoint;
 }).catch(() => {});
+
+function countBrainIO(schema) {
+    let inputs = schema.inputs.length;
+    let outputs = schema.outputs.length;
+    for (const vars of Object.values(schema.input_busses)) inputs += vars.length;
+    for (const vars of Object.values(schema.output_busses)) outputs += vars.length;
+    return { inputs, outputs };
+}
 
 // =============================================
 //  EDITOR
@@ -1118,13 +1460,46 @@ function mgrRenderList() {
         return;
     }
     el.innerHTML = mgrBrains.map(b => {
-        const inC = b.schema.inputs.length;
-        const outC = b.schema.outputs.length;
-        return `<div class="mgr-brain" onclick="mgrSelect('${b.name}')">
-            <h3>${b.name}</h3>
-            <div class="io-summary">${inC} input${inC !== 1 ? 's' : ''}, ${outC} output${outC !== 1 ? 's' : ''}</div>
+        const io = countBrainIO(b.schema);
+        const checked = b.mcp_enabled ? 'checked' : '';
+        return `<div class="mgr-brain">
+            <div class="mgr-brain-row">
+                <div class="mgr-brain-info" onclick="mgrSelect('${b.name}')" style="cursor:pointer">
+                    <h3>${b.name}</h3>
+                    <div class="io-summary">${io.inputs} input${io.inputs !== 1 ? 's' : ''}, ${io.outputs} output${io.outputs !== 1 ? 's' : ''}</div>
+                </div>
+                <div class="mcp-toggle-wrap" title="Expose as MCP tool">
+                    <span class="mcp-toggle-label ${b.mcp_enabled ? 'on' : ''}">MCP</span>
+                    <label class="mcp-toggle">
+                        <input type="checkbox" ${checked} onchange="mgrToggleMcp('${b.name}', this.checked)">
+                        <span class="mcp-slider"></span>
+                    </label>
+                </div>
+            </div>
         </div>`;
     }).join('');
+}
+
+async function mgrToggleMcp(name, enabled) {
+    try {
+        const res = await fetch('/api/brains/' + encodeURIComponent(name) + '/mcp', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mcp_enabled: enabled })
+        });
+        if (!res.ok) throw new Error('Server returned ' + res.status);
+        const result = await res.json();
+        const brain = mgrBrains.find(b => b.name === name);
+        if (brain) brain.mcp_enabled = result.mcp_enabled;
+        mgrRenderList();
+        if (mgrSelected && mgrSelected.name === name) {
+            mgrSelected.mcp_enabled = result.mcp_enabled;
+            mgrRenderDetail(mgrSelected);
+        }
+    } catch (e) {
+        alert('Failed to update MCP status: ' + e.message + '\nYou may need to restart the server.');
+        await mgrLoad();
+    }
 }
 
 function mgrSelect(name) {
@@ -1169,7 +1544,20 @@ function mgrRenderDetail(brain) {
         html += '</table></div>';
     }
 
-    html += `<div class="connection-info"><label>MCP Tool Name</label><code>${brain.name}</code></div>`;
+    const mcpChecked = brain.mcp_enabled ? 'checked' : '';
+    html += `<div class="connection-info">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <label style="margin:0">MCP Tool</label>
+            <div class="mcp-toggle-wrap">
+                <span class="mcp-toggle-label ${brain.mcp_enabled ? 'on' : ''}">${brain.mcp_enabled ? 'Enabled' : 'Disabled'}</span>
+                <label class="mcp-toggle">
+                    <input type="checkbox" ${mcpChecked} onchange="mgrToggleMcp('${brain.name}', this.checked)">
+                    <span class="mcp-slider"></span>
+                </label>
+            </div>
+        </div>
+        <label>Tool Name</label><code>${brain.name}</code>
+    </div>`;
     document.getElementById('mgrDetail').innerHTML = `<div class="mgr-detail">${html}</div>`;
 }
 
@@ -1277,6 +1665,81 @@ function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+// =============================================
+//  MCP
+// =============================================
+
+let mcpBaseUrl = '';
+
+async function mcpRefresh() {
+    try {
+        const [statusRes, brainsRes] = await Promise.all([
+            fetch('/api/status'),
+            fetch('/api/brains')
+        ]);
+        const status = await statusRes.json();
+        const brains = await brainsRes.json();
+
+        mcpBaseUrl = 'http://localhost:' + status.port;
+        const sseUrl = mcpBaseUrl + '/sse';
+        const msgUrl = mcpBaseUrl + '/messages';
+
+        document.getElementById('mcpSseUrl').textContent = sseUrl;
+        document.getElementById('mcpMsgUrl').textContent = msgUrl;
+
+        const configObj = {
+            "mcpServers": {
+                "bespoke-automata": {
+                    "url": sseUrl
+                }
+            }
+        };
+        document.getElementById('mcpConfigSnippet').textContent = JSON.stringify(configObj, null, 2);
+
+        document.getElementById('mcpSessionCount').textContent = status.sessions;
+
+        const enabledBrains = brains.filter(b => b.mcp_enabled);
+        document.getElementById('mcpToolCount').textContent = enabledBrains.length;
+
+        const listEl = document.getElementById('mcpToolList');
+        if (enabledBrains.length === 0) {
+            listEl.innerHTML = '<div class="mcp-empty-tools">No brains are enabled as MCP tools. Enable them in the Manager tab.</div>';
+        } else {
+            listEl.innerHTML = enabledBrains.map(b => {
+                const s = b.schema;
+                let tags = '';
+                for (const inp of s.inputs) {
+                    tags += `<span class="tag tag-input">${inp.name}</span>`;
+                }
+                for (const [busId, vars] of Object.entries(s.input_busses)) {
+                    for (const v of vars) tags += `<span class="tag tag-input">${v}</span>`;
+                }
+                for (const out of s.outputs) {
+                    tags += `<span class="tag tag-output">${out.name}</span>`;
+                }
+                for (const [busId, vars] of Object.entries(s.output_busses)) {
+                    for (const v of vars) tags += `<span class="tag tag-output">${v}</span>`;
+                }
+                const io = countBrainIO(s);
+                let desc = `${io.inputs} input${io.inputs !== 1 ? 's' : ''}, ${io.outputs} output${io.outputs !== 1 ? 's' : ''}`;
+
+                return `<div class="mcp-tool-item">
+                    <div class="mcp-tool-name">${b.name}</div>
+                    <div class="mcp-tool-desc">${desc}</div>
+                    ${tags ? '<div class="mcp-tool-schema">' + tags + '</div>' : ''}
+                </div>`;
+            }).join('');
+        }
+    } catch (e) {
+        console.error('MCP refresh failed:', e);
+    }
+}
+
+function mcpCopyConfig() {
+    const text = document.getElementById('mcpConfigSnippet').textContent;
+    navigator.clipboard.writeText(text);
 }
 </script>
 </body>
