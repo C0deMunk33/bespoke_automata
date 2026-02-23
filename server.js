@@ -6,7 +6,7 @@ const multer = require('multer');
 const { McpServer } = require('@modelcontextprotocol/sdk/server/mcp.js');
 const { SSEServerTransport } = require('@modelcontextprotocol/sdk/server/sse.js');
 const { z } = require('zod');
-const { loadBrain, getBrainSchema, executeBrain, discoverBrains } = require('./bespoke_manager/core.js');
+const { loadBrain, getBrainSchema, executeBrain, executeBrainStreaming, discoverBrains } = require('./bespoke_manager/core.js');
 
 const PORT = process.env.PORT || 9999;
 const GRAPHS_DIR = path.join(__dirname, 'graphs');
@@ -147,7 +147,7 @@ function createMcpServer() {
             }
             try {
                 const inputData = parseToolArgs(args, brain.schema);
-                const result = await executeBrain(graph, inputData);
+                const result = await executeBrainStreaming(graph, inputData, () => {});
                 const outputText = result.results.map(r => `${r.name}: ${r.value}`).join('\n\n');
                 let fullOutput = outputText;
                 if (Object.keys(result.output_busses).length > 0) {
@@ -303,6 +303,45 @@ async function startServer() {
         } catch (err) {
             res.status(500).json({ error: 'Execution failed', details: err.message });
         }
+    });
+
+    // --- Streaming brain execution API (SSE) ---
+
+    app.post('/api/brains/:name/stream', async (req, res) => {
+        const brain = brainMetadata.find(b => b.name === req.params.name);
+        if (!brain) {
+            return res.status(404).json({ error: `Brain "${req.params.name}" not found` });
+        }
+        const graph = loadedGraphs[brain.name];
+        if (!graph) {
+            return res.status(500).json({ error: `Brain "${brain.name}" not loaded` });
+        }
+
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'X-Accel-Buffering': 'no'
+        });
+
+        let closed = false;
+        res.on('close', () => { closed = true; });
+
+        function sendEvent(data) {
+            if (closed) return;
+            try {
+                res.write(`data: ${JSON.stringify(data)}\n\n`);
+            } catch (e) {
+                console.error('sendEvent error:', e.message);
+            }
+        }
+
+        try {
+            await executeBrainStreaming(graph, req.body, sendEvent);
+        } catch (err) {
+            sendEvent({ type: 'error', message: err.message });
+        }
+        res.end();
     });
 
     // --- Status / health ---

@@ -606,6 +606,34 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Streaming output */
+        .stream-node {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--deco-panel-border);
+        }
+        .stream-node:last-child { border-bottom: none; margin-bottom: 0; }
+        .stream-node-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: "Raleway", sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--deco-gold-dim);
+            margin-bottom: 4px;
+        }
+        .stream-node-title { color: var(--deco-gold); }
+        .stream-node-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--deco-text);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
         /* --- MCP view styles --- */
         #view-mcp {
             position: fixed;
@@ -1631,34 +1659,86 @@ async function runnerExec(index) {
 
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Running...';
-    outputEl.innerHTML = '';
+
+    outputEl.innerHTML = `<div class="output-panel stream-panel">
+        <div class="output-panel-header">Streaming <span class="spinner" style="margin-left:6px"></span></div>
+        <div class="output-panel-body" id="${cardId}-stream"></div>
+    </div>`;
+    const streamBody = document.getElementById(cardId + '-stream');
 
     try {
-        const res = await fetch('/api/brains/' + encodeURIComponent(brain.name) + '/run', {
+        const res = await fetch('/api/brains/' + encodeURIComponent(brain.name) + '/stream', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(args)
         });
-        const result = await res.json();
 
-        if (result.error) {
-            outputEl.innerHTML = `<div class="output-panel" style="border-color:#e94560"><div class="output-panel-header">Error</div><div class="output-panel-body">${escapeHtml(result.error + (result.details ? '\n' + result.details : ''))}</div></div>`;
-        } else {
-            let text = (result.results || []).map(r => r.name + ': ' + r.value).join('\n\n');
-            if (result.output_busses && Object.keys(result.output_busses).length > 0) {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
+        let nodeStreams = {};
+        let finalOutputs = null;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buf += decoder.decode(value, { stream: true });
+            const lines = buf.split('\n');
+            buf = lines.pop();
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                let evt;
+                try { evt = JSON.parse(line.slice(6)); } catch (_) { continue; }
+
+                if (evt.type === 'token') {
+                    if (!nodeStreams[evt.nodeId]) {
+                        nodeStreams[evt.nodeId] = { title: evt.nodeTitle, text: '' };
+                    }
+                    nodeStreams[evt.nodeId].text += evt.token;
+                    renderStreamState(streamBody, nodeStreams);
+                } else if (evt.type === 'node_done') {
+                    if (nodeStreams[evt.nodeId]) {
+                        nodeStreams[evt.nodeId].done = true;
+                        renderStreamState(streamBody, nodeStreams);
+                    }
+                } else if (evt.type === 'complete') {
+                    finalOutputs = evt.outputs;
+                } else if (evt.type === 'error') {
+                    streamBody.textContent = 'Error: ' + evt.message;
+                }
+            }
+        }
+
+        if (finalOutputs) {
+            let text = (finalOutputs.results || []).map(r => r.name + ': ' + r.value).join('\n\n');
+            if (finalOutputs.output_busses && Object.keys(finalOutputs.output_busses).length > 0) {
                 text += '\n\n--- Bus Outputs ---\n';
-                for (const [busId, vars] of Object.entries(result.output_busses)) {
+                for (const [busId, vars] of Object.entries(finalOutputs.output_busses)) {
                     for (const v of vars) text += '[' + busId + '] ' + v.name + ': ' + v.value + '\n';
                 }
             }
             outputEl.innerHTML = `<div class="output-panel"><div class="output-panel-header">Output</div><div class="output-panel-body">${escapeHtml(text)}</div></div>`;
         }
     } catch (err) {
-        outputEl.innerHTML = `<div class="output-panel" style="border-color:#e94560"><div class="output-panel-header">Error</div><div class="output-panel-body">${escapeHtml('Request failed: ' + err.message)}</div></div>`;
+        outputEl.innerHTML = `<div class="output-panel" style="border-left-color:var(--deco-red)"><div class="output-panel-header">Error</div><div class="output-panel-body">${escapeHtml('Request failed: ' + err.message)}</div></div>`;
     }
 
     btn.disabled = false;
     btn.innerHTML = 'Run Brain';
+}
+
+function renderStreamState(container, nodeStreams) {
+    let html = '';
+    for (const [id, ns] of Object.entries(nodeStreams)) {
+        const statusIcon = ns.done ? '&#10003;' : '<span class="spinner" style="width:10px;height:10px;border-width:1.5px"></span>';
+        html += `<div class="stream-node">
+            <div class="stream-node-header">${statusIcon} <span class="stream-node-title">${escapeHtml(ns.title)}</span></div>
+            <div class="stream-node-text">${escapeHtml(ns.text)}</div>
+        </div>`;
+    }
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
 }
 
 function escapeHtml(str) {

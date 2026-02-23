@@ -168,6 +168,19 @@ async function executeBrain(graph, inputData) {
     return readOutputs(graph);
 }
 
+async function executeBrainStreaming(graph, inputData, onEvent) {
+    graph._stream_callback = (evt) => {
+        try { onEvent(evt); } catch (_) {}
+    };
+    setInputs(graph, inputData);
+    onEvent({ type: 'start' });
+    await runGraph(graph);
+    const outputs = readOutputs(graph);
+    onEvent({ type: 'complete', outputs });
+    graph._stream_callback = null;
+    return outputs;
+}
+
 function discoverBrains(graphsDir) {
     if (!fs.existsSync(graphsDir)) return [];
     const files = fs.readdirSync(graphsDir).filter(f => f.endsWith('.brain'));
@@ -183,6 +196,7 @@ module.exports = {
     loadBrain,
     getBrainSchema,
     executeBrain,
+    executeBrainStreaming,
     setInputs,
     readOutputs,
     runGraph,

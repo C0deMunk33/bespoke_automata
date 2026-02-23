@@ -17,47 +17,102 @@ const gpt_endpoint = '/v1/chat/completions';
 const gpt_url = 'https://api.openai.com'
 const default_gpt_model = "gpt-3.5-turbo";
 
-call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model, grammar=undefined) { 
+// Parse an OpenAI-compatible SSE stream, calling onChunk(token) for each token.
+// Returns the full accumulated text.
+async function _parseSSEStream(response, onChunk) {
+	let full = '';
+	const reader = response.body.getReader ? response.body.getReader() : null;
+	if (reader) {
+		const decoder = new TextDecoder();
+		let buf = '';
+		while (true) {
+			const { done, value } = await reader.read();
+			if (done) break;
+			buf += decoder.decode(value, { stream: true });
+			const lines = buf.split('\n');
+			buf = lines.pop();
+			for (const line of lines) {
+				if (!line.startsWith('data: ')) continue;
+				const payload = line.slice(6).trim();
+				if (payload === '[DONE]') continue;
+				try {
+					const obj = JSON.parse(payload);
+					const token = obj.choices?.[0]?.delta?.content;
+					if (token) {
+						full += token;
+						if (onChunk) onChunk(token);
+					}
+				} catch (_) {}
+			}
+		}
+	} else if (typeof response.body[Symbol.asyncIterator] === 'function') {
+		const decoder = new TextDecoder();
+		let buf = '';
+		for await (const chunk of response.body) {
+			buf += (typeof chunk === 'string') ? chunk : decoder.decode(chunk, { stream: true });
+			const lines = buf.split('\n');
+			buf = lines.pop();
+			for (const line of lines) {
+				if (!line.startsWith('data: ')) continue;
+				const payload = line.slice(6).trim();
+				if (payload === '[DONE]') continue;
+				try {
+					const obj = JSON.parse(payload);
+					const token = obj.choices?.[0]?.delta?.content;
+					if (token) {
+						full += token;
+						if (onChunk) onChunk(token);
+					}
+				} catch (_) {}
+			}
+		}
+	} else {
+		const text = await response.text();
+		full = text;
+		if (onChunk) onChunk(text);
+	}
+	return full;
+}
+
+call_gpt = async function(messages, api_key, url=gpt_url, model=default_gpt_model, grammar=undefined, onChunk=undefined) { 
 	try {
 		const headers = {
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${api_key}`
 		};
 
-		
+		const streaming = !!onChunk;
 		const data = {
 			model: model,
 			messages: messages,
 			max_tokens: 30000,
-			stream: false, 
+			stream: streaming, 
 			grammar: (grammar === undefined || grammar === "") ? undefined : grammar
 		};
 		final_url = url + gpt_endpoint;
 
-
-		//console.log("final url: " + final_url)
 		const response = await fetch(final_url, {
 			method: 'POST',
 			headers: headers,
 			body: JSON.stringify(data)
 		});
 
+		if (!response.ok) {
+			const errText = await response.text().catch(() => response.statusText);
+			console.log("GPT API error:", response.status, errText);
+			return "error: " + response.status;
+		}
+
+		if (streaming) {
+			return await _parseSSEStream(response, onChunk);
+		}
+
 		const responseData = await response.json();
-		console.log("llm response: " + JSON.stringify(responseData.chat.choices[0].message.content))
 		return responseData.chat.choices[0].message.content;
 	} catch (error) {
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
-		console.log(error);
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~")
-
+		console.log("GPT call error:", error);
 		return "error";
 	}
-
 }
 
 query_wikipedia = async function(query, milvus_url, top_k=3) {
@@ -1523,11 +1578,22 @@ GPT_Node.prototype.onExecute = async function() {
 	messages.unshift(system_role);
 
 	let grammar = this.getInputData(6);
-	console.log("grammar: " + grammar)
 
-	let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar);
+	let streamCb = null;
+	if (this.graph && this.graph._stream_callback) {
+		const nodeId = this.id;
+		const nodeTitle = this.title || 'LLM';
+		streamCb = (token) => {
+			this.graph._stream_callback({ type: 'token', nodeId, nodeTitle, token });
+		};
+	}
 
-	console.log("setting GPT output: " + gpt_response)
+	let gpt_response = await call_gpt(messages, this.properties.api_key, this.properties.server_url, this.properties.model, grammar, streamCb);
+
+	if (streamCb) {
+		this.graph._stream_callback({ type: 'node_done', nodeId: this.id, nodeTitle: this.title || 'LLM' });
+	}
+
 	this.properties.chat_buffer.push({"role": "assistant", "content": gpt_response});
 	this.setOutputData(0, gpt_response);
 	this.setOutputData(1, JSON.stringify(this.properties.chat_buffer));
@@ -1538,18 +1604,19 @@ const venice_api_url = 'https://api.venice.ai/api/v1';
 const venice_endpoint = '/chat/completions';
 const default_venice_model = 'llama-3.3-70b';
 
-call_venice = async function(messages, api_key, model=default_venice_model, web_search=false) {
+call_venice = async function(messages, api_key, model=default_venice_model, web_search=false, onChunk=undefined) {
 	try {
 		const headers = {
 			'Content-Type': 'application/json',
 			'Authorization': `Bearer ${api_key}`
 		};
 
+		const streaming = !!onChunk;
 		const data = {
 			model: model,
 			messages: messages,
 			max_tokens: 30000,
-			stream: false,
+			stream: streaming,
 			venice_parameters: {
 				enable_web_search: web_search ? "on" : "off"
 			}
@@ -1560,6 +1627,16 @@ call_venice = async function(messages, api_key, model=default_venice_model, web_
 			headers: headers,
 			body: JSON.stringify(data)
 		});
+
+		if (!response.ok) {
+			const errText = await response.text().catch(() => response.statusText);
+			console.log("Venice API error:", response.status, errText);
+			return "error: " + response.status;
+		}
+
+		if (streaming) {
+			return await _parseSSEStream(response, onChunk);
+		}
 
 		const responseData = await response.json();
 		return responseData.choices[0].message.content;
@@ -1645,8 +1722,20 @@ Venice_API_Node.prototype.onExecute = async function() {
 	let messages = this.properties.chat_buffer.map((item) => item);
 	messages.unshift(system_role);
 
-	console.log("-----Venice API node executing-----");
-	let response = await call_venice(messages, this.properties.api_key, this.properties.model, this.properties.web_search);
+	let streamCb = null;
+	if (this.graph && this.graph._stream_callback) {
+		const nodeId = this.id;
+		const nodeTitle = this.title || 'Venice API';
+		streamCb = (token) => {
+			this.graph._stream_callback({ type: 'token', nodeId, nodeTitle, token });
+		};
+	}
+
+	let response = await call_venice(messages, this.properties.api_key, this.properties.model, this.properties.web_search, streamCb);
+
+	if (streamCb) {
+		this.graph._stream_callback({ type: 'node_done', nodeId: this.id, nodeTitle: this.title || 'Venice API' });
+	}
 
 	this.properties.chat_buffer.push({"role": "assistant", "content": response});
 	this.setOutputData(0, response);
